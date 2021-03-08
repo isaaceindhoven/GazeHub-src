@@ -2,27 +2,26 @@
 
 namespace GazeHub;
 
+use DI\Container;
 use GazeHub\Controllers\EventController;
 use GazeHub\Controllers\SSEController;
-use GazeHub\Services\StreamRepository;
 use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Message\Response;
 
 class Router {
+    private $container;
 
-    private $streamRepository;
-
-    function __construct(StreamRepository $streamRepository) {
-        $this->streamRepository = $streamRepository;
+    public function __construct(Container $container) {
+        $this->container = $container;
     }
 
-    function route(ServerRequestInterface $request) {
+    public function route(ServerRequestInterface $request) {
 
         $path = $request->getUri()->getPath();
 
         $routes = [];
-        $routes["/sse"] = [new SSEController($this->streamRepository), 'handle'];
-        $routes["/event"] = [new EventController($this->streamRepository), 'handle'];
+        $routes["/sse"] = [$this->container->get(SSEController::class), 'handle'];
+        $routes["/event"] = [$this->container->get(EventController::class), 'handle'];
 
         // TODO: remove
         if ($request->getUri()->getPath() === '/') {
@@ -34,6 +33,5 @@ class Router {
         }
 
         return new Response(404, [], "Not found");
-        
     }
 }
