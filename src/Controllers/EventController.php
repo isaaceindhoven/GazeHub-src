@@ -4,15 +4,24 @@ declare(strict_types=1);
 
 namespace GazeHub\Controllers;
 
-use GazeHub\Models\Client;
+use Exception;
 use GazeHub\Models\Request;
-use GazeHub\Services\ClientRepository;
+use GazeHub\Models\Subscription;
 use GazeHub\Services\SubscriptionRepository;
 use React\Http\Message\Response;
 
+use function array_key_exists;
+use function boolval;
+use function explode;
+use function floatval;
+use function in_array;
+use function is_array;
+use function is_numeric;
+use function preg_match;
+use function sprintf;
+
 class EventController
 {
-
     /**
      * @var SubscriptionRepository
      */
@@ -25,24 +34,78 @@ class EventController
 
     public function handle(Request $request): Response
     {
-        if (!$request->isAuthorized() || $request->getTokenPayload()['role'] != 'server') {
+        if (!$request->isAuthorized() || $request->getTokenPayload()['role'] !== 'server') {
             return new Response(401);
         }
 
         $data = $request->getParsedBody();
 
-        if (!array_key_exists('topic', $data)) {
-            return new Response(400, [], 'Missing topic');
+        if (!array_key_exists('topic', $data) || !array_key_exists('payload', $data)) {
+            return new Response(400, [], 'Missing data');
         }
 
-        if (!array_key_exists('payload', $data)) {
-            return new Response(400, [], 'Missing payload');
-        }
+        $parentScope = $this;
 
-        $this->subscriptionRepository->forEachInTopic($data['topic'], static function (Client $client) use ($data) {
-            $client->stream->write($data['payload']);
+        $this->subscriptionRepository->forEach(static function (Subscription $subscription) use ($data, $parentScope) {
+            if ($parentScope->payloadMatchesSubscription($data['topic'], $data['payload'], $subscription)) {
+                $subscription->client->stream->write([
+                    'callbackId' => $subscription->callbackId,
+                    'payload' => $data['payload'],
+                ]);
+            };
         });
 
         return new Response(200, [ 'Content-Type' => 'text/html' ], 'Completed');
+    }
+
+    // phpcs:ignore SlevomatCodingStandard.Classes.UnusedPrivateElements.UnusedMethod, Generic.Metrics.CyclomaticComplexity.TooHigh, ObjectCalisthenics.Files.FunctionLength.ObjectCalisthenics\Sniffs\Files\FunctionLengthSniff
+    private function payloadMatchesSubscription(string $topic, array $payload, Subscription $subscription): bool
+    {
+        if ($subscription->topic !== $topic) {
+            return false;
+        }
+
+        try {
+            $fieldToCheck = $this->getNestedField($payload, $subscription->field);
+        } catch (Exception $e) {
+            return false;
+        }
+
+        switch ($subscription->operator) {
+            case '==':
+                return $fieldToCheck === $subscription->value;
+            case '!=':
+                return $fieldToCheck !== $subscription->value;
+            case '>':
+                return is_numeric($fieldToCheck) && floatval($fieldToCheck) > $subscription->value;
+            case '<':
+                return is_numeric($fieldToCheck) && floatval($fieldToCheck) < $subscription->value;
+            case '>=':
+                return is_numeric($fieldToCheck) && floatval($fieldToCheck) >= $subscription->value;
+            case '<=':
+                return is_numeric($fieldToCheck) && floatval($fieldToCheck) <= $subscription->value;
+            case 'in':
+                return is_array($fieldToCheck) && in_array($fieldToCheck, $subscription->value);
+            case 'regex':
+                return boolval(preg_match($subscription->value, $fieldToCheck));
+            default:
+                return false;
+        }
+    }
+
+    private function getNestedField(array $obj, string $path): string
+    {
+        $fields = explode('.', $path);
+
+        $fieldToCheck = $obj;
+
+        foreach ($fields as $field) {
+            if (!array_key_exists($field, $fieldToCheck)) {
+                throw new Exception(sprintf('Field %s not found', $field));
+            }
+            $fieldToCheck = $fieldToCheck[$field];
+        }
+
+        return $fieldToCheck;
     }
 }

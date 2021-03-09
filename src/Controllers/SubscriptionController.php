@@ -6,15 +6,21 @@ namespace GazeHub\Controllers;
 
 use GazeHub\Models\Client;
 use GazeHub\Models\Request;
+use GazeHub\Models\Subscription;
 use GazeHub\Services\ClientRepository;
 use GazeHub\Services\SubscriptionRepository;
 use React\Http\Message\Response;
+
+use function array_key_exists;
+use function count;
+use function is_array;
 
 class SubscriptionController
 {
     /**
      *  @var SubscriptionRepository
      */
+    // phpcs:ignore SlevomatCodingStandard.Classes.UnusedPrivateElements.WriteOnlyProperty
     private $subscriptionRepository;
 
     /**
@@ -29,43 +35,64 @@ class SubscriptionController
     }
 
     public function create(Request $request): Response
-    {   
+    {
         $scope = $this;
 
-        return $this->getTopicFromRequest($request, static function(string $topic, Client $client) use ($scope) {
-            $scope->subscriptionRepository->subscribe($topic, $client);
-        });
+        return $this->getTopicFromRequest(
+            $request,
+            static function (Client $client, array $subscriptionRequest) use ($scope) {
+                $scope->subscriptionRepository->subscribe($client, $subscriptionRequest);
+            }
+        );
     }
 
     public function destroy(Request $request): Response
     {
         $scope = $this;
 
-        return $this->getTopicFromRequest($request, static function(string $topic, Client $client) use ($scope) {
-            $scope->subscriptionRepository->unsubscribe($topic, $client);
-        });
+        return $this->getTopicFromRequest(
+            $request,
+            static function (Client $client, array $subscriptionRequest) use ($scope) {
+                $scope->subscriptionRepository->unsubscribe($client, $subscriptionRequest);
+            }
+        );
     }
 
     private function getTopicFromRequest(Request $request, callable $callback): Response
     {
+
+
         if (!$request->isAuthorized()) {
             return new Response(401);
         }
 
-        $body = $request->getParsedBody();
-        
-        if (!array_key_exists('topic', $body)) {
-            return new Response(400, [], 'Missing topic');
+        if (!is_array($request->getParsedBody()) || count($request->getParsedBody()) === 0) {
+            return new Response(400, [], 'Missing topics');
         }
-        
+
         $client = $this->clientRepository->getByTokenId($request->getTokenPayload()['jti']);
 
         if (!$client) {
             return new Response(401);
         }
-        
-        $callback($body['topic'], $client);
-        
+
+        foreach ($request->getParsedBody() as $subscriptionRequest) {
+            if (!$this->arrayHasAllKeys($subscriptionRequest, ['topic', 'callbackId'])) {
+                return new Response(400, [], 'Missing data');
+            }
+            $callback($client, $subscriptionRequest);
+        }
+
         return new Response(204);
+    }
+
+    private function arrayHasAllKeys(array $arr, array $keys): bool
+    {
+        foreach ($keys as $key) {
+            if (!array_key_exists($key, $arr)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
