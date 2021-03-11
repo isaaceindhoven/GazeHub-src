@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace GazeHub\Controllers;
 
+use GazeHub\Log;
 use GazeHub\Models\Request;
 use GazeHub\Services\ClientRepository;
 use GazeHub\Services\SubscriptionRepository;
@@ -45,6 +46,7 @@ class SSEController
         $request->isAuthorized();
 
         $stream = new ThroughStream(static function (array $data) {
+            Log::info('Sending data to client:', $data);
             return 'data: ' . json_encode($data) . "\n\n";
         });
 
@@ -53,7 +55,7 @@ class SSEController
         $scope = $this;
 
         $stream->on('close', static function () use ($scope, $client) {
-            $scope->subscriptionRepository->unsubscribe($client);
+            $scope->subscriptionRepository->remove($client);
             $scope->clientRepository->remove($client);
         });
 

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace GazeHub\Controllers;
 
-use GazeHub\Exceptions\UnAuthorizedException;
+use GazeHub\Log;
 use GazeHub\Models\Request;
 use GazeHub\Services\SubscriptionRepository;
 use React\Http\Message\Response;
@@ -32,22 +32,16 @@ class EventController extends BaseController
 
     public function handle(Request $request): Response
     {
-        $request->isAuthorized();
+        $request->isRole('server');
 
-        if ($request->getTokenPayload()['role'] !== 'server') {
-            throw new UnAuthorizedException();
-        }
-
-        $validatedData = $this->validatedData($request->getParsedBody(), [
+        $validatedData = $request->validate([
             'topic' => 'required|string|max:255',
             'payload' => 'required',
         ]);
 
-        foreach ($this->subscriptionRepository->subscriptions as $subscription) {
-            if ($validatedData['topic'] !== $subscription->topic) {
-                continue;
-            }
+        Log::info('Server wants to emit', $validatedData);
 
+        foreach ($this->subscriptionRepository->getSubscriptionsByTopic($validatedData['topic']) as $subscription) {
             $subscription->client->stream->write([
                 'callbackId' => $subscription->callbackId,
                 'payload' => $validatedData['payload'],
