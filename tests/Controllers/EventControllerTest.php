@@ -11,53 +11,34 @@
 
 declare(strict_types=1);
 
-namespace Tests\Controllers;
+namespace GazeHub\Tests\Controllers;
 
 use GazeHub\Controllers\EventController;
 use GazeHub\Exceptions\DataValidationFailedException;
 use GazeHub\Exceptions\UnAuthorizedException;
+use GazeHub\Models\Client;
 use GazeHub\Models\Request;
+use GazeHub\Models\Subscription;
+use GazeHub\Services\SubscriptionRepository;
 
 class EventControllerTest extends ControllerTestCase
 {
-    public function testShouldThrowIfNoTokenPresent()
+    public function testShouldThrowIfNotAuthenticated()
     {
         // Arrange
         $this->expectException(UnAuthorizedException::class);
-        $requestMock = $this->getRequestMock();
-        $request = $this->container->get(Request::class);
-        $request->setOriginalRequest($requestMock);
+
+        $subscriptionRepository = $this->createMock(SubscriptionRepository::class);
+        $eventController = new EventController($subscriptionRepository);
+
+        $request = $this->createMock(Request::class);
+        $request
+            ->expects($this->once())
+            ->method('isRole')
+            ->with('server')
+            ->willThrowException(new UnAuthorizedException());
 
         // Act
-        $eventController = $this->container->get(EventController::class);
-        $eventController->handle($request);
-    }
-
-    public function testShouldThrowIfTokenIsEmptyString()
-    {
-        // Arrange
-        $this->expectException(UnAuthorizedException::class);
-        $requestMock = $this->getRequestMock();
-
-        $request = $this->container->get(Request::class);
-        $request->setOriginalRequest($requestMock);
-
-        // Act
-        $eventController = $this->container->get(EventController::class);
-        $eventController->handle($request);
-    }
-
-    public function testShouldThrowIfTokenIsInvalid()
-    {
-        // Arrange
-        $this->expectException(UnAuthorizedException::class);
-        $requestMock = $this->getRequestMock('INVALID_TOKEN');
-
-        $request = $this->container->get(Request::class);
-        $request->setOriginalRequest($requestMock);
-
-        // Act
-        $eventController = $this->container->get(EventController::class);
         $eventController->handle($request);
     }
 
@@ -115,5 +96,29 @@ class EventControllerTest extends ControllerTestCase
         // Assert
         $response = $eventController->handle($request);
         $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testIfClientSendIsCalled()
+    {
+        $requestMoch = $this->createMock(Request::class);
+        $requestMoch->method('validate')->willReturn([
+            'topic' => 'ProductCreated',
+            'payload' => ['id' => 1, 'name' => 'Shirt'],
+        ]);
+
+        $subscriptionRepoMoch = $this->createMock(SubscriptionRepository::class);
+        $subscription = new Subscription();
+        $subscription->client = $this->createMock(Client::class);
+        $subscription->client->expects($this->once())->method('send');
+        $subscription->callbackId = 'ABC';
+        $subscription->topic = 'ProductCreated';
+
+        $subscriptionRepoMoch->method('getSubscriptionsByTopic')->willReturn([
+            $subscription,
+        ]);
+
+        $eventController = new EventController($subscriptionRepoMoch);
+
+        $eventController->handle($requestMoch);
     }
 }

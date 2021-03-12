@@ -16,22 +16,26 @@ namespace GazeHub\Services;
 use GazeHub\Log;
 use GazeHub\Models\Client;
 use React\Stream\ThroughStream;
-use SplObjectStorage;
+
+use function array_push;
+use function count;
+use function json_encode;
 
 class ClientRepository
 {
     /**
-     * @var SplObjectStorage
+     * @var Client[]
      */
-    private $clients;
+    private $clients = [];
 
     public function __construct()
     {
-        $this->clients = new SplObjectStorage();
+        $this->clients = [];
     }
 
     public function getByTokenId(string $tokenId): ?Client
     {
+        /** @var Client $client */
         foreach ($this->clients as $client) {
             if ($client->tokenId === $tokenId) {
                 return $client;
@@ -41,29 +45,38 @@ class ClientRepository
         return null;
     }
 
-    public function add(ThroughStream $stream, array $token): Client
+    public function add(array $token): Client
     {
         $client = new Client();
-        $client->stream = $stream;
         $client->roles = $token['roles'];
         $client->tokenId = $token['jti'];
+        $client->stream = new ThroughStream(static function (array $data) {
+            Log::info('Sending data to client:', $data);
+            return 'data: ' . json_encode($data) . "\n\n";
+        });
 
-        $this->clients->attach($client);
-        Log::info('Connected clients', $this->clients->count());
+        array_push($this->clients, $client);
+        Log::info('Connected clients', count($this->clients));
 
         return $client;
     }
 
-    public function remove(Client $client): void
+    public function remove(Client $clientToRemove): void
     {
-        $this->clients->detach($client);
-        Log::info('Connected clients', $this->clients->count());
+        foreach ($this->clients as $index => $client) {
+            if ($client->tokenId === $clientToRemove->tokenId) {
+                unset($this->clients[$index]);
+                break;
+            }
+        }
+        Log::info('Connected clients', count($this->clients));
     }
 
     public function forEach(callable $callback): void
     {
-        foreach ($this->clients as $stream) {
-            $callback($stream);
+        /** @var Client $client */
+        foreach ($this->clients as $client) {
+            $callback($client);
         }
     }
 }

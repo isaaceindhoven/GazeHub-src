@@ -20,13 +20,14 @@ use GazeHub\Models\Subscription;
 use function array_filter;
 use function array_push;
 use function count;
+use function in_array;
 
 class SubscriptionRepository
 {
     /**
      * @var array
      */
-    public $subscriptions = [];
+    private $subscriptions = [];
 
     public function add(Client $client, array $subscriptionRequest)
     {
@@ -42,17 +43,18 @@ class SubscriptionRepository
         }
     }
 
-    public function remove(Client $client, string $callbackId = null)
+    public function remove(Client $client, array $topics = null)
     {
-        foreach ($this->subscriptions as $subscription) {
+        foreach ($this->subscriptions as $i => $subscription) {
             $sameClient = $subscription->client->tokenId === $client->tokenId;
-            $sameCallbackId = $callbackId !== null ? $subscription->callbackId === $callbackId : true;
+            if ($sameClient && ($topics === null || in_array($subscription->topic, $topics))) {
+                $topic = $subscription->topic;
 
-            if ($sameClient && $sameCallbackId) {
-                unset($subscription);
+                unset($this->subscriptions[$i]);
+
                 Log::info(
                     'Unsubscribing client from topic',
-                    $subscription->topic,
+                    $topic,
                     'active subscriptions',
                     count($this->subscriptions)
                 );
