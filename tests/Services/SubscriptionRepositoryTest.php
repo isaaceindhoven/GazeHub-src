@@ -31,10 +31,10 @@ class SubscriptionRepositoryTest extends TestCase
         $subscriptionRequest = ['topics' => ['ABC'], 'callbackId' => uniqid()];
 
         // Act
-        $subscriptionRepository->add($client1, $subscriptionRequest);
+        $subscriptionRepository->add($client1, $subscriptionRequest['topics'], $subscriptionRequest['callbackId']);
 
         // Assert
-        $subs = $subscriptionRepository->getSubscriptionsByTopic('ABC');
+        $subs = $subscriptionRepository->getSubscriptionsByTopicAndRole('ABC');
         $this->assertEquals(1, count($subs));
         $this->assertEquals($subs[0]->client->tokenId, $client1->tokenId);
         $this->assertEquals($subs[0]->callbackId, $subscriptionRequest['callbackId']);
@@ -50,12 +50,12 @@ class SubscriptionRepositoryTest extends TestCase
         $subscriptionRequest2 = ['topics' => ['ABC'], 'callbackId' => uniqid()];
 
         // Act
-        $subscriptionRepository->add($client1, $subscriptionRequest1);
-        $subscriptionRepository->add($client2, $subscriptionRequest2);
+        $subscriptionRepository->add($client1, $subscriptionRequest1['topics'], $subscriptionRequest1['callbackId']);
+        $subscriptionRepository->add($client2, $subscriptionRequest2['topics'], $subscriptionRequest2['callbackId']);
         $subscriptionRepository->remove($client1);
 
         // Assert
-        $subs = $subscriptionRepository->getSubscriptionsByTopic('ABC');
+        $subs = $subscriptionRepository->getSubscriptionsByTopicAndRole('ABC');
         $this->assertEquals(1, count($subs));
         $this->assertEquals($subs[1]->client->tokenId, $client2->tokenId);
         $this->assertEquals($subs[1]->callbackId, $subscriptionRequest2['callbackId']);
@@ -69,11 +69,11 @@ class SubscriptionRepositoryTest extends TestCase
         $subscriptionRequest = ['topics' => ['1', '2'], 'callbackId' => uniqid()];
 
         // Act
-        $subscriptionRepository->add($client1, $subscriptionRequest);
+        $subscriptionRepository->add($client1, $subscriptionRequest['topics'], $subscriptionRequest['callbackId']);
         $subscriptionRepository->remove($client1, ['2']);
 
         // Assert
-        $subs = $subscriptionRepository->getSubscriptionsByTopic('1');
+        $subs = $subscriptionRepository->getSubscriptionsByTopicAndRole('1');
         $this->assertEquals(1, count($subs));
 
         $this->assertEquals($subs[0]->client->tokenId, $client1->tokenId);

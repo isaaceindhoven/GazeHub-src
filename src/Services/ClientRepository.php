@@ -33,9 +33,14 @@ class ClientRepository
         $this->clients = [];
     }
 
+    /**
+     * Find client by Token Id (jti claim in JWT)
+     *
+     * @param string        $tokenId        Token ID in JWT jti claim
+     * @return Client|null
+     */
     public function getByTokenId(string $tokenId): ?Client
     {
-        /** @var Client $client */
         foreach ($this->clients as $client) {
             if ($client->tokenId === $tokenId) {
                 return $client;
@@ -45,11 +50,18 @@ class ClientRepository
         return null;
     }
 
-    public function add(array $token): Client
+    /**
+     * Create and add a new client to this repository
+     *
+     * @param array         $roles      Client roles
+     * @param string        $tokenId    Client token id
+     * @return Client                   Newly created client
+     */
+    public function add(array $roles, string $tokenId): Client
     {
         $client = new Client();
-        $client->roles = $token['roles'];
-        $client->tokenId = $token['jti'];
+        $client->roles = $roles;
+        $client->tokenId = $tokenId;
         $client->stream = new ThroughStream(static function (array $data) {
             Log::info('Sending data to client:', $data);
             return 'data: ' . json_encode($data) . "\n\n";
@@ -61,6 +73,11 @@ class ClientRepository
         return $client;
     }
 
+    /**
+     * Remove client from repository, the stream is not closed automatically.
+     *
+     * @param Client        $clientToRemove
+     */
     public function remove(Client $clientToRemove): void
     {
         foreach ($this->clients as $index => $client) {
@@ -70,13 +87,5 @@ class ClientRepository
             }
         }
         Log::info('Connected clients', count($this->clients));
-    }
-
-    public function forEach(callable $callback): void
-    {
-        /** @var Client $client */
-        foreach ($this->clients as $client) {
-            $callback($client);
-        }
     }
 }
