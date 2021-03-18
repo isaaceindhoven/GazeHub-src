@@ -45,7 +45,7 @@ class Hub
 
         $loop = Factory::create();
         $socket = new Server(sprintf('%s:%s', $host, $port), $loop);
-        $config->get('logging') ? Log::enable($loop) : null;
+        Log::setLogLevel($loop, $config->get('log_level'));
 
         $server = new HttpServer(
             $loop,
@@ -58,7 +58,7 @@ class Hub
 
         $server->listen($socket);
 
-        LOG::info(sprintf('Server running on %s:%s', $host, $port));
+        Log::info(sprintf('Server running on %s:%s', $host, $port));
 
         $loop->run();
     }
@@ -67,7 +67,7 @@ class Hub
     {
         Log::error($e->getMessage());
         if ($e->getPrevious() !== null && $e->getPrevious()->getMessage() !== '') {
-            Log::warn($e->getPrevious()->getMessage());
+            Log::error($e->getPrevious()->getMessage());
         }
     }
 }
