@@ -5,6 +5,8 @@ RED="\033[0;31m"
 CYAN="\033[0;36m"
 NO_COLOR="\033[0m"
 
+REPORT="\n\n${CYAN}Summary:${NO_COLOR}\n"
+
 function success() {
   echo -e "${GREEN}$1${NO_COLOR}"
 }
@@ -26,9 +28,10 @@ function runTest() {
 
   if [[ -$? -ne 0 ]]; then
     error "PHP $PHP Failed!, see phpunit output above️"
-    exit 1
+    REPORT="${REPORT}${RED}- PHP ${PHP} Failed${NO_COLOR}\n"
   else
-    success "PHP $PHP succeeded️"
+    success "PHP $PHP passed"
+    REPORT="${REPORT}${GREEN}- PHP ${PHP} Passed\n"
   fi
 }
 
@@ -37,3 +40,5 @@ versions=('7.3' '7.4' '8.0')
 for version in "${versions[@]}"; do
   runTest "$version"
 done
+
+echo -e "$REPORT"

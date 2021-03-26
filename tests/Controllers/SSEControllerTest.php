@@ -15,12 +15,12 @@ namespace GazeHub\Tests\Controllers;
 
 class SSEControllerTest extends ControllerTestCase
 {
-    public function testReponse401IfUnauthorized(): void
+    public function testResponse401IfUnauthorized(): void
     {
         $this->req('/sse', 'GET')->assertHttpCode(401);
     }
 
-    public function testReponse200IfAuthorized(): void
+    public function testResponse200IfAuthorized(): void
     {
         $this->req('/sse?token=' . $this->getClientToken(), 'GET')->assertHttpCode(200);
     }

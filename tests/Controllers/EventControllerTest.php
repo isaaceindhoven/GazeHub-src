@@ -21,12 +21,12 @@ use function PHPUnit\Framework\once;
 
 class EventControllerTest extends ControllerTestCase
 {
-    public function testReponse400IfUnauthorized(): void
+    public function testResponse400IfUnauthorized(): void
     {
         $this->req('/event', 'POST')->assertHttpCode(401);
     }
 
-    public function testReponse200IfValidRequest(): void
+    public function testResponse200IfValidRequest(): void
     {
         $this
             ->req('/event', 'POST')
@@ -71,7 +71,7 @@ class EventControllerTest extends ControllerTestCase
             ->assertHttpCode(200);
     }
 
-    public function testReponse200IfRoleIsMissing(): void
+    public function testResponse200IfRoleIsMissing(): void
     {
         $this
             ->req('/event', 'POST')

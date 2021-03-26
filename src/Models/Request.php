@@ -26,9 +26,9 @@ use function str_replace;
 class Request
 {
     /**
-     * @var string
+     * @var mixed[]
      */
-    private $token;
+    private $tokenPayload;
 
     /**
      * @var ServerRequestInterface;
@@ -65,7 +65,7 @@ class Request
         $token = str_replace('Bearer ', '', $token);
 
         try {
-            $this->token = $this->jwtDecoder->decode($token);
+            $this->tokenPayload = $this->jwtDecoder->decode($token);
         } catch (Throwable $th) {
             throw new UnAuthorizedException();
         }
@@ -85,7 +85,7 @@ class Request
      */
     public function getBody(): array
     {
-        return $this->originalRequest->getParsedBody();
+        return (array) $this->originalRequest->getParsedBody();
     }
 
     /**
@@ -93,9 +93,13 @@ class Request
      */
     public function getTokenPayload(): array
     {
-        return (array) $this->token;
+        return $this->tokenPayload;
     }
 
+    /**
+     * @param string[] $checks
+     * @return mixed[]
+     */
     public function validate(array $checks): array
     {
         $validator = new Validator();

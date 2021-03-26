@@ -28,10 +28,6 @@ class JsonParserMiddleware
         if ($request->getHeaderLine('Content-Type') === 'application/json') {
             try {
                 $data = json_decode((string) $request->getBody(), true, 512, JSON_THROW_ON_ERROR);
-
-                if ($data === false) {
-                    $data = [];
-                }
             } catch (Exception $e) {
                 return new Response(400, [], 'Invalid JSON');
             }

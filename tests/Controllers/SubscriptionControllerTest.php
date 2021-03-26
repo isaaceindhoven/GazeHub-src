@@ -15,12 +15,12 @@ namespace GazeHub\Tests\Controllers;
 
 class SubscriptionControllerTest extends ControllerTestCase
 {
-    public function testSubscibeResponse401IfUnauthorized(): void
+    public function testSubscribeResponse401IfUnauthorized(): void
     {
         $this->req('/subscription', 'POST')->assertHttpCode(401);
     }
 
-    public function testUnsubscibeResponse401IfUnauthorized(): void
+    public function testUnsubscribeResponse401IfUnauthorized(): void
     {
         $this->req('/subscription', 'DELETE')->assertHttpCode(401);
     }
@@ -61,5 +61,22 @@ class SubscriptionControllerTest extends ControllerTestCase
             ->asClient('client1')
             ->setBody(['topics' => ['ProductCreated']])
             ->assertHttpCode(401);
+    }
+
+    public function testPingResponse401IfClientNotRegistered(): void
+    {
+        $this
+            ->req('/ping', 'GET')
+            ->asClient('client1')
+            ->assertHttpCode(401);
+    }
+
+    public function testPingResponse200IfAuthorized(): void
+    {
+        $this
+            ->req('/ping', 'GET')
+            ->registerClient('client1')
+            ->asClient('client1')
+            ->assertHttpCode(200);
     }
 }
