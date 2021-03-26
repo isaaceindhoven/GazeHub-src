@@ -26,8 +26,11 @@ use React\Http\Message\Response;
 use function array_key_exists;
 use function base64_encode;
 use function explode;
+use function is_string;
 use function json_encode;
 use function parse_url;
+use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\returnCallback;
 use function uniqid;
 
 use const PHP_URL_PATH;
@@ -52,18 +55,18 @@ class ControllerTestCase extends TestCase
     private $method;
 
     /**
-     * @var Response
+     * @var Response|null
      */
     private $response;
 
     /**
-     * @var array
+     * @var string[]
      */
     // phpcs:ignore SlevomatCodingStandard.Classes.UnusedPrivateElements.WriteOnlyProperty
     private $headers;
 
     /**
-     * @var array
+     * @var mixed[]
      */
     private $body;
 
@@ -77,7 +80,7 @@ class ControllerTestCase extends TestCase
     {
         $this->response = null;
         $this->headers = [];
-        $this->body = null;
+        $this->body = [];
     }
 
     protected function req(string $url, string $method): self
@@ -88,15 +91,24 @@ class ControllerTestCase extends TestCase
         return $this;
     }
 
+    /**
+     * @param string[] $headers
+     * @return $this
+     */
     protected function setHeaders(array $headers): self
     {
         $this->headers = $headers;
         return $this;
     }
 
+    /**
+     * @param mixed[] $payload
+     * @return string
+     */
     private function generateToken(array $payload): string
     {
-        return 'KEEPME.' . base64_encode(json_encode($payload)) . '.KEEPME';
+        $payload = json_encode($payload);
+        return 'KEEPME.' . base64_encode($payload === false ? '' : $payload) . '.KEEPME';
     }
 
     protected function asServer(): self
@@ -126,6 +138,10 @@ class ControllerTestCase extends TestCase
         return $this->generateToken(['roles' => [], 'jti' => $jti]);
     }
 
+    /**
+     * @param mixed[] $body
+     * @return $this
+     */
     protected function setBody(array $body): self
     {
         $this->body = $body;
@@ -140,7 +156,7 @@ class ControllerTestCase extends TestCase
         $this->container->set(ConfigRepository::class, $configRepo);
 
         $router = new Router($this->container);
-        $this->response = $router->route($this->buildOriginalRequest());
+        $this->response = $router->route($this->buildOriginalRequest()); // @phpstan-ignore-line
 
         return $this;
     }
@@ -155,7 +171,7 @@ class ControllerTestCase extends TestCase
         $scope = $this;
         $originalRequest
             ->method('getHeaderLine')
-            ->will($this->returnCallback(static function ($key) use ($scope) {
+            ->will(returnCallback(static function ($key) use ($scope): string {
                 if (!array_key_exists($key, $scope->headers)) {
                     return '';
                 }
@@ -170,21 +186,29 @@ class ControllerTestCase extends TestCase
         return $originalRequest;
     }
 
-    protected function assertHttpCode(int $code)
+    protected function assertHttpCode(int $code): void
     {
         if ($this->response === null) {
             $this->do();
         }
 
-        $this->assertEquals($code, $this->response->getStatusCode());
+        if ($this->response !== null) {
+            assertEquals($code, $this->response->getStatusCode());
+        }
     }
 
+    /**
+     * @return string[]
+     */
     private function getParsedQuery(): array
     {
-        if (!parse_url($this->url, PHP_URL_QUERY)) {
+        $queryString = parse_url($this->url, PHP_URL_QUERY);
+
+        if (!is_string($queryString)) {
             return [];
         }
-        $params = explode('&', parse_url($this->url, PHP_URL_QUERY));
+
+        $params = explode('&', $queryString);
         $queryParams = [];
         foreach ($params as $param) {
             [$key, $val] = explode('=', $param);

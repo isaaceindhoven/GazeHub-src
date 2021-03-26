@@ -40,6 +40,6 @@ class DebugController extends BaseController
         }
 
         $debugHtml = file_get_contents(__DIR__ . '/../../public/debug.html');
-        return new Response(200, ['Content-Type' => 'text/html'], $debugHtml);
+        return new Response(200, ['Content-Type' => 'text/html'], $debugHtml === false ? '' : $debugHtml);
     }
 }

@@ -21,13 +21,12 @@ use Rakit\Validation\Validator;
 use Throwable;
 
 use function array_key_exists;
-use function is_array;
 use function str_replace;
 
 class Request
 {
     /**
-     * @var array
+     * @var string
      */
     private $token;
 
@@ -51,7 +50,7 @@ class Request
         $this->originalRequest = $request;
     }
 
-    public function isAuthorized()
+    public function isAuthorized(): void
     {
         $token = $this->getHeaderValueByKey('Authorization');
 
@@ -72,7 +71,7 @@ class Request
         }
     }
 
-    public function isRole(string $role)
+    public function isRole(string $role): void
     {
         $this->isAuthorized();
 
@@ -81,11 +80,17 @@ class Request
         }
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getBody(): array
     {
         return $this->originalRequest->getParsedBody();
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getTokenPayload(): array
     {
         return (array) $this->token;
@@ -105,12 +110,12 @@ class Request
     }
 
     /**
-     * @param null|array $arr
-     * @return null|boolean
+     * @param mixed[] $arr
+     * @return null|string
      */
-    private function getValueByKey($arr, string $key)
+    private function getValueByKey(array $arr, string $key)
     {
-        if (is_array($arr) && array_key_exists($key, $arr)) {
+        if (array_key_exists($key, $arr)) {
             return $arr[$key];
         }
         return null;
@@ -122,7 +127,7 @@ class Request
     private function getHeaderValueByKey(string $key)
     {
         $value = $this->originalRequest->getHeaderLine($key);
-        if ($value === null || $value === '') {
+        if ($value === '') {
             return null;
         }
         return $value;

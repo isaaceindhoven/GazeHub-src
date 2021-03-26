@@ -17,16 +17,20 @@ use GazeHub\Middlewares\CorsMiddleware;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Message\Response;
+use RingCentral\Psr7\MessageTrait;
+
+use function PHPUnit\Framework\assertArrayHasKey;
+use function PHPUnit\Framework\assertEquals;
 
 class CorsMiddlewareTest extends TestCase
 {
-    public function testShouldAddCorsHeadersToOptionsRequestAndRespondWith204()
+    public function testShouldAddCorsHeadersToOptionsRequestAndRespondWith204(): void
     {
         // Arrange
         $middleware = new CorsMiddleware();
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getMethod')->willReturn('options');
-        $callable = static function (ServerRequestInterface $req) {
+        $callable = static function (ServerRequestInterface $req): ServerRequestInterface {
             return $req;
         };
 
@@ -34,19 +38,19 @@ class CorsMiddlewareTest extends TestCase
         $response = $middleware->handle($request, $callable);
 
         // Assert
-        $this->assertEquals(204, $response->getStatusCode());
-        $this->assertArrayHasKey('Access-Control-Allow-Origin', $response->getHeaders());
-        $this->assertArrayHasKey('Access-Control-Allow-Methods', $response->getHeaders());
-        $this->assertArrayHasKey('Access-Control-Allow-Headers', $response->getHeaders());
+        assertEquals(204, $response->getStatusCode());
+        assertArrayHasKey('Access-Control-Allow-Origin', $response->getHeaders());
+        assertArrayHasKey('Access-Control-Allow-Methods', $response->getHeaders());
+        assertArrayHasKey('Access-Control-Allow-Headers', $response->getHeaders());
     }
 
-    public function testShouldAddCorsHeadersToOtherRequestAndForwardRequest()
+    public function testShouldAddCorsHeadersToOtherRequestAndForwardRequest(): void
     {
         // Arrange
         $middleware = new CorsMiddleware();
         $request = $this->createMock(ServerRequestInterface::class);
         $request->method('getMethod')->willReturn('get');
-        $callable = static function (ServerRequestInterface $req) {
+        $callable = static function (ServerRequestInterface $req): MessageTrait {
             $resp = new Response(500);
             return $resp->withHeader('X-Test-Header', 'This is a test');
         };
@@ -55,10 +59,10 @@ class CorsMiddlewareTest extends TestCase
         $response = $middleware->handle($request, $callable);
 
         // Assert
-        $this->assertEquals(500, $response->getStatusCode());
-        $this->assertArrayHasKey('X-Test-Header', $response->getHeaders());
-        $this->assertArrayHasKey('Access-Control-Allow-Origin', $response->getHeaders());
-        $this->assertArrayHasKey('Access-Control-Allow-Methods', $response->getHeaders());
-        $this->assertArrayHasKey('Access-Control-Allow-Headers', $response->getHeaders());
+        assertEquals(500, $response->getStatusCode());
+        assertArrayHasKey('X-Test-Header', $response->getHeaders());
+        assertArrayHasKey('Access-Control-Allow-Origin', $response->getHeaders());
+        assertArrayHasKey('Access-Control-Allow-Methods', $response->getHeaders());
+        assertArrayHasKey('Access-Control-Allow-Headers', $response->getHeaders());
     }
 }

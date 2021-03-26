@@ -53,7 +53,7 @@ class ClientRepository
     /**
      * Create and add a new client to this repository
      *
-     * @param array         $roles      Client roles
+     * @param string[]      $roles      Client roles
      * @param string        $tokenId    Client token id
      * @return Client                   Newly created client
      */
@@ -62,7 +62,7 @@ class ClientRepository
         $client = new Client();
         $client->roles = $roles;
         $client->tokenId = $tokenId;
-        $client->stream = new ThroughStream(static function (array $data) {
+        $client->stream = new ThroughStream(static function (array $data): string {
             Log::debug('Sending data to client:', $data);
             return 'data: ' . json_encode($data) . "\n\n";
         });

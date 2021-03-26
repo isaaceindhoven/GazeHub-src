@@ -25,7 +25,7 @@ use function in_array;
 class SubscriptionRepository
 {
     /**
-     * @var array
+     * @var Subscription[]
      */
     private $subscriptions = [];
 
@@ -38,13 +38,16 @@ class SubscriptionRepository
      */
     public function getSubscriptionsByTopicAndRole(string $topic, string $role = null): array
     {
-        return array_filter($this->subscriptions, static function (Subscription $subscription) use ($topic, $role) {
-            if ($role !== null && $role !== '') {
-                return $subscription->topic === $topic && in_array($role, $subscription->client->roles);
-            }
+        return array_filter(
+            $this->subscriptions,
+            static function (Subscription $subscription) use ($topic, $role): bool {
+                if ($role !== null && $role !== '') {
+                    return $subscription->topic === $topic && in_array($role, $subscription->client->roles, true);
+                }
 
-            return $subscription->topic === $topic;
-        });
+                return $subscription->topic === $topic;
+            }
+        );
     }
 
     /**
@@ -54,7 +57,7 @@ class SubscriptionRepository
      * @param string[]      $topics         The topics to subscribe to
      * @param string        $callbackId     The callbackId related to the subs
      */
-    public function add(Client $client, array $topics, string $callbackId)
+    public function add(Client $client, array $topics, string $callbackId): void
     {
         foreach ($topics as $topic) {
             $subscription = new Subscription();
@@ -74,11 +77,11 @@ class SubscriptionRepository
      * @param Client        $client     The client related to the subs
      * @param string[]|null $topics     When supplied, only the subs matching one of these topic will be removed
      */
-    public function remove(Client $client, array $topics = null)
+    public function remove(Client $client, array $topics = null): void
     {
         foreach ($this->subscriptions as $i => $subscription) {
             $sameClient = $subscription->client->tokenId === $client->tokenId;
-            if ($sameClient && ($topics === null || in_array($subscription->topic, $topics))) {
+            if ($sameClient && ($topics === null || in_array($subscription->topic, $topics, true))) {
                 $topic = $subscription->topic;
 
                 unset($this->subscriptions[$i]);

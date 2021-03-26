@@ -17,14 +17,16 @@ use GazeHub\Models\Client;
 use GazeHub\Models\Subscription;
 use GazeHub\Services\SubscriptionRepository;
 
+use function PHPUnit\Framework\once;
+
 class EventControllerTest extends ControllerTestCase
 {
-    public function testReponse400IfUnauthorized()
+    public function testReponse400IfUnauthorized(): void
     {
         $this->req('/event', 'POST')->assertHttpCode(401);
     }
 
-    public function testReponse200IfValidRequest()
+    public function testReponse200IfValidRequest(): void
     {
         $this
             ->req('/event', 'POST')
@@ -33,7 +35,7 @@ class EventControllerTest extends ControllerTestCase
             ->assertHttpCode(200);
     }
 
-    public function testResponse400IfTopicMissing()
+    public function testResponse400IfTopicMissing(): void
     {
         $this
             ->req('/event', 'POST')
@@ -48,7 +50,7 @@ class EventControllerTest extends ControllerTestCase
             ->assertHttpCode(400);
     }
 
-    public function testResponse200IfPayloadMissing()
+    public function testResponse200IfPayloadMissing(): void
     {
         $this
             ->req('/event', 'POST')
@@ -69,7 +71,7 @@ class EventControllerTest extends ControllerTestCase
             ->assertHttpCode(200);
     }
 
-    public function testReponse200IfRoleIsMissing()
+    public function testReponse200IfRoleIsMissing(): void
     {
         $this
             ->req('/event', 'POST')
@@ -84,12 +86,12 @@ class EventControllerTest extends ControllerTestCase
             ->assertHttpCode(200);
     }
 
-    public function testIfClientSendIsCalled()
+    public function testIfClientSendIsCalled(): void
     {
         $subscriptionRepoMoch = $this->createMock(SubscriptionRepository::class);
         $subscription = new Subscription();
         $subscription->client = $this->createMock(Client::class);
-        $subscription->client->expects($this->once())->method('send');
+        $subscription->client->expects(once())->method('send');
         $subscription->callbackId = 'ABC';
         $subscription->topic = 'ProductCreated';
 

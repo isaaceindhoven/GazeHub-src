@@ -17,15 +17,16 @@ use GazeHub\Exceptions\ConfigFileNotExistsException;
 use GazeHub\Exceptions\ConfigKeyNotFoundException;
 
 use function array_key_exists;
+use function count;
 use function file_exists;
 use function sprintf;
 
 class ConfigRepository
 {
     /**
-     * @var array
+     * @var mixed[]
      */
-    private $config;
+    private $config = [];
 
     /**
      * Load configuration file in memory, if path is null, /config/config.php is loaded
@@ -33,7 +34,7 @@ class ConfigRepository
      * @param string|null       $path           Path to config file to load
      * @throws ConfigFileNotExistsException     Thrown when the config file does not exist
      */
-    public function loadConfig(string $path = null)
+    public function loadConfig(string $path = null): void
     {
         if ($path === null) {
             $path = __DIR__ . '/../../config/config.php';
@@ -56,7 +57,7 @@ class ConfigRepository
      */
     public function get(string $key)
     {
-        if (!$this->config) {
+        if (count($this->config) < 1) {
             $this->loadConfig();
         }
 

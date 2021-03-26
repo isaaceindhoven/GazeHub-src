@@ -47,7 +47,7 @@ class SSEController
 
         $scope = $this;
 
-        $client->stream->on('close', static function () use ($scope, $client) {
+        $client->stream->on('close', static function () use ($scope, $client): void {
             $scope->subscriptionRepository->remove($client);
             $scope->clientRepository->remove($client);
         });

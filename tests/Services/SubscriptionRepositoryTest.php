@@ -19,11 +19,12 @@ use PHPUnit\Framework\TestCase;
 use React\Stream\ThroughStream;
 
 use function count;
+use function PHPUnit\Framework\assertEquals;
 use function uniqid;
 
 class SubscriptionRepositoryTest extends TestCase
 {
-    public function testShouldAddSubscription()
+    public function testShouldAddSubscription(): void
     {
         // Arrange
         $subscriptionRepository = new SubscriptionRepository();
@@ -35,12 +36,12 @@ class SubscriptionRepositoryTest extends TestCase
 
         // Assert
         $subs = $subscriptionRepository->getSubscriptionsByTopicAndRole('ABC');
-        $this->assertEquals(1, count($subs));
-        $this->assertEquals($subs[0]->client->tokenId, $client1->tokenId);
-        $this->assertEquals($subs[0]->callbackId, $subscriptionRequest['callbackId']);
+        assertEquals(1, count($subs));
+        assertEquals($subs[0]->client->tokenId, $client1->tokenId);
+        assertEquals($subs[0]->callbackId, $subscriptionRequest['callbackId']);
     }
 
-    public function testShouldRemoveAllClientSubscriptions()
+    public function testShouldRemoveAllClientSubscriptions(): void
     {
         // Arrange
         $subscriptionRepository = new SubscriptionRepository();
@@ -56,12 +57,12 @@ class SubscriptionRepositoryTest extends TestCase
 
         // Assert
         $subs = $subscriptionRepository->getSubscriptionsByTopicAndRole('ABC');
-        $this->assertEquals(1, count($subs));
-        $this->assertEquals($subs[1]->client->tokenId, $client2->tokenId);
-        $this->assertEquals($subs[1]->callbackId, $subscriptionRequest2['callbackId']);
+        assertEquals(1, count($subs));
+        assertEquals($subs[1]->client->tokenId, $client2->tokenId);
+        assertEquals($subs[1]->callbackId, $subscriptionRequest2['callbackId']);
     }
 
-    public function testShouldRemoveSingleSubscriptions()
+    public function testShouldRemoveSingleSubscriptions(): void
     {
         // Arrange
         $subscriptionRepository = new SubscriptionRepository();
@@ -74,12 +75,16 @@ class SubscriptionRepositoryTest extends TestCase
 
         // Assert
         $subs = $subscriptionRepository->getSubscriptionsByTopicAndRole('1');
-        $this->assertEquals(1, count($subs));
+        assertEquals(1, count($subs));
 
-        $this->assertEquals($subs[0]->client->tokenId, $client1->tokenId);
-        $this->assertEquals($subs[0]->callbackId, $subscriptionRequest['callbackId']);
+        assertEquals($subs[0]->client->tokenId, $client1->tokenId);
+        assertEquals($subs[0]->callbackId, $subscriptionRequest['callbackId']);
     }
 
+    /**
+     * @param string[] $roles
+     * @return Client
+     */
     private function createClient(array $roles = []): Client
     {
         $client = new Client();

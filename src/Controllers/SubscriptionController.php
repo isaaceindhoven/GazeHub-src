@@ -87,7 +87,7 @@ class SubscriptionController extends BaseController
     {
         $request->isAuthorized();
         $client = $this->clientRepository->getByTokenId($request->getTokenPayload()['jti']);
-        if (!$client) {
+        if ($client === null) {
             throw new UnAuthorizedException();
         }
         return $client;

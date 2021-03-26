@@ -32,7 +32,10 @@ class Client
      */
     public $tokenId;
 
-    public function send(array $data)
+    /**
+     * @param mixed[] $data
+     */
+    public function send(array $data): void
     {
         $this->stream->write($data);
     }

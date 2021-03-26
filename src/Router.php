@@ -57,18 +57,25 @@ class Router
         $endPoint = $routes[$method][$path];
         $handler = [ $this->container->get($endPoint[0]), $endPoint[1] ];
 
-        return $this->handle($handler, $req);
+        return $this->handle($handler, $req); // @phpstan-ignore-line
     }
 
     /**
-     * @param callback|array $handler
+     * @param Callable $handler
+     * @param Request $req
+     * @return Response
      */
     private function handle($handler, Request $req): Response
     {
         try {
             return call_user_func($handler, $req);
         } catch (DataValidationFailedException $e) {
-            return new Response(400, ['Content-Type' => 'application/json'], json_encode($e->errors));
+            $errors = json_encode($e->errors);
+            return new Response(
+                400,
+                ['Content-Type' => 'application/json'],
+                $errors === false ? '' : $errors
+            );
         } catch (UnAuthorizedException $e) {
             return new Response(401, ['Content-Type' => 'application/json']);
         }

@@ -42,17 +42,22 @@ class Log
      */
     private static $stream;
 
-    public static function setLogLevel(LoopInterface $loop, int $logLevel)
+    public static function setLogLevel(LoopInterface $loop, int $logLevel): void
     {
         self::$logLevel = $logLevel;
         self::$stream = new WritableResourceStream(STDOUT, $loop);
     }
 
-    private static function printMsg(string $code, array $args)
+    /**
+     * @param string $code
+     * @param mixed[] $args
+     * @return void
+     */
+    private static function printMsg(string $code, array $args): void
     {
-        $args = array_map(static function ($x) {
+        $args = array_map(static function ($x): string {
             if (!is_string($x)) {
-                return json_encode($x);
+                return json_encode($x) === false ? '' : json_encode($x);
             }
             return $x;
         }, $args);
@@ -65,7 +70,7 @@ class Log
     /**
      * @param mixed $args
      */
-    public static function error(...$args)
+    public static function error(...$args): void
     {
         if (self::$logLevel >= self::ERROR) {
             Log::printMsg('31', $args);
@@ -75,7 +80,7 @@ class Log
     /**
      * @param mixed $args
      */
-    public static function info(...$args)
+    public static function info(...$args): void
     {
         if (self::$logLevel >= self::INFO) {
             Log::printMsg('32', $args);
@@ -85,7 +90,7 @@ class Log
     /**
      * @param mixed $args
      */
-    public static function debug(...$args)
+    public static function debug(...$args): void
     {
         if (self::$logLevel >= self::DEBUG) {
             Log::printMsg('36', $args);

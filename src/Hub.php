@@ -36,7 +36,7 @@ class Hub
         $this->container = new Container();
     }
 
-    public function run()
+    public function run(): void
     {
         $config = $this->container->get(ConfigRepository::class);
 
@@ -63,7 +63,7 @@ class Hub
         $loop->run();
     }
 
-    public function onError(Exception $e)
+    public function onError(Exception $e): void
     {
         Log::error($e->getMessage());
         if ($e->getPrevious() !== null && $e->getPrevious()->getMessage() !== '') {

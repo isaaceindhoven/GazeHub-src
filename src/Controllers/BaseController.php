@@ -19,13 +19,26 @@ use function json_encode;
 
 abstract class BaseController
 {
+    /**
+     * @param string $text
+     * @param string[] $headers
+     * @param int $statusCode
+     * @return Response
+     */
     private function end(string $text, array $headers, int $statusCode): Response
     {
         return new Response($statusCode, $headers, $text);
     }
 
+    /**
+     * @param string[] $data
+     * @param int $statusCode
+     * @return Response
+     */
     protected function json(array $data, int $statusCode = 200): Response
     {
-        return $this->end(json_encode($data), [ 'Content-Type' => 'application/json' ], $statusCode);
+        $data = json_encode($data);
+
+        return $this->end($data === false ? '' : $data, [ 'Content-Type' => 'application/json' ], $statusCode);
     }
 }

@@ -18,9 +18,12 @@ use GazeHub\Exceptions\ConfigKeyNotFoundException;
 use GazeHub\Services\ConfigRepository;
 use PHPUnit\Framework\TestCase;
 
+use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertNotEmpty;
+
 class ConfigRepositoryTest extends TestCase
 {
-    public function testShouldAutoloadConfigWhenNoPathIsSupplied()
+    public function testShouldAutoloadConfigWhenNoPathIsSupplied(): void
     {
         // Arrange
         $config = new ConfigRepository();
@@ -29,10 +32,10 @@ class ConfigRepositoryTest extends TestCase
         $config->loadConfig();
 
         // Assert
-        $this->assertNotEmpty($config->get('server_port'));
+        assertNotEmpty($config->get('server_port'));
     }
 
-    public function testShouldLoadCustomConfigFileWhenPathIsSupplied()
+    public function testShouldLoadCustomConfigFileWhenPathIsSupplied(): void
     {
         // Arrange
         $config = new ConfigRepository();
@@ -41,10 +44,10 @@ class ConfigRepositoryTest extends TestCase
         $config->loadConfig(__DIR__ . '/../assets/testConfig.php');
 
         // Assert
-        $this->assertEquals('test_value', $config->get('test_key'));
+        assertEquals('test_value', $config->get('test_key'));
     }
 
-    public function testShouldThrowExceptionWhenConfigFileDoesNotExists()
+    public function testShouldThrowExceptionWhenConfigFileDoesNotExists(): void
     {
         // Arrange
         $this->expectException(ConfigFileNotExistsException::class);
@@ -57,7 +60,7 @@ class ConfigRepositoryTest extends TestCase
         // Nothing to assert
     }
 
-    public function testShouldThrowExceptionWhenConfigKeyDoesNotExists()
+    public function testShouldThrowExceptionWhenConfigKeyDoesNotExists(): void
     {
         // Arrange
         $this->expectException(ConfigKeyNotFoundException::class);

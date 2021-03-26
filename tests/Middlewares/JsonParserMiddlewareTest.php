@@ -15,12 +15,17 @@ namespace GazeHub\Tests\Middlewares;
 
 use GazeHub\Middlewares\JsonParserMiddleware;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Message\Response;
 
+use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\never;
+use function PHPUnit\Framework\once;
+
 class JsonParserMiddlewareTest extends TestCase
 {
-    public function testShouldSetParsedBodyWhenContentTypeIsJson()
+    public function testShouldSetParsedBodyWhenContentTypeIsJson(): void
     {
         // Arrange
         $middleware = new JsonParserMiddleware();
@@ -28,12 +33,12 @@ class JsonParserMiddlewareTest extends TestCase
         $request->method('getHeaderLine')->with('Content-Type')->willReturn('application/json');
         $request->method('getBody')->willReturn('{"test": "This is a test"}');
         $request
-            ->expects($this->once())
+            ->expects(once())
             ->method('withParsedBody')
             ->with(['test' => 'This is a test'])
             ->willReturn($request);
 
-        $callable = static function (ServerRequestInterface $req) {
+        $callable = static function (ServerRequestInterface $req): ResponseInterface {
             return new Response(200);
         };
 
@@ -41,10 +46,10 @@ class JsonParserMiddlewareTest extends TestCase
         $response = $middleware->handle($request, $callable);
 
         // Assert
-        $this->assertEquals(200, $response->getStatusCode());
+        assertEquals(200, $response->getStatusCode());
     }
 
-    public function testShouldReturn400ResponseWhenJsonIsInvalid()
+    public function testShouldReturn400ResponseWhenJsonIsInvalid(): void
     {
         // Arrange
         $middleware = new JsonParserMiddleware();
@@ -56,10 +61,10 @@ class JsonParserMiddlewareTest extends TestCase
         $request->method('getBody')
             ->willReturn('Invalid JSON');
 
-        $request->expects($this->never())
+        $request->expects(never())
             ->method('withParsedBody');
 
-        $callable = static function (ServerRequestInterface $req) {
+        $callable = static function (ServerRequestInterface $req): ResponseInterface {
             return new Response(200);
         };
 
@@ -67,6 +72,6 @@ class JsonParserMiddlewareTest extends TestCase
         $response = $middleware->handle($request, $callable);
 
         // Assert
-        $this->assertEquals(400, $response->getStatusCode());
+        assertEquals(400, $response->getStatusCode());
     }
 }

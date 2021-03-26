@@ -39,19 +39,25 @@ class JWTDecoder
 
     public function __construct(ConfigRepository $configRepository)
     {
-        $this->jwtVerify = $configRepository->get('jwt_verify');
+        $this->jwtVerify = (bool) $configRepository->get('jwt_verify');
         if ($this->jwtVerify) {
-            $this->publicKeyContent = file_get_contents($configRepository->get('jwt_public_key'));
+            $publicKeyContent = file_get_contents($configRepository->get('jwt_public_key'));
+            $this->publicKeyContent = $publicKeyContent === false ? '' : $publicKeyContent;
         }
         $this->algorithm = $configRepository->get('jwt_alg');
     }
 
+    /**
+     * @param string $token
+     * @return mixed[]
+     */
     public function decode(string $token): array
     {
         if ($this->jwtVerify) {
             return (array) JWT::decode($token, $this->publicKeyContent, explode(',', $this->algorithm));
         } else {
-            return json_decode(base64_decode(explode('.', $token)[1]), true);
+            $base64Decoded = base64_decode(explode('.', $token)[1], true);
+            return json_decode($base64Decoded === false ? '' : $base64Decoded, true);
         }
     }
 }

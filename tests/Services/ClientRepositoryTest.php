@@ -17,11 +17,14 @@ use GazeHub\Models\Client;
 use GazeHub\Services\ClientRepository;
 use PHPUnit\Framework\TestCase;
 
+use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertNotNull;
+use function PHPUnit\Framework\assertNull;
 use function uniqid;
 
 class ClientRepositoryTest extends TestCase
 {
-    public function testShouldCreateAndStoreClient()
+    public function testShouldCreateAndStoreClient(): void
     {
         // Arrange
         $clientRepo = new ClientRepository();
@@ -31,11 +34,11 @@ class ClientRepositoryTest extends TestCase
         $client = $clientRepo->add($tokenPayload['roles'], $tokenPayload['jti']);
 
         // Assert
-        $this->assertEquals($tokenPayload['roles'], $client->roles);
-        $this->assertEquals($tokenPayload['jti'], $client->tokenId);
+        assertEquals($tokenPayload['roles'], $client->roles);
+        assertEquals($tokenPayload['jti'], $client->tokenId);
     }
 
-    public function testShouldReturnClientBasedOnTokenId()
+    public function testShouldReturnClientBasedOnTokenId(): void
     {
         // Arrange
         $clientRepo = new ClientRepository();
@@ -46,11 +49,11 @@ class ClientRepositoryTest extends TestCase
         $foundClient = $clientRepo->getByTokenId($client1->tokenId);
 
         // Assert
-        $this->assertNotNull($foundClient);
-        $this->assertEquals($client1, $foundClient);
+        assertNotNull($foundClient);
+        assertEquals($client1, $foundClient);
     }
 
-    public function testShouldRemoveClientFromRepo()
+    public function testShouldRemoveClientFromRepo(): void
     {
         // Arrange
         $clientRepo = new ClientRepository();
@@ -61,8 +64,8 @@ class ClientRepositoryTest extends TestCase
         $clientRepo->remove($client1);
 
         // Assert
-        $this->assertNull($clientRepo->getByTokenId($client1->tokenId));
-        $this->assertEquals($client2, $clientRepo->getByTokenId($client2->tokenId));
+        assertNull($clientRepo->getByTokenId($client1->tokenId));
+        assertEquals($client2, $clientRepo->getByTokenId($client2->tokenId));
     }
 
     private function addClientToRepo(ClientRepository $repository): Client

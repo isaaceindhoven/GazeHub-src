@@ -32,7 +32,7 @@ class CorsMiddleware
     private function addCorsHeaders(ServerRequestInterface $request, Response $response): Response
     {
         return $response
-            ->withHeader('Access-Control-Allow-Origin', (string) $request->getHeaderLine('Origin'))
+            ->withHeader('Access-Control-Allow-Origin', $request->getHeaderLine('Origin'))
             ->withHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE')
             ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Authorization, Content-Type');
     }
