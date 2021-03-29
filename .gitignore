@@ -6,3 +6,4 @@
 coverage/
 .tmp_staging
 gazehub.phar
+.idea
