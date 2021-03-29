@@ -11,6 +11,8 @@
 
 declare(strict_types=1);
 
+use GazeHub\Services\HelpPrinter;
+
 // Load composer autoload
 $composerFile = null;
 
@@ -32,4 +34,11 @@ if ($composerFile === null) {
 }
 
 require $composerFile;
-require __DIR__ . '/main.php';
+
+$options = getopt('h');
+
+if (array_key_exists('h', $options)) {
+    HelpPrinter::print();
+} else {
+    require __DIR__ . '/main.php';
+}

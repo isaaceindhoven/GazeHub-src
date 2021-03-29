@@ -19,6 +19,7 @@ use React\Stream\WritableResourceStream;
 use function array_map;
 use function date;
 use function implode;
+use function intval;
 use function is_string;
 use function json_encode;
 use function sprintf;
@@ -42,9 +43,9 @@ class Log
      */
     private static $stream;
 
-    public static function setLogLevel(LoopInterface $loop, int $logLevel): void
+    public static function setLogLevel(LoopInterface $loop, string $logLevel): void
     {
-        self::$logLevel = $logLevel;
+        self::$logLevel = intval($logLevel);
         self::$stream = new WritableResourceStream(STDOUT, $loop);
     }
 

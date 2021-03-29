@@ -27,7 +27,7 @@ try {
 
     $phar->startBuffering();
 
-    $stub = $phar->createDefaultStub('bin/autoload.php');
+    $stub = $phar->createDefaultStub('bin/bootstrap.php');
     $stub = "#!/usr/bin/env php \n" . $stub;
 
     $phar->buildFromDirectory(__DIR__, '/\.(php|html)$/');

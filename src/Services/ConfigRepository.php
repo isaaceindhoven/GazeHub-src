@@ -20,6 +20,7 @@ use function array_key_exists;
 use function count;
 use function file_exists;
 use function sprintf;
+use function strtoupper;
 
 class ConfigRepository
 {
@@ -45,6 +46,10 @@ class ConfigRepository
         }
 
         $this->config = include($path);
+
+        foreach ($this->config as $key => $value) {
+            $this->config[$key] = Environment::get('GAZEHUB_' . strtoupper($key), $value);
+        }
     }
 
     /**

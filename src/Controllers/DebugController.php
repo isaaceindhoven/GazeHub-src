@@ -30,7 +30,7 @@ class DebugController extends BaseController
 
     public function __construct(ConfigRepository $configRepository)
     {
-        $this->debugEnabled = $configRepository->get('jwt_verify') === false;
+        $this->debugEnabled = ((bool) $configRepository->get('jwt_verify')) === false;
     }
 
     public function handle(): Response
