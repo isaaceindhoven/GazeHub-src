@@ -22,6 +22,7 @@ use Throwable;
 
 use function array_key_exists;
 use function str_replace;
+use function urldecode;
 
 class Request
 {
@@ -54,8 +55,9 @@ class Request
     {
         $token = $this->getHeaderValueByKey('Authorization');
 
+
         if ($token === null) {
-            $token = $this->getValueByKey($this->originalRequest->getQueryParams(), 'token');
+            $token = $this->getQueryParam('token');
         }
 
         if ($token === null) {
@@ -114,13 +116,13 @@ class Request
     }
 
     /**
-     * @param mixed[] $arr
      * @return null|string
      */
-    private function getValueByKey(array $arr, string $key)
+    private function getQueryParam(string $key)
     {
-        if (array_key_exists($key, $arr)) {
-            return $arr[$key];
+        if (array_key_exists($key, $this->originalRequest->getQueryParams())) {
+            $value = $this->originalRequest->getQueryParams()[$key];
+            return urldecode($value);
         }
         return null;
     }

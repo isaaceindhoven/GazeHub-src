@@ -79,4 +79,12 @@ class SubscriptionControllerTest extends ControllerTestCase
             ->asClient('client1')
             ->assertHttpCode(200);
     }
+
+    public function testPingResponse401WithInvalidJwt(): void
+    {
+        $this
+            ->req('/ping', 'GET')
+            ->setHeaders(['Authorization' => 'Bearer NOTVALID.NOTVALID.NOTVALID'])
+            ->assertHttpCode(401);
+    }
 }

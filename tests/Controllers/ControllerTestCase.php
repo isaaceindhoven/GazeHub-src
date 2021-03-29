@@ -105,7 +105,7 @@ class ControllerTestCase extends TestCase
      * @param mixed[] $payload
      * @return string
      */
-    private function generateToken(array $payload): string
+    protected function generateToken(array $payload): string
     {
         $payload = json_encode($payload);
         return 'KEEPME.' . base64_encode($payload === false ? '' : $payload) . '.KEEPME';

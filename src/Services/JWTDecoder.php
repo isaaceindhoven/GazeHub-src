@@ -14,8 +14,10 @@ declare(strict_types=1);
 namespace GazeHub\Services;
 
 use Firebase\JWT\JWT;
+use GazeHub\Exceptions\JwtDecodeException;
 
 use function base64_decode;
+use function count;
 use function explode;
 use function file_get_contents;
 use function json_decode;
@@ -56,8 +58,25 @@ class JWTDecoder
         if ($this->jwtVerify) {
             return (array) JWT::decode($token, $this->publicKeyContent, explode(',', $this->algorithm));
         } else {
-            $base64Decoded = base64_decode(explode('.', $token)[1], true);
-            return json_decode($base64Decoded === false ? '' : $base64Decoded, true);
+            $tokenParts = explode('.', $token);
+            if (count($tokenParts) !== 3) {
+                throw new JwtDecodeException();
+            }
+            $base64Data = $tokenParts[1];
+
+            $base64Decoded = base64_decode($base64Data, true);
+
+            if ($base64Decoded === false) {
+                throw new JwtDecodeException();
+            }
+
+            $payload = json_decode($base64Decoded, true);
+
+            if ($payload === null) {
+                throw new JwtDecodeException();
+            }
+
+            return $payload;
         }
     }
 }

@@ -21,9 +21,17 @@ use function PHPUnit\Framework\once;
 
 class EventControllerTest extends ControllerTestCase
 {
-    public function testResponse400IfUnauthorized(): void
+    public function testResponse401IfUnauthorized(): void
     {
         $this->req('/event', 'POST')->assertHttpCode(401);
+    }
+
+    public function testResponse401IfRoleIsWrong(): void
+    {
+        $this
+            ->req('/event', 'POST')
+            ->setHeaders(['Authorization' => 'Bearer ' . $this->generateToken(['role' => 'admin'])])
+            ->assertHttpCode(401);
     }
 
     public function testResponse200IfValidRequest(): void

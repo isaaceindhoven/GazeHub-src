@@ -81,6 +81,26 @@ class SubscriptionRepositoryTest extends TestCase
         assertEquals($subs[0]->callbackId, $subscriptionRequest['callbackId']);
     }
 
+    public function testShouldGetAllAdminSubscriptions(): void
+    {
+        // Arrange
+        $subscriptionRepository = new SubscriptionRepository();
+        $client1 = $this->createClient(['admin']);
+        $client2 = $this->createClient(['normal']);
+        $client3 = $this->createClient(['admin', 'normal']);
+        $subscriptionRequest1 = ['topics' => ['1', '2'], 'callbackId' => uniqid()];
+        $subscriptionRequest2 = ['topics' => ['1', '2'], 'callbackId' => uniqid()];
+        $subscriptionRequest3 = ['topics' => ['1', '2'], 'callbackId' => uniqid()];
+
+        $subscriptionRepository->add($client1, $subscriptionRequest1['topics'], $subscriptionRequest1['callbackId']);
+        $subscriptionRepository->add($client2, $subscriptionRequest2['topics'], $subscriptionRequest2['callbackId']);
+        $subscriptionRepository->add($client3, $subscriptionRequest3['topics'], $subscriptionRequest3['callbackId']);
+
+        // Assert
+        $subs = $subscriptionRepository->getSubscriptionsByTopicAndRole('1', 'admin');
+        assertEquals(2, count($subs));
+    }
+
     /**
      * @param string[] $roles
      * @return Client
