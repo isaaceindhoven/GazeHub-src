@@ -35,6 +35,16 @@ class SubscriptionControllerTest extends ControllerTestCase
             ->assertHttpCode(200);
     }
 
+    public function testSubscribeResponse400IfNoTopic(): void
+    {
+        $this
+            ->req('/subscription', 'POST')
+            ->registerClient('client1')
+            ->asClient('client1')
+            ->setBody(['callbackId' => 'abc', 'topics' => []])
+            ->assertHttpCode(400);
+    }
+
     public function testUnsubscribeResponse200IfAuthorized(): void
     {
         $this

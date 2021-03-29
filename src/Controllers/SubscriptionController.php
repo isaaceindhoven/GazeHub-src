@@ -56,14 +56,6 @@ class SubscriptionController extends BaseController
 
     public function destroy(Request $request): Response
     {
-        if (!$request->isAuthorized()) {
-            return new Response(401);
-        }
-
-        if (!is_array($request->getParsedBody()) || count($request->getParsedBody()) === 0) {
-            return new Response(400, [], 'Missing topics');
-        }
-
         $client = $this->getClient($request);
 
         $validatedData = $request->validate([
