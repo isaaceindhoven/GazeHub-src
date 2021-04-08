@@ -11,11 +11,11 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Tests\Services;
+namespace ISAAC\GazeHub\Tests\Services;
 
-use GazeHub\Exceptions\ConfigFileNotExistsException;
-use GazeHub\Exceptions\ConfigKeyNotFoundException;
-use GazeHub\Services\ConfigRepository;
+use ISAAC\GazeHub\Exceptions\ConfigFileNotExistsException;
+use ISAAC\GazeHub\Exceptions\ConfigKeyNotFoundException;
+use ISAAC\GazeHub\Services\ConfigRepository;
 use PHPUnit\Framework\TestCase;
 
 use function PHPUnit\Framework\assertEquals;

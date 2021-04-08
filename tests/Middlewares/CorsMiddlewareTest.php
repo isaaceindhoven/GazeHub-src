@@ -11,9 +11,9 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Tests\Middlewares;
+namespace ISAAC\GazeHub\Tests\Middlewares;
 
-use GazeHub\Middlewares\CorsMiddleware;
+use ISAAC\GazeHub\Middlewares\CorsMiddleware;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Message\Response;

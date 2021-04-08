@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Middlewares;
+namespace ISAAC\GazeHub\Middlewares;
 
 use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Message\Response;

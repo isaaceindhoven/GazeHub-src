@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-use GazeHub\Services\HelpPrinter;
+use ISAAC\GazeHub\Services\HelpPrinter;
 
 // Load composer autoload
 $composerFile = null;
@@ -27,7 +27,7 @@ foreach ([$libraryAutoload, $projectAutoload] as $file) {
 }
 
 if ($composerFile === null) {
-    fwrite(STDERR, 'You can use gazehub as dependency in a project, ' .
+    fwrite(STDERR, 'You can use ISAAC\GazeHub as dependency in a project, ' .
         'or as a standalone application, but make sure you install the dependencies using composer.');
 
     die(1);

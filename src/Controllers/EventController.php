@@ -11,12 +11,12 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Controllers;
+namespace ISAAC\GazeHub\Controllers;
 
-use GazeHub\Log;
-use GazeHub\Models\Request;
-use GazeHub\Models\Subscription;
-use GazeHub\Services\SubscriptionRepository;
+use ISAAC\GazeHub\Log;
+use ISAAC\GazeHub\Models\Request;
+use ISAAC\GazeHub\Models\Subscription;
+use ISAAC\GazeHub\Services\SubscriptionRepository;
 use React\Http\Message\Response;
 
 class EventController extends BaseController

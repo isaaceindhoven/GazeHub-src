@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Controllers;
+namespace ISAAC\GazeHub\Controllers;
 
 use React\Http\Message\Response;
 

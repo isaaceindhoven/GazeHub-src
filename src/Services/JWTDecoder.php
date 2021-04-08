@@ -11,10 +11,10 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Services;
+namespace ISAAC\GazeHub\Services;
 
 use Firebase\JWT\JWT;
-use GazeHub\Exceptions\JwtDecodeException;
+use ISAAC\GazeHub\Exceptions\JwtDecodeException;
 
 use function base64_decode;
 use function count;

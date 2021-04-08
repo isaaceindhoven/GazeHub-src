@@ -11,9 +11,9 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Controllers;
+namespace ISAAC\GazeHub\Controllers;
 
-use GazeHub\Services\ConfigRepository;
+use ISAAC\GazeHub\Services\ConfigRepository;
 use React\Http\Message\Response;
 
 use function file_get_contents;

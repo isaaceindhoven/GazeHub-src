@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Models;
+namespace ISAAC\GazeHub\Models;
 
 class Subscription
 {

@@ -11,14 +11,13 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Controllers;
+namespace ISAAC\GazeHub\Controllers;
 
-use GazeHub\Exceptions\UnAuthorizedException;
-use GazeHub\Models\Client;
-use GazeHub\Models\Request;
-use GazeHub\Models\Subscription;
-use GazeHub\Services\ClientRepository;
-use GazeHub\Services\SubscriptionRepository;
+use ISAAC\GazeHub\Exceptions\UnAuthorizedException;
+use ISAAC\GazeHub\Models\Client;
+use ISAAC\GazeHub\Models\Request;
+use ISAAC\GazeHub\Services\ClientRepository;
+use ISAAC\GazeHub\Services\SubscriptionRepository;
 use React\Http\Message\Response;
 
 class SubscriptionController extends BaseController

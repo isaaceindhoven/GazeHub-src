@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Exceptions;
+namespace ISAAC\GazeHub\Exceptions;
 
 use Exception;
 

@@ -11,9 +11,9 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Tests\Middlewares;
+namespace ISAAC\GazeHub\Tests\Middlewares;
 
-use GazeHub\Middlewares\JsonParserMiddleware;
+use ISAAC\GazeHub\Middlewares\JsonParserMiddleware;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

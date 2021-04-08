@@ -11,11 +11,11 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Services;
+namespace ISAAC\GazeHub\Services;
 
-use GazeHub\Log;
-use GazeHub\Models\Client;
-use GazeHub\Models\Subscription;
+use ISAAC\GazeHub\Log;
+use ISAAC\GazeHub\Models\Client;
+use ISAAC\GazeHub\Models\Subscription;
 
 use function array_filter;
 use function array_push;

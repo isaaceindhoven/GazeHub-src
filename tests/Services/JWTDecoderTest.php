@@ -11,13 +11,13 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Tests\Services;
+namespace ISAAC\GazeHub\Tests\Services;
 
 use Exception;
 use Firebase\JWT\JWT;
-use GazeHub\Exceptions\JwtDecodeException;
-use GazeHub\Services\ConfigRepository;
-use GazeHub\Services\JWTDecoder;
+use ISAAC\GazeHub\Exceptions\JwtDecodeException;
+use ISAAC\GazeHub\Services\ConfigRepository;
+use ISAAC\GazeHub\Services\JWTDecoder;
 use PHPUnit\Framework\TestCase;
 
 use function base64_encode;

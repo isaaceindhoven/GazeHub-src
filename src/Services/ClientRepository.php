@@ -11,10 +11,10 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Services;
+namespace ISAAC\GazeHub\Services;
 
-use GazeHub\Log;
-use GazeHub\Models\Client;
+use ISAAC\GazeHub\Log;
+use ISAAC\GazeHub\Models\Client;
 use React\Stream\ThroughStream;
 
 use function array_push;

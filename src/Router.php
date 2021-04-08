@@ -11,13 +11,13 @@
 
 declare(strict_types=1);
 
-namespace GazeHub;
+namespace ISAAC\GazeHub;
 
 use DI\Container;
-use GazeHub\Exceptions\DataValidationFailedException;
-use GazeHub\Exceptions\UnAuthorizedException;
-use GazeHub\Models\Request;
-use GazeHub\Services\ConfigRepository;
+use ISAAC\GazeHub\Exceptions\DataValidationFailedException;
+use ISAAC\GazeHub\Exceptions\UnAuthorizedException;
+use ISAAC\GazeHub\Models\Request;
+use ISAAC\GazeHub\Services\ConfigRepository;
 use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Message\Response;
 

@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace GazeHub;
+namespace ISAAC\GazeHub;
 
 use React\EventLoop\LoopInterface;
 use React\Stream\WritableResourceStream;

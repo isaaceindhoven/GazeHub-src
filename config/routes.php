@@ -11,10 +11,10 @@
 
 declare(strict_types=1);
 
-use GazeHub\Controllers\DebugController;
-use GazeHub\Controllers\EventController;
-use GazeHub\Controllers\SSEController;
-use GazeHub\Controllers\SubscriptionController;
+use ISAAC\GazeHub\Controllers\DebugController;
+use ISAAC\GazeHub\Controllers\EventController;
+use ISAAC\GazeHub\Controllers\SSEController;
+use ISAAC\GazeHub\Controllers\SubscriptionController;
 
 return [
     'GET' => [

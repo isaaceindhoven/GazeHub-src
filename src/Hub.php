@@ -11,13 +11,13 @@
 
 declare(strict_types=1);
 
-namespace GazeHub;
+namespace ISAAC\GazeHub;
 
 use DI\Container;
 use Exception;
-use GazeHub\Middlewares\CorsMiddleware;
-use GazeHub\Middlewares\JsonParserMiddleware;
-use GazeHub\Services\ConfigRepository;
+use ISAAC\GazeHub\Middlewares\CorsMiddleware;
+use ISAAC\GazeHub\Middlewares\JsonParserMiddleware;
+use ISAAC\GazeHub\Services\ConfigRepository;
 use React\EventLoop\Factory;
 use React\Http\Server as HttpServer;
 use React\Socket\Server;

@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Tests\Controllers;
+namespace ISAAC\GazeHub\Tests\Controllers;
 
 class SubscriptionControllerTest extends ControllerTestCase
 {

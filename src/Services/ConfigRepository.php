@@ -11,10 +11,10 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Services;
+namespace ISAAC\GazeHub\Services;
 
-use GazeHub\Exceptions\ConfigFileNotExistsException;
-use GazeHub\Exceptions\ConfigKeyNotFoundException;
+use ISAAC\GazeHub\Exceptions\ConfigFileNotExistsException;
+use ISAAC\GazeHub\Exceptions\ConfigKeyNotFoundException;
 
 use function array_key_exists;
 use function count;

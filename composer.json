@@ -29,8 +29,8 @@
     },
     "autoload": {
         "psr-4": {
-            "GazeHub\\": "src/",
-            "GazeHub\\Tests\\": "tests/"
+            "ISAAC\\GazeHub\\": "src/",
+            "ISAAC\\GazeHub\\Tests\\": "tests/"
         }
     },
     "scripts": {

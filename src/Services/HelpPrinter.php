@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Services;
+namespace ISAAC\GazeHub\Services;
 
 use function array_keys;
 use function array_map;

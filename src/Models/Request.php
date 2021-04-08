@@ -11,11 +11,11 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Models;
+namespace ISAAC\GazeHub\Models;
 
-use GazeHub\Exceptions\DataValidationFailedException;
-use GazeHub\Exceptions\UnAuthorizedException;
-use GazeHub\Services\JWTDecoder;
+use ISAAC\GazeHub\Exceptions\DataValidationFailedException;
+use ISAAC\GazeHub\Exceptions\UnAuthorizedException;
+use ISAAC\GazeHub\Services\JWTDecoder;
 use Psr\Http\Message\ServerRequestInterface;
 use Rakit\Validation\Validator;
 use Throwable;

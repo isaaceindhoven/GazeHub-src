@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-use GazeHub\Hub;
+use ISAAC\GazeHub\Hub;
 
 $hub = new Hub();
 

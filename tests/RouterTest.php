@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Tests;
 
 use DI\Container;
-use GazeHub\Router;
+use ISAAC\GazeHub\Router;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;

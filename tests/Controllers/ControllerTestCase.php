@@ -11,12 +11,12 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Tests\Controllers;
+namespace ISAAC\GazeHub\Tests\Controllers;
 
 use DI\Container;
-use GazeHub\Router;
-use GazeHub\Services\ClientRepository;
-use GazeHub\Services\ConfigRepository;
+use ISAAC\GazeHub\Router;
+use ISAAC\GazeHub\Services\ClientRepository;
+use ISAAC\GazeHub\Services\ConfigRepository;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;

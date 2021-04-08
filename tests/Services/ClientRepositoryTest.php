@@ -11,10 +11,10 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Tests\Services;
+namespace ISAAC\GazeHub\Tests\Services;
 
-use GazeHub\Models\Client;
-use GazeHub\Services\ClientRepository;
+use ISAAC\GazeHub\Models\Client;
+use ISAAC\GazeHub\Services\ClientRepository;
 use PHPUnit\Framework\TestCase;
 
 use function PHPUnit\Framework\assertEquals;

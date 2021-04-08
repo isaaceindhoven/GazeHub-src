@@ -11,11 +11,11 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Tests\Controllers;
+namespace ISAAC\GazeHub\Tests\Controllers;
 
-use GazeHub\Models\Client;
-use GazeHub\Models\Subscription;
-use GazeHub\Services\SubscriptionRepository;
+use ISAAC\GazeHub\Models\Client;
+use ISAAC\GazeHub\Models\Subscription;
+use ISAAC\GazeHub\Services\SubscriptionRepository;
 
 use function PHPUnit\Framework\once;
 

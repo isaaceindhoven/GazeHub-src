@@ -11,9 +11,9 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Tests\Services;
+namespace ISAAC\GazeHub\Tests\Services;
 
-use GazeHub\Services\Environment;
+use ISAAC\GazeHub\Services\Environment;
 use PHPUnit\Framework\TestCase;
 
 use function PHPUnit\Framework\assertEquals;

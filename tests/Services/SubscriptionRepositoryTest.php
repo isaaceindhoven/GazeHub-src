@@ -11,10 +11,10 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Tests\Services;
+namespace ISAAC\GazeHub\Tests\Services;
 
-use GazeHub\Models\Client;
-use GazeHub\Services\SubscriptionRepository;
+use ISAAC\GazeHub\Models\Client;
+use ISAAC\GazeHub\Services\SubscriptionRepository;
 use PHPUnit\Framework\TestCase;
 use React\Stream\ThroughStream;
 

@@ -11,11 +11,11 @@
 
 declare(strict_types=1);
 
-namespace GazeHub\Controllers;
+namespace ISAAC\GazeHub\Controllers;
 
-use GazeHub\Models\Request;
-use GazeHub\Services\ClientRepository;
-use GazeHub\Services\SubscriptionRepository;
+use ISAAC\GazeHub\Models\Request;
+use ISAAC\GazeHub\Services\ClientRepository;
+use ISAAC\GazeHub\Services\SubscriptionRepository;
 use React\Http\Message\Response;
 
 class SSEController
