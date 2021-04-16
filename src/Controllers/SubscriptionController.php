@@ -17,24 +17,17 @@ use ISAAC\GazeHub\Exceptions\UnAuthorizedException;
 use ISAAC\GazeHub\Models\Client;
 use ISAAC\GazeHub\Models\Request;
 use ISAAC\GazeHub\Services\ClientRepository;
-use ISAAC\GazeHub\Services\SubscriptionRepository;
 use React\Http\Message\Response;
 
 class SubscriptionController extends BaseController
 {
     /**
-     *  @var SubscriptionRepository
-     */
-    private $subscriptionRepository;
-
-    /**
      *  @var ClientRepository
      */
     private $clientRepository;
 
-    public function __construct(SubscriptionRepository $subscriptionRepository, ClientRepository $clientRepository)
+    public function __construct(ClientRepository $clientRepository)
     {
-        $this->subscriptionRepository = $subscriptionRepository;
         $this->clientRepository = $clientRepository;
     }
 
@@ -43,12 +36,11 @@ class SubscriptionController extends BaseController
         $client = $this->getClient($request);
 
         $validatedData = $request->validate([
-            'callbackId' => 'required|regex:/.+/',
             'topics' => 'required|array',
             'topics.*' => 'required|regex:/.+/',
         ]);
 
-        $this->subscriptionRepository->add($client, $validatedData['topics'], $validatedData['callbackId']);
+        $client->addTopics($validatedData['topics']);
 
         return $this->json(['status' => 'subscribed'], 200);
     }
@@ -62,7 +54,7 @@ class SubscriptionController extends BaseController
             'topics.*' => 'required|regex:/.+/',
         ]);
 
-        $this->subscriptionRepository->remove($client, $validatedData['topics']);
+        $client->removeTopics($validatedData['topics']);
 
         return $this->json(['status' => 'unsubscribed']);
     }

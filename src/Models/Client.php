@@ -15,6 +15,10 @@ namespace ISAAC\GazeHub\Models;
 
 use React\Stream\ThroughStream;
 
+use function array_filter;
+use function array_push;
+use function in_array;
+
 class Client
 {
     /**
@@ -33,10 +37,35 @@ class Client
     public $tokenId;
 
     /**
+     * @var string[]
+     */
+    public $topics = [];
+
+    /**
      * @param mixed[] $data
      */
     public function send(array $data): void
     {
         $this->stream->write($data);
+    }
+
+    /**
+     * @param string[] $topics
+     * @return void
+     */
+    public function addTopics(array $topics)
+    {
+        array_push($this->topics, ...$topics);
+    }
+
+    /**
+     * @param string[] $topics
+     * @return void
+     */
+    public function removeTopics(array $topics)
+    {
+        $this->topics = array_filter($this->topics, static function ($topic) use ($topics): bool {
+            return !in_array($topic, $topics, true);
+        });
     }
 }

@@ -15,7 +15,6 @@ namespace ISAAC\GazeHub\Controllers;
 
 use ISAAC\GazeHub\Models\Request;
 use ISAAC\GazeHub\Services\ClientRepository;
-use ISAAC\GazeHub\Services\SubscriptionRepository;
 use React\Http\Message\Response;
 
 class SSEController
@@ -25,16 +24,9 @@ class SSEController
      */
     private $clientRepository;
 
-    /**
-     * @var SubscriptionRepository
-     */
-    //phpcs:ignore SlevomatCodingStandard.Classes.UnusedPrivateElements.WriteOnlyProperty
-    private $subscriptionRepository;
-
-    public function __construct(ClientRepository $clientRepository, SubscriptionRepository $subscriptionRepository)
+    public function __construct(ClientRepository $clientRepository)
     {
         $this->clientRepository = $clientRepository;
-        $this->subscriptionRepository = $subscriptionRepository;
     }
 
     public function handle(Request $request): Response
@@ -48,7 +40,6 @@ class SSEController
         $scope = $this;
 
         $client->stream->on('close', static function () use ($scope, $client): void {
-            $scope->subscriptionRepository->remove($client);
             $scope->clientRepository->remove($client);
         });
 

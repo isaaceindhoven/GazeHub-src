@@ -14,21 +14,21 @@ declare(strict_types=1);
 namespace ISAAC\GazeHub\Controllers;
 
 use ISAAC\GazeHub\Log;
+use ISAAC\GazeHub\Models\Client;
 use ISAAC\GazeHub\Models\Request;
-use ISAAC\GazeHub\Models\Subscription;
-use ISAAC\GazeHub\Services\SubscriptionRepository;
+use ISAAC\GazeHub\Services\ClientRepository;
 use React\Http\Message\Response;
 
 class EventController extends BaseController
 {
     /**
-     * @var SubscriptionRepository
+     * @var ClientRepository
      */
-    private $subscriptionRepository;
+    private $clientRepository;
 
-    public function __construct(SubscriptionRepository $subscriptionRepository)
+    public function __construct(ClientRepository $clientRepository)
     {
-        $this->subscriptionRepository = $subscriptionRepository;
+        $this->clientRepository = $clientRepository;
     }
 
     public function handle(Request $request): Response
@@ -43,13 +43,13 @@ class EventController extends BaseController
 
         Log::debug('Server wants to emit', $validatedData);
 
-        /** @var Subscription[] $subscriptions */
-        $subscriptions = $this->subscriptionRepository
-            ->getSubscriptionsByTopicAndRole($validatedData['topic'], $validatedData['role']);
+        /** @var Client[] $clients */
+        $clients = $this->clientRepository
+            ->getClientsByTopicAndRole($validatedData['topic'], $validatedData['role']);
 
-        foreach ($subscriptions as $subscription) {
-            $subscription->client->send([
-                'callbackId' => $subscription->callbackId,
+        foreach ($clients as $client) {
+            $client->send([
+                'topic' => $validatedData['topic'],
                 'payload' => $validatedData['payload'],
             ]);
         }

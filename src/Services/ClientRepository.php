@@ -17,8 +17,10 @@ use ISAAC\GazeHub\Log;
 use ISAAC\GazeHub\Models\Client;
 use React\Stream\ThroughStream;
 
+use function array_filter;
 use function array_push;
 use function count;
+use function in_array;
 use function json_encode;
 
 class ClientRepository
@@ -87,5 +89,28 @@ class ClientRepository
             }
         }
         Log::debug('Connected clients', count($this->clients));
+    }
+
+    /**
+     * @param string $topic
+     * @param string $role
+     * @return Client[]
+     */
+    public function getClientsByTopicAndRole(string $topic, string $role = null): array
+    {
+        return array_filter(
+            $this->clients,
+            static function (Client $client) use ($topic, $role): bool {
+
+                $clientSubscribedToTopic = in_array($topic, $client->topics, true);
+                $roleSpecified = $role !== null && $role !== '';
+
+                if ($roleSpecified) {
+                    return $clientSubscribedToTopic && in_array($role, $client->roles, true);
+                }
+
+                return $clientSubscribedToTopic;
+            }
+        );
     }
 }

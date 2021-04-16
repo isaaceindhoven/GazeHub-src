@@ -17,6 +17,7 @@ use ISAAC\GazeHub\Models\Client;
 use ISAAC\GazeHub\Services\ClientRepository;
 use PHPUnit\Framework\TestCase;
 
+use function count;
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertNotNull;
 use function PHPUnit\Framework\assertNull;
@@ -66,6 +67,25 @@ class ClientRepositoryTest extends TestCase
         // Assert
         assertNull($clientRepo->getByTokenId($client1->tokenId));
         assertEquals($client2, $clientRepo->getByTokenId($client2->tokenId));
+    }
+
+    public function testShouldGetAllAdminSubscriptions(): void
+    {
+        // Arrange
+        $clientRepo = new ClientRepository();
+        $client1 = $clientRepo->add(['admin'], 'Client1');
+        $client2 = $clientRepo->add([], 'Client2');
+        $client3 = $clientRepo->add([], 'Client3');
+
+        $client1->topics = ['ProductCreated'];
+        $client2->topics = ['ProductCreated'];
+        $client3->topics = ['ProductCreated'];
+
+        // Assert
+        $adminClients = $clientRepo->getClientsByTopicAndRole('ProductCreated', 'admin');
+        $normalClients = $clientRepo->getClientsByTopicAndRole('ProductCreated', '');
+        assertEquals(1, count($adminClients));
+        assertEquals(3, count($normalClients));
     }
 
     private function addClientToRepo(ClientRepository $repository): Client
