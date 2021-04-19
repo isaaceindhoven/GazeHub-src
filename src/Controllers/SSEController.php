@@ -15,6 +15,7 @@ namespace ISAAC\GazeHub\Controllers;
 
 use ISAAC\GazeHub\Models\Request;
 use ISAAC\GazeHub\Services\ClientRepository;
+use ISAAC\GazeHub\Services\SubscriptionRepository;
 use React\Http\Message\Response;
 
 class SSEController
@@ -24,9 +25,15 @@ class SSEController
      */
     private $clientRepository;
 
-    public function __construct(ClientRepository $clientRepository)
+    /**
+     * @var SubscriptionRepository
+     */
+    private $subscriptionRepository;
+
+    public function __construct(ClientRepository $clientRepository, SubscriptionRepository $subscriptionRepository)
     {
         $this->clientRepository = $clientRepository;
+        $this->subscriptionRepository = $subscriptionRepository;
     }
 
     public function handle(Request $request): Response
@@ -37,11 +44,16 @@ class SSEController
 
         $client = $this->clientRepository->add($payload['roles'], $payload['jti']);
 
-        $scope = $this;
+        $subscriptionRepository = $this->subscriptionRepository;
+        $clientRepository = $this->clientRepository;
 
-        $client->stream->on('close', static function () use ($scope, $client): void {
-            $scope->clientRepository->remove($client);
-        });
+        $client->stream->on(
+            'close',
+            static function () use ($client, $subscriptionRepository, $clientRepository): void {
+                $subscriptionRepository->remove($client);
+                $clientRepository->remove($client);
+            }
+        );
 
         return new Response(200, [ 'Content-Type' => 'text/event-stream' ], $client->stream);
     }

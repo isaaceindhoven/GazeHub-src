@@ -17,6 +17,7 @@ use ISAAC\GazeHub\Exceptions\UnAuthorizedException;
 use ISAAC\GazeHub\Models\Client;
 use ISAAC\GazeHub\Models\Request;
 use ISAAC\GazeHub\Services\ClientRepository;
+use ISAAC\GazeHub\Services\SubscriptionRepository;
 use React\Http\Message\Response;
 
 class SubscriptionController extends BaseController
@@ -26,9 +27,15 @@ class SubscriptionController extends BaseController
      */
     private $clientRepository;
 
-    public function __construct(ClientRepository $clientRepository)
+    /**
+     *  @var SubscriptionRepository
+     */
+    private $subscriptionRepository;
+
+    public function __construct(ClientRepository $clientRepository, SubscriptionRepository $subscriptionRepository)
     {
         $this->clientRepository = $clientRepository;
+        $this->subscriptionRepository = $subscriptionRepository;
     }
 
     public function create(Request $request): Response
@@ -40,7 +47,9 @@ class SubscriptionController extends BaseController
             'topics.*' => 'required|regex:/.+/',
         ]);
 
-        $client->addTopics($validatedData['topics']);
+        foreach ($validatedData['topics'] as $topic) {
+            $this->subscriptionRepository->subscribe($client, $topic);
+        }
 
         return $this->json(['status' => 'subscribed'], 200);
     }
@@ -54,7 +63,9 @@ class SubscriptionController extends BaseController
             'topics.*' => 'required|regex:/.+/',
         ]);
 
-        $client->removeTopics($validatedData['topics']);
+        foreach ($validatedData['topics'] as $topic) {
+            $this->subscriptionRepository->unsubscribe($client, $topic);
+        }
 
         return $this->json(['status' => 'unsubscribed']);
     }

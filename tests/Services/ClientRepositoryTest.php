@@ -15,6 +15,7 @@ namespace ISAAC\GazeHub\Tests\Services;
 
 use ISAAC\GazeHub\Models\Client;
 use ISAAC\GazeHub\Services\ClientRepository;
+use ISAAC\GazeHub\Services\SubscriptionRepository;
 use PHPUnit\Framework\TestCase;
 
 use function count;
@@ -77,13 +78,14 @@ class ClientRepositoryTest extends TestCase
         $client2 = $clientRepo->add([], 'Client2');
         $client3 = $clientRepo->add([], 'Client3');
 
-        $client1->topics = ['ProductCreated'];
-        $client2->topics = ['ProductCreated'];
-        $client3->topics = ['ProductCreated'];
+        $subRepo = new SubscriptionRepository();
+        $subRepo->subscribe($client1, 'ProductCreated');
+        $subRepo->subscribe($client2, 'ProductCreated');
+        $subRepo->subscribe($client3, 'ProductCreated');
 
         // Assert
-        $adminClients = $clientRepo->getClientsByTopicAndRole('ProductCreated', 'admin');
-        $normalClients = $clientRepo->getClientsByTopicAndRole('ProductCreated', '');
+        $adminClients = $subRepo->getClientsByTopicAndRole('ProductCreated', 'admin');
+        $normalClients = $subRepo->getClientsByTopicAndRole('ProductCreated', '');
         assertEquals(1, count($adminClients));
         assertEquals(3, count($normalClients));
     }

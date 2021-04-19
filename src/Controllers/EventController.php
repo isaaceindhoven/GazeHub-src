@@ -16,19 +16,19 @@ namespace ISAAC\GazeHub\Controllers;
 use ISAAC\GazeHub\Log;
 use ISAAC\GazeHub\Models\Client;
 use ISAAC\GazeHub\Models\Request;
-use ISAAC\GazeHub\Services\ClientRepository;
+use ISAAC\GazeHub\Services\SubscriptionRepository;
 use React\Http\Message\Response;
 
 class EventController extends BaseController
 {
     /**
-     * @var ClientRepository
+     * @var SubscriptionRepository
      */
-    private $clientRepository;
+    private $subscriptionRepository;
 
-    public function __construct(ClientRepository $clientRepository)
+    public function __construct(SubscriptionRepository $subscriptionRepository)
     {
-        $this->clientRepository = $clientRepository;
+        $this->subscriptionRepository = $subscriptionRepository;
     }
 
     public function handle(Request $request): Response
@@ -44,7 +44,7 @@ class EventController extends BaseController
         Log::debug('Server wants to emit', $validatedData);
 
         /** @var Client[] $clients */
-        $clients = $this->clientRepository
+        $clients = $this->subscriptionRepository
             ->getClientsByTopicAndRole($validatedData['topic'], $validatedData['role']);
 
         foreach ($clients as $client) {
