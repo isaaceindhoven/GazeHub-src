@@ -13,23 +13,13 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Controllers;
 
+use ISAAC\GazeHub\Helpers\Json;
 use React\Http\Message\Response;
 
-use function json_encode;
+use function file_get_contents;
 
 abstract class BaseController
 {
-    /**
-     * @param string $text
-     * @param string[] $headers
-     * @param int $statusCode
-     * @return Response
-     */
-    private function end(string $text, array $headers, int $statusCode): Response
-    {
-        return new Response($statusCode, $headers, $text);
-    }
-
     /**
      * @param string[] $data
      * @param int $statusCode
@@ -37,8 +27,21 @@ abstract class BaseController
      */
     protected function json(array $data, int $statusCode = 200): Response
     {
-        $data = json_encode($data);
+        return new Response(
+            $statusCode,
+            [ 'Content-Type' => 'application/json' ],
+            Json::encode($data, '')
+        );
+    }
 
-        return $this->end($data === false ? '' : $data, [ 'Content-Type' => 'application/json' ], $statusCode);
+    protected function html(string $htmlFile, int $statusCode = 200): Response
+    {
+        $debugHtml = file_get_contents(__DIR__ . '/../../public/' . $htmlFile);
+
+        return new Response(
+            $statusCode,
+            [ 'Content-Type' => 'text/html' ],
+            $debugHtml === false ? '' : $debugHtml
+        );
     }
 }

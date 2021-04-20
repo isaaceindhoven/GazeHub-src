@@ -13,31 +13,38 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Controllers;
 
+use ISAAC\GazeHub\Exceptions\DataValidationFailedException;
 use ISAAC\GazeHub\Exceptions\UnAuthorizedException;
 use ISAAC\GazeHub\Models\Client;
 use ISAAC\GazeHub\Models\Request;
-use ISAAC\GazeHub\Services\ClientRepository;
-use ISAAC\GazeHub\Services\SubscriptionRepository;
+use ISAAC\GazeHub\Repositories\IClientRepository;
+use ISAAC\GazeHub\Repositories\ISubscriptionRepository;
 use React\Http\Message\Response;
 
 class SubscriptionController extends BaseController
 {
     /**
-     *  @var ClientRepository
+     *  @var IClientRepository
      */
     private $clientRepository;
 
     /**
-     *  @var SubscriptionRepository
+     *  @var ISubscriptionRepository
      */
     private $subscriptionRepository;
 
-    public function __construct(ClientRepository $clientRepository, SubscriptionRepository $subscriptionRepository)
+    public function __construct(IClientRepository $clientRepository, ISubscriptionRepository $subscriptionRepository)
     {
         $this->clientRepository = $clientRepository;
         $this->subscriptionRepository = $subscriptionRepository;
     }
 
+    /**
+     * @param Request $request
+     * @return Response
+     * @throws UnAuthorizedException
+     * @throws DataValidationFailedException
+     */
     public function create(Request $request): Response
     {
         $client = $this->getClient($request);
@@ -54,6 +61,12 @@ class SubscriptionController extends BaseController
         return $this->json(['status' => 'subscribed'], 200);
     }
 
+    /**
+     * @param Request $request
+     * @return Response
+     * @throws DataValidationFailedException
+     * @throws UnAuthorizedException
+     */
     public function destroy(Request $request): Response
     {
         $client = $this->getClient($request);
@@ -70,6 +83,11 @@ class SubscriptionController extends BaseController
         return $this->json(['status' => 'unsubscribed']);
     }
 
+    /**
+     * @param Request $request
+     * @return Response
+     * @throws UnAuthorizedException
+     */
     public function ping(Request $request): Response
     {
         $client = $this->getClient($request);
@@ -77,10 +95,16 @@ class SubscriptionController extends BaseController
         return new Response();
     }
 
+    /**
+     * @param Request $request
+     * @return Client
+     * @throws UnAuthorizedException
+     */
     protected function getClient(Request $request): Client
     {
         $request->isAuthorized();
-        $client = $this->clientRepository->getByTokenId($request->getTokenPayload()['jti']);
+        $jti = $request->getTokenPayload()['jti'];
+        $client = $this->clientRepository->getByTokenId($jti);
         if ($client === null) {
             throw new UnAuthorizedException();
         }

@@ -17,11 +17,14 @@ use DI\Container;
 use Exception;
 use ISAAC\GazeHub\Middlewares\CorsMiddleware;
 use ISAAC\GazeHub\Middlewares\JsonParserMiddleware;
-use ISAAC\GazeHub\Services\ConfigRepository;
+use ISAAC\GazeHub\Providers\IProvider;
+use ISAAC\GazeHub\Repositories\IConfigRepository;
+use Psr\Log\LoggerInterface;
 use React\EventLoop\Factory;
 use React\Http\Server as HttpServer;
 use React\Socket\Server;
 
+use function get_class;
 use function sprintf;
 
 class Hub
@@ -31,43 +34,67 @@ class Hub
      */
     private $container;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     public function __construct()
     {
         $this->container = new Container();
+        $this->loadProviders();
+        $this->logger = $this->container->get(LoggerInterface::class);
     }
 
     public function run(): void
     {
-        $config = $this->container->get(ConfigRepository::class);
+        $config = $this->container->get(IConfigRepository::class);
 
         $host = $config->get('server_host');
         $port = $config->get('server_port');
 
         $loop = Factory::create();
+
         $socket = new Server(sprintf('%s:%s', $host, $port), $loop);
-        Log::setLogLevel($loop, $config->get('log_level'));
 
         $server = new HttpServer(
             $loop,
             [$this->container->get(CorsMiddleware::class), 'handle'],
             [$this->container->get(JsonParserMiddleware::class), 'handle'],
-            [$this->container->get(Router::class), 'route']
+            [new Router($this->container), 'route']
         );
 
         $server->on('error', [$this, 'onError']);
 
         $server->listen($socket);
 
-        Log::info(sprintf('Server running on %s:%s', $host, $port));
+        $this->logger->info(sprintf('Server running on %s:%s', $host, $port));
 
         $loop->run();
     }
 
     public function onError(Exception $e): void
     {
-        Log::error($e->getMessage());
+        $this->logger->error($e->getMessage());
         if ($e->getPrevious() !== null && $e->getPrevious()->getMessage() !== '') {
-            Log::error($e->getPrevious()->getMessage());
+            $this->logger->error($e->getPrevious()->getMessage());
+        }
+    }
+
+    private function loadProviders(): void
+    {
+        $providers = require(__DIR__ . '/../config/providers.php');
+
+        foreach ($providers as $provider) {
+            $provider = new $provider();
+
+            if (!($provider instanceof IProvider)) {
+                $className = get_class($provider);
+                $this->logger->error(sprintf('Class %s is not an instance of IProvider', $className));
+                continue;
+            }
+
+            $provider->register($this->container);
         }
     }
 }

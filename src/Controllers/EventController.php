@@ -13,24 +13,37 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Controllers;
 
-use ISAAC\GazeHub\Log;
-use ISAAC\GazeHub\Models\Client;
+use ISAAC\GazeHub\Exceptions\DataValidationFailedException;
+use ISAAC\GazeHub\Exceptions\UnAuthorizedException;
 use ISAAC\GazeHub\Models\Request;
-use ISAAC\GazeHub\Services\SubscriptionRepository;
+use ISAAC\GazeHub\Repositories\ISubscriptionRepository;
+use Psr\Log\LoggerInterface;
 use React\Http\Message\Response;
 
 class EventController extends BaseController
 {
     /**
-     * @var SubscriptionRepository
+     * @var ISubscriptionRepository
      */
     private $subscriptionRepository;
 
-    public function __construct(SubscriptionRepository $subscriptionRepository)
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(ISubscriptionRepository $subscriptionRepository, LoggerInterface $logger)
     {
         $this->subscriptionRepository = $subscriptionRepository;
+        $this->logger = $logger;
     }
 
+    /**
+     * @param Request $request
+     * @return Response
+     * @throws DataValidationFailedException
+     * @throws UnAuthorizedException
+     */
     public function handle(Request $request): Response
     {
         $request->isRole('server');
@@ -41,13 +54,15 @@ class EventController extends BaseController
             'role' => 'regex:/.+/',
         ]);
 
-        Log::debug('Server wants to emit', $validatedData);
+        $this->logger->debug('Server wants to emit', $validatedData);
 
-        /** @var Client[] $clients */
-        $clients = $this->subscriptionRepository
-            ->getClientsByTopicAndRole($validatedData['topic'], $validatedData['role']);
+        $clients = $this->subscriptionRepository->getClientsByTopicAndRole(
+            $validatedData['topic'],
+            $validatedData['role']
+        );
 
         foreach ($clients as $client) {
+            $this->logger->debug('Sending data to client', $validatedData);
             $client->send([
                 'topic' => $validatedData['topic'],
                 'payload' => $validatedData['payload'],

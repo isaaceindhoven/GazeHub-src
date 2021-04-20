@@ -13,12 +13,10 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Tests\Controllers;
 
-use DI\Container;
+use ISAAC\GazeHub\Repositories\IClientRepository;
 use ISAAC\GazeHub\Router;
-use ISAAC\GazeHub\Services\ClientRepository;
-use ISAAC\GazeHub\Services\ConfigRepository;
+use ISAAC\GazeHub\Tests\BaseTest;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use React\Http\Message\Response;
@@ -37,13 +35,8 @@ use const PHP_URL_PATH;
 use const PHP_URL_QUERY;
 
 // phpcs:ignore ObjectCalisthenics.Metrics.MethodPerClassLimit.ObjectCalisthenics\Sniffs\Metrics\MethodPerClassLimitSniff
-class ControllerTestCase extends TestCase
+class ControllerTestCase extends BaseTest
 {
-    /**
-     * @var Container
-     */
-    protected $container;
-
     /**
      * @var string
      */
@@ -69,12 +62,6 @@ class ControllerTestCase extends TestCase
      * @var mixed[]
      */
     private $body;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->container = new Container();
-    }
 
     protected function setUp(): void
     {
@@ -119,7 +106,7 @@ class ControllerTestCase extends TestCase
 
     protected function registerClient(string $jti): self
     {
-        $clientRepo = $this->container->get(ClientRepository::class);
+        $clientRepo = $this->container->get(IClientRepository::class);
         $clientRepo->add([], $jti);
         return $this;
     }
@@ -150,11 +137,6 @@ class ControllerTestCase extends TestCase
 
     protected function do(): self
     {
-        $configRepo = new ConfigRepository();
-        $configRepo->loadConfig(__DIR__ . '/../assets/testConfig.php');
-
-        $this->container->set(ConfigRepository::class, $configRepo);
-
         $router = new Router($this->container);
         $this->response = $router->route($this->buildOriginalRequest()); // @phpstan-ignore-line
 

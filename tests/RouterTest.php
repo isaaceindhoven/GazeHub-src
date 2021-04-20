@@ -11,33 +11,25 @@
 
 declare(strict_types=1);
 
-namespace Tests;
+namespace ISAAC\GazeHub\Tests;
 
-use DI\Container;
 use ISAAC\GazeHub\Router;
-use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\once;
 
-class RouterTest extends TestCase
+class RouterTest extends BaseTest
 {
     /**
      * @var Router
      */
     private $router;
 
-    /**
-     * @var Container
-     */
-    private $container;
-
     public function __construct()
     {
         parent::__construct();
-        $this->container = new Container();
         $this->router = $this->container->get(Router::class);
     }
 

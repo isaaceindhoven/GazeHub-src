@@ -11,25 +11,22 @@
 
 declare(strict_types=1);
 
-namespace ISAAC\GazeHub\Tests\Services;
+namespace ISAAC\GazeHub\Tests\Repositories;
 
 use ISAAC\GazeHub\Exceptions\ConfigFileNotExistsException;
 use ISAAC\GazeHub\Exceptions\ConfigKeyNotFoundException;
-use ISAAC\GazeHub\Services\ConfigRepository;
+use ISAAC\GazeHub\Repositories\ConfigRepositoryFilesystem;
 use PHPUnit\Framework\TestCase;
 
 use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertNotEmpty;
 
-class ConfigRepositoryTest extends TestCase
+class ConfigRepositoryFilesystemTest extends TestCase
 {
     public function testShouldAutoloadConfigWhenNoPathIsSupplied(): void
     {
         // Arrange
-        $config = new ConfigRepository();
-
-        // Act
-        $config->loadConfig();
+        $config = new ConfigRepositoryFilesystem(__DIR__ . '/../../config/config.php');
 
         // Assert
         assertNotEmpty($config->get('server_port'));
@@ -38,10 +35,7 @@ class ConfigRepositoryTest extends TestCase
     public function testShouldLoadCustomConfigFileWhenPathIsSupplied(): void
     {
         // Arrange
-        $config = new ConfigRepository();
-
-        // Act
-        $config->loadConfig(__DIR__ . '/../assets/testConfig.php');
+        $config = new ConfigRepositoryFilesystem(__DIR__ . '/../assets/testConfig.php');
 
         // Assert
         assertEquals('test_value', $config->get('test_key'));
@@ -51,10 +45,7 @@ class ConfigRepositoryTest extends TestCase
     {
         // Arrange
         $this->expectException(ConfigFileNotExistsException::class);
-        $config = new ConfigRepository();
-
-        // Act
-        $config->loadConfig('NON_EXISTING_PATH');
+        $config = new ConfigRepositoryFilesystem('NON_EXISTING_PATH');
 
         // Assert
         // Nothing to assert
@@ -64,8 +55,7 @@ class ConfigRepositoryTest extends TestCase
     {
         // Arrange
         $this->expectException(ConfigKeyNotFoundException::class);
-        $config = new ConfigRepository();
-        $config->loadConfig(__DIR__ . '/../assets/testConfig.php');
+        $config = new ConfigRepositoryFilesystem(__DIR__ . '/../assets/testConfig.php');
 
         // Act
         $config->get('NON_EXISTING_KEY');

@@ -7,10 +7,12 @@
         "sort-packages": true
     },
     "require": {
+        "php": "~7.3.0 || ~7.4.0 || ~8.0.0",
         "ext-json": "*",
         "firebase/php-jwt": "^5.2",
+        "monolog/monolog": "^2.2",
         "php-di/php-di": "^6.3",
-        "php": "~7.3.0 || ~7.4.0 || ~8.0.0",
+        "psr/log": "^1.1",
         "rakit/validation": "^1.4",
         "react/event-loop": "^1.1",
         "react/http": "^1.2",

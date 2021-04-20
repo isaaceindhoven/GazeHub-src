@@ -13,10 +13,8 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Controllers;
 
-use ISAAC\GazeHub\Services\ConfigRepository;
+use ISAAC\GazeHub\Repositories\IConfigRepository;
 use React\Http\Message\Response;
-
-use function file_get_contents;
 
 /**
  * @codeCoverageIgnore
@@ -24,22 +22,21 @@ use function file_get_contents;
 class DebugController extends BaseController
 {
     /**
-     * @var bool $debugEnabled
+     * @var bool $enableDebugPage
      */
-    private $debugEnabled;
+    private $enableDebugPage;
 
-    public function __construct(ConfigRepository $configRepository)
+    public function __construct(IConfigRepository $configRepository)
     {
-        $this->debugEnabled = ((bool) $configRepository->get('jwt_verify')) === false;
+        $this->enableDebugPage = (bool) $configRepository->get('debug_page');
     }
 
     public function handle(): Response
     {
-        if (!$this->debugEnabled) {
-            return new Response(404);
+        if ($this->enableDebugPage) {
+            return $this->html('debug.html');
         }
 
-        $debugHtml = file_get_contents(__DIR__ . '/../../public/debug.html');
-        return new Response(200, ['Content-Type' => 'text/html'], $debugHtml === false ? '' : $debugHtml);
+        return new Response(404);
     }
 }

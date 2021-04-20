@@ -11,12 +11,14 @@
 
 declare(strict_types=1);
 
+use ISAAC\GazeHub\Decoders\TokenDecoderJwt;
+
 return [
-    'routes_config' => __DIR__ . '/routes.php',
     'server_port' => '3333',
     'server_host' => '0.0.0.0',
-    'jwt_public_key' => __DIR__ . '/../public.key',
-    'jwt_verify' => '1',
+    'debug_page' => '0',
+    'token_decoder' => TokenDecoderJwt::class,
+    'jwt_public_key_path' => __DIR__ . '/../public.key',
     'jwt_alg' => 'RS256',
-    'log_level' => '3',
+    'log_level' => 'INFO', // ['DEBUG', 'INFO', 'ERROR']
 ];

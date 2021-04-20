@@ -11,10 +11,23 @@
 
 declare(strict_types=1);
 
-namespace ISAAC\GazeHub\Exceptions;
+namespace ISAAC\GazeHub\Helpers;
 
-use Exception;
+use function json_encode;
 
-class JwtDecodeException extends Exception
+class Json
 {
+    /**
+     * @param mixed $obj
+     * @param string $default
+     * @return string
+     */
+    public static function encode($obj, string $default): string
+    {
+        $encoded = json_encode($obj);
+        if ($encoded === false) {
+            return $default;
+        }
+        return $encoded;
+    }
 }

@@ -11,53 +11,53 @@
 
 declare(strict_types=1);
 
-namespace ISAAC\GazeHub\Tests\Services;
+namespace ISAAC\GazeHub\Tests\Decoders;
 
 use Exception;
 use Firebase\JWT\JWT;
-use ISAAC\GazeHub\Exceptions\JwtDecodeException;
-use ISAAC\GazeHub\Services\ConfigRepository;
-use ISAAC\GazeHub\Services\JWTDecoder;
-use PHPUnit\Framework\TestCase;
+use ISAAC\GazeHub\Decoders\TokenDecoderJwt;
+use ISAAC\GazeHub\Exceptions\ConfigKeyNotFoundException;
+use ISAAC\GazeHub\Exceptions\TokenDecodeException;
+use ISAAC\GazeHub\Repositories\IConfigRepository;
+use ISAAC\GazeHub\Tests\BaseTest;
 
-use function base64_encode;
 use function file_get_contents;
-use function json_encode;
 use function PHPUnit\Framework\assertEquals;
-use function putenv;
 use function sprintf;
 
-class JWTDecoderTest extends TestCase
+class JWTDecoderTest extends BaseTest
 {
     /**
-     * @var ConfigRepository
+     * @var IConfigRepository
      */
     private $configRepo;
 
     public function __construct()
     {
         parent::__construct();
-        $this->configRepo = new ConfigRepository();
-        $this->configRepo->loadConfig(__DIR__ . '/../assets/testConfig.php');
+        $this->configRepo = $this->container->get(IConfigRepository::class);
     }
 
     /**
+     * @param bool $throwsException
+     * @param string $token
      * @return mixed[]
+     * @throws TokenDecodeException
      */
-    private function decode(bool $shouldVerify, bool $throwsException, string $token): array
+    private function decode(bool $throwsException, string $token): array
     {
         if ($throwsException) {
-            $this->expectException(JwtDecodeException::class);
+            $this->expectException(TokenDecodeException::class);
         }
-        putenv('GAZEHUB_JWT_VERIFY=' . ($shouldVerify ? '1' : '0'));
-        $this->configRepo->loadConfig(__DIR__ . '/../assets/testConfig.php');
-        $jwtDecoder = new JWTDecoder($this->configRepo);
+        $jwtDecoder = new TokenDecoderJwt($this->configRepo);
         return $jwtDecoder->decode($token);
     }
 
     /**
      * @param mixed[] $payload
      * @return string
+     * @throws ConfigKeyNotFoundException
+     * @throws Exception
      */
     private function encode(array $payload): string
     {
@@ -69,43 +69,54 @@ class JWTDecoderTest extends TestCase
         return JWT::encode($payload, $privateKeyContents, $this->configRepo->get('jwt_alg'));
     }
 
+    /**
+     * @throws TokenDecodeException
+     */
     public function testIfJwtDecodeThrowsIfNot3Parts(): void
     {
-        $this->decode(false, true, 'Kevin');
+        $this->decode(true, 'Kevin');
     }
 
+    /**
+     * @throws TokenDecodeException
+     */
     public function testIfJwtDecodeThrowsIfNotValidJsonInTheMiddle(): void
     {
-        $this->decode(false, true, 'X.X.X');
+        $this->decode(true, 'X.X.X');
     }
 
+    /**
+     * @throws TokenDecodeException
+     */
     public function testIfJwtDecodeThrowsIfEmptyString(): void
     {
-        $this->decode(false, true, '');
+        $this->decode(true, '');
     }
 
+    /**
+     * @throws TokenDecodeException
+     */
     public function testIfJwtDecodeThrowsIf3EmptyDots(): void
     {
-        $this->decode(false, true, '...');
+        $this->decode(true, '...');
     }
 
+    /**
+     * @throws TokenDecodeException
+     */
     public function testIfJwtDecodeThrowsIfMiddleNotValidBase64(): void
     {
-        $this->decode(false, true, 'X.~.X');
+        $this->decode(true, 'X.~.X');
     }
 
-    public function testIfDecodeReturnsPayload(): void
-    {
-        $payload = ['Kevin' => 1];
-        // @phpstan-ignore-next-line
-        $decoded = $this->decode(false, false, 'X.' . base64_encode(json_encode($payload)) . '.X');
-        assertEquals($payload, $decoded);
-    }
-
+    /**
+     * @throws ConfigKeyNotFoundException
+     * @throws TokenDecodeException
+     */
     public function testIfDecodeWorksWithPrivateKey(): void
     {
         $payload = ['Kevin' => 1];
-        $decoded = $this->decode(true, false, $this->encode($payload));
+        $decoded = $this->decode(false, $this->encode($payload));
         assertEquals($payload, $decoded);
     }
 }

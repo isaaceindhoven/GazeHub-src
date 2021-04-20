@@ -11,25 +11,18 @@
 
 declare(strict_types=1);
 
-namespace ISAAC\GazeHub\Services;
+namespace ISAAC\GazeHub\Decoders;
 
-use function getenv;
+use ISAAC\GazeHub\Exceptions\TokenDecodeException;
 
-class Environment
+interface ITokenDecoder
 {
     /**
-     * @param string $key
-     * @param mixed $default
-     * @return mixed
+     * Decode token and return associated data
+     *
+     * @param string $token
+     * @return mixed[]
+     * @throws TokenDecodeException
      */
-    public static function get(string $key, $default = null)
-    {
-        $value = getenv($key);
-
-        if ($value === false) {
-            return $default;
-        }
-
-        return $value;
-    }
+    public function decode(string $token): array;
 }

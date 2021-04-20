@@ -11,7 +11,7 @@
 
 declare(strict_types=1);
 
-use ISAAC\GazeHub\Services\HelpPrinter;
+use ISAAC\GazeHub\Decoders\HelpPrinter;
 
 // Load composer autoload
 $composerFile = null;

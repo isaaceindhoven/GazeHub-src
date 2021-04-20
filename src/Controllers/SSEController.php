@@ -13,29 +13,35 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Controllers;
 
+use ISAAC\GazeHub\Exceptions\UnAuthorizedException;
 use ISAAC\GazeHub\Models\Request;
-use ISAAC\GazeHub\Services\ClientRepository;
-use ISAAC\GazeHub\Services\SubscriptionRepository;
+use ISAAC\GazeHub\Repositories\IClientRepository;
+use ISAAC\GazeHub\Repositories\ISubscriptionRepository;
 use React\Http\Message\Response;
 
 class SSEController
 {
     /**
-     * @var ClientRepository
+     * @var IClientRepository
      */
     private $clientRepository;
 
     /**
-     * @var SubscriptionRepository
+     * @var ISubscriptionRepository
      */
     private $subscriptionRepository;
 
-    public function __construct(ClientRepository $clientRepository, SubscriptionRepository $subscriptionRepository)
+    public function __construct(IClientRepository $clientRepository, ISubscriptionRepository $subscriptionRepository)
     {
         $this->clientRepository = $clientRepository;
         $this->subscriptionRepository = $subscriptionRepository;
     }
 
+    /**
+     * @param Request $request
+     * @return Response
+     * @throws UnAuthorizedException
+     */
     public function handle(Request $request): Response
     {
         $request->isAuthorized();
@@ -44,17 +50,14 @@ class SSEController
 
         $client = $this->clientRepository->add($payload['roles'], $payload['jti']);
 
-        $subscriptionRepository = $this->subscriptionRepository;
-        $clientRepository = $this->clientRepository;
-
-        $client->stream->on(
+        $client->getStream()->on(
             'close',
-            static function () use ($client, $subscriptionRepository, $clientRepository): void {
-                $subscriptionRepository->remove($client);
-                $clientRepository->remove($client);
+            function () use ($client): void {
+                $this->subscriptionRepository->remove($client);
+                $this->clientRepository->remove($client);
             }
         );
 
-        return new Response(200, [ 'Content-Type' => 'text/event-stream' ], $client->stream);
+        return new Response(200, ['Content-Type' => 'text/event-stream'], $client->getStream());
     }
 }

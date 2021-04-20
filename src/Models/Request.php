@@ -13,15 +13,15 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Models;
 
+use ISAAC\GazeHub\Decoders\ITokenDecoder;
 use ISAAC\GazeHub\Exceptions\DataValidationFailedException;
 use ISAAC\GazeHub\Exceptions\UnAuthorizedException;
-use ISAAC\GazeHub\Services\JWTDecoder;
 use Psr\Http\Message\ServerRequestInterface;
 use Rakit\Validation\Validator;
-use Throwable;
 
 use function array_key_exists;
 use function str_replace;
+use function trim;
 use function urldecode;
 
 class Request
@@ -37,42 +37,26 @@ class Request
     private $originalRequest;
 
     /**
-     * @var JWTDecoder;
+     * @var ITokenDecoder;
      */
-    private $jwtDecoder;
+    private $tokenDecoder;
 
-    public function __construct(JWTDecoder $jwtDecoder)
+    public function __construct(ITokenDecoder $tokenDecoder, ServerRequestInterface $request)
     {
-        $this->jwtDecoder = $jwtDecoder;
-    }
-
-    public function setOriginalRequest(ServerRequestInterface $request): void
-    {
+        $this->tokenDecoder = $tokenDecoder;
         $this->originalRequest = $request;
     }
 
     public function isAuthorized(): void
     {
-        $token = $this->getHeaderValueByKey('Authorization');
-
-
-        if ($token === null) {
-            $token = $this->getQueryParam('token');
-        }
-
-        if ($token === null) {
-            throw new UnAuthorizedException();
-        }
-
-        $token = str_replace('Bearer ', '', $token);
-
-        try {
-            $this->tokenPayload = $this->jwtDecoder->decode($token);
-        } catch (Throwable $th) {
-            throw new UnAuthorizedException();
-        }
+        $token = $this->getTokenFromHeaderOrQuery();
+        $this->tokenPayload = $this->tokenDecoder->decode($token);
     }
 
+    /**
+     * @param string $role
+     * @throws UnAuthorizedException
+     */
     public function isRole(string $role): void
     {
         $this->isAuthorized();
@@ -101,6 +85,7 @@ class Request
     /**
      * @param string[] $checks
      * @return mixed[]
+     * @throws DataValidationFailedException
      */
     public function validate(array $checks): array
     {
@@ -116,6 +101,7 @@ class Request
     }
 
     /**
+     * @param string $key
      * @return null|string
      */
     private function getQueryParam(string $key)
@@ -128,14 +114,30 @@ class Request
     }
 
     /**
+     * @param string $key
      * @return null|string
      */
     private function getHeaderValueByKey(string $key)
     {
         $value = $this->originalRequest->getHeaderLine($key);
-        if ($value === '') {
+        if (trim($value) === '') {
             return null;
         }
         return $value;
+    }
+
+    private function getTokenFromHeaderOrQuery(): string
+    {
+        $token = $this->getHeaderValueByKey('Authorization');
+
+        if ($token === null) {
+            $token = $this->getQueryParam('token');
+        }
+
+        if ($token === null) {
+            $token = '';
+        }
+
+        return str_replace('Bearer ', '', $token);
     }
 }

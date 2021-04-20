@@ -14,7 +14,8 @@ declare(strict_types=1);
 namespace ISAAC\GazeHub\Tests\Controllers;
 
 use ISAAC\GazeHub\Models\Client;
-use ISAAC\GazeHub\Services\SubscriptionRepository;
+use ISAAC\GazeHub\Repositories\ISubscriptionRepository;
+use ISAAC\GazeHub\Repositories\SubscriptionRepositoryInMemory;
 
 use function PHPUnit\Framework\once;
 
@@ -95,13 +96,13 @@ class EventControllerTest extends ControllerTestCase
 
     public function testIfClientSendIsCalled(): void
     {
-        $subRepo = $this->createMock(SubscriptionRepository::class);
+        $subRepo = $this->createMock(SubscriptionRepositoryInMemory::class);
         $client = $this->createMock(Client::class);
         $client->expects(once())->method('send');
 
         $subRepo->method('getClientsByTopicAndRole')->willReturn([$client]);
 
-        $this->container->set(SubscriptionRepository::class, $subRepo);
+        $this->container->set(ISubscriptionRepository::class, $subRepo);
 
         $this
             ->req('/event', 'POST')

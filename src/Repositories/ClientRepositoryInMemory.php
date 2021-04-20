@@ -11,27 +11,30 @@
 
 declare(strict_types=1);
 
-namespace ISAAC\GazeHub\Services;
+namespace ISAAC\GazeHub\Repositories;
 
-use ISAAC\GazeHub\Log;
 use ISAAC\GazeHub\Models\Client;
-use React\Stream\ThroughStream;
+use Psr\Log\LoggerInterface;
 
 use function array_filter;
 use function array_push;
 use function count;
-use function json_encode;
 
-class ClientRepository
+class ClientRepositoryInMemory implements IClientRepository
 {
     /**
      * @var Client[]
      */
     private $clients = [];
 
-    public function __construct()
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(LoggerInterface $logger)
     {
-        $this->clients = [];
+        $this->logger = $logger;
     }
 
     /**
@@ -43,7 +46,7 @@ class ClientRepository
     public function getByTokenId(string $tokenId): ?Client
     {
         foreach ($this->clients as $client) {
-            if ($client->tokenId === $tokenId) {
+            if ($client->getTokenId() === $tokenId) {
                 return $client;
             }
         }
@@ -60,16 +63,10 @@ class ClientRepository
      */
     public function add(array $roles, string $tokenId): Client
     {
-        $client = new Client();
-        $client->roles = $roles;
-        $client->tokenId = $tokenId;
-        $client->stream = new ThroughStream(static function (array $data): string {
-            Log::debug('Sending data to client:', $data);
-            return 'data: ' . json_encode($data) . "\n\n";
-        });
+        $client = new Client($roles, $tokenId);
 
         array_push($this->clients, $client);
-        Log::debug('Connected clients', count($this->clients));
+        $this->logger->info('Client connected', ['connected clients' => count($this->clients)]);
 
         return $client;
     }
@@ -84,9 +81,9 @@ class ClientRepository
         $this->clients = array_filter(
             $this->clients,
             static function ($client) use ($clientToRemove): bool {
-                return $client->tokenId !== $clientToRemove->tokenId;
+                return !$clientToRemove->equals($client);
             }
         );
-        Log::debug('Connected clients', count($this->clients));
+        $this->logger->info('Client disconnected', ['connected clients' => count($this->clients)]);
     }
 }
