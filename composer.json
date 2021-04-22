@@ -40,7 +40,7 @@
     },
     "license": "proprietary",
     "bin": [
-        "gazehub"
+        "bin/gazehub"
     ],
     "repositories": {
         "isaac": {
