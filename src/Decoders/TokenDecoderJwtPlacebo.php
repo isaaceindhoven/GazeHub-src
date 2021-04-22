@@ -14,11 +14,14 @@ declare(strict_types=1);
 namespace ISAAC\GazeHub\Decoders;
 
 use ISAAC\GazeHub\Exceptions\TokenDecodeException;
+use JsonException;
 
 use function base64_decode;
 use function count;
 use function explode;
 use function json_decode;
+
+use const JSON_THROW_ON_ERROR;
 
 class TokenDecoderJwtPlacebo implements TokenDecoder
 {
@@ -41,7 +44,11 @@ class TokenDecoderJwtPlacebo implements TokenDecoder
             throw new TokenDecodeException();
         }
 
-        $payload = json_decode($base64Decoded, true);
+        try {
+            $payload = json_decode($base64Decoded, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            throw new TokenDecodeException();
+        }
 
         if ($payload === null) {
             throw new TokenDecodeException();

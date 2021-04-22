@@ -13,7 +13,11 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Helpers;
 
+use JsonException;
+
 use function json_encode;
+
+use const JSON_THROW_ON_ERROR;
 
 class Json
 {
@@ -24,10 +28,10 @@ class Json
      */
     public static function encode($obj, string $default): string
     {
-        $encoded = json_encode($obj);
-        if ($encoded === false) {
+        try {
+            return json_encode($obj, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
             return $default;
         }
-        return $encoded;
     }
 }
