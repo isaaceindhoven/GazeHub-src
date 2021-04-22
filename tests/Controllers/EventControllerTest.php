@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace ISAAC\GazeHub\Tests\Controllers;
 
 use ISAAC\GazeHub\Models\Client;
-use ISAAC\GazeHub\Repositories\ISubscriptionRepository;
+use ISAAC\GazeHub\Repositories\SubscriptionRepository;
 use ISAAC\GazeHub\Repositories\SubscriptionRepositoryInMemory;
 
 use function PHPUnit\Framework\once;
@@ -102,7 +102,7 @@ class EventControllerTest extends ControllerTestCase
 
         $subRepo->method('getClientsByTopicAndRole')->willReturn([$client]);
 
-        $this->container->set(ISubscriptionRepository::class, $subRepo);
+        $this->container->set(SubscriptionRepository::class, $subRepo);
 
         $this
             ->req('/event', 'POST')

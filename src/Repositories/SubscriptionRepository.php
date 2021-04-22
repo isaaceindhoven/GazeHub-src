@@ -15,7 +15,7 @@ namespace ISAAC\GazeHub\Repositories;
 
 use ISAAC\GazeHub\Models\Client;
 
-interface ISubscriptionRepository
+interface SubscriptionRepository
 {
     /**
      * @param Client $client

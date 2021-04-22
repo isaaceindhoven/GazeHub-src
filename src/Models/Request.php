@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Models;
 
-use ISAAC\GazeHub\Decoders\ITokenDecoder;
+use ISAAC\GazeHub\Decoders\TokenDecoder;
 use ISAAC\GazeHub\Exceptions\DataValidationFailedException;
-use ISAAC\GazeHub\Exceptions\UnAuthorizedException;
+use ISAAC\GazeHub\Exceptions\UnauthorizedException;
 use Psr\Http\Message\ServerRequestInterface;
 use Rakit\Validation\Validator;
 
@@ -37,11 +37,11 @@ class Request
     private $originalRequest;
 
     /**
-     * @var ITokenDecoder;
+     * @var TokenDecoder;
      */
     private $tokenDecoder;
 
-    public function __construct(ITokenDecoder $tokenDecoder, ServerRequestInterface $request)
+    public function __construct(TokenDecoder $tokenDecoder, ServerRequestInterface $request)
     {
         $this->tokenDecoder = $tokenDecoder;
         $this->originalRequest = $request;
@@ -55,14 +55,14 @@ class Request
 
     /**
      * @param string $role
-     * @throws UnAuthorizedException
+     * @throws UnauthorizedException
      */
     public function isRole(string $role): void
     {
         $this->isAuthorized();
 
         if ($this->getTokenPayload()['role'] !== $role) {
-            throw new UnAuthorizedException();
+            throw new UnauthorizedException();
         }
     }
 

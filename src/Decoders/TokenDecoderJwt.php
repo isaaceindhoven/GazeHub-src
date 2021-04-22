@@ -17,12 +17,12 @@ use Exception;
 use Firebase\JWT\JWT;
 use ISAAC\GazeHub\Exceptions\PublicKeyFileNotExistsException;
 use ISAAC\GazeHub\Exceptions\TokenDecodeException;
-use ISAAC\GazeHub\Repositories\IConfigRepository;
+use ISAAC\GazeHub\Repositories\ConfigRepository;
 
 use function explode;
 use function file_get_contents;
 
-class TokenDecoderJwt implements ITokenDecoder
+class TokenDecoderJwt implements TokenDecoder
 {
     /**
      * @var string
@@ -34,7 +34,7 @@ class TokenDecoderJwt implements ITokenDecoder
      */
     private $algorithm;
 
-    public function __construct(IConfigRepository $configRepository)
+    public function __construct(ConfigRepository $configRepository)
     {
         $this->algorithm = $configRepository->get('jwt_alg');
         $publicKeyContent = file_get_contents($configRepository->get('jwt_public_key_path'));

@@ -20,7 +20,7 @@ use function count;
 use function explode;
 use function json_decode;
 
-class TokenDecoderJwtPlacebo implements ITokenDecoder
+class TokenDecoderJwtPlacebo implements TokenDecoder
 {
     /**
      * @param string $token

@@ -13,15 +13,15 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Tests;
 
-use ISAAC\GazeHub\Decoders\ITokenDecoder;
+use ISAAC\GazeHub\Decoders\TokenDecoder;
 use ISAAC\GazeHub\Providers\ClientRepositoryProvider;
 use ISAAC\GazeHub\Providers\ConfigRepositoryProvider;
 use ISAAC\GazeHub\Providers\LoggerProvider;
 use ISAAC\GazeHub\Providers\SubscriptionRepositoryProvider;
 use ISAAC\GazeHub\Providers\TokenDecoderProvider;
-use ISAAC\GazeHub\Repositories\IClientRepository;
-use ISAAC\GazeHub\Repositories\IConfigRepository;
-use ISAAC\GazeHub\Repositories\ISubscriptionRepository;
+use ISAAC\GazeHub\Repositories\ClientRepository;
+use ISAAC\GazeHub\Repositories\ConfigRepository;
+use ISAAC\GazeHub\Repositories\SubscriptionRepository;
 use Psr\Log\LoggerInterface;
 
 use function PHPUnit\Framework\assertTrue;
@@ -31,11 +31,11 @@ class ProviderTest extends BaseTest
     public function testIfProvidersAllInjectedIntoTheContainer(): void
     {
         $providers = [
-            ConfigRepositoryProvider::class => [IConfigRepository::class],
+            ConfigRepositoryProvider::class => [ConfigRepository::class],
             LoggerProvider::class => [LoggerInterface::class],
-            ClientRepositoryProvider::class => [IClientRepository::class],
-            SubscriptionRepositoryProvider::class => [ISubscriptionRepository::class],
-            TokenDecoderProvider::class => [ITokenDecoder::class],
+            ClientRepositoryProvider::class => [ClientRepository::class],
+            SubscriptionRepositoryProvider::class => [SubscriptionRepository::class],
+            TokenDecoderProvider::class => [TokenDecoder::class],
         ];
 
         foreach ($providers as $provider => $classesToInject) {

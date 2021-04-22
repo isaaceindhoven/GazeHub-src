@@ -15,6 +15,6 @@ namespace ISAAC\GazeHub\Exceptions;
 
 use Exception;
 
-class UnAuthorizedException extends Exception
+class UnauthorizedException extends Exception
 {
 }

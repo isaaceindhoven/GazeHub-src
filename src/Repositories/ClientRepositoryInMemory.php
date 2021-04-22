@@ -20,7 +20,7 @@ use function array_filter;
 use function array_push;
 use function count;
 
-class ClientRepositoryInMemory implements IClientRepository
+class ClientRepositoryInMemory implements ClientRepository
 {
     /**
      * @var Client[]

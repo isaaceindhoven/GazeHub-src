@@ -17,8 +17,8 @@ use DI\Container;
 use Exception;
 use ISAAC\GazeHub\Middlewares\CorsMiddleware;
 use ISAAC\GazeHub\Middlewares\JsonParserMiddleware;
-use ISAAC\GazeHub\Providers\IProvider;
-use ISAAC\GazeHub\Repositories\IConfigRepository;
+use ISAAC\GazeHub\Providers\Provider;
+use ISAAC\GazeHub\Repositories\ConfigRepository;
 use Psr\Log\LoggerInterface;
 use React\EventLoop\Factory;
 use React\Http\Server as HttpServer;
@@ -48,7 +48,7 @@ class Hub
 
     public function run(): void
     {
-        $config = $this->container->get(IConfigRepository::class);
+        $config = $this->container->get(ConfigRepository::class);
 
         $host = $config->get('server_host');
         $port = $config->get('server_port');
@@ -88,9 +88,9 @@ class Hub
         foreach ($providers as $provider) {
             $provider = new $provider();
 
-            if (!($provider instanceof IProvider)) {
+            if (!($provider instanceof Provider)) {
                 $className = get_class($provider);
-                $this->logger->error(sprintf('Class %s is not an instance of IProvider', $className));
+                $this->logger->error(sprintf('Class %s is not an instance of Provider', $className));
                 continue;
             }
 

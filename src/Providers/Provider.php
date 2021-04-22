@@ -15,7 +15,7 @@ namespace ISAAC\GazeHub\Providers;
 
 use DI\Container;
 
-interface IProvider
+interface Provider
 {
     public function register(Container &$container): void;
 }

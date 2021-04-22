@@ -22,7 +22,7 @@ use function getenv;
 use function sprintf;
 use function strtoupper;
 
-class ConfigRepositoryFilesystem implements IConfigRepository
+class ConfigRepositoryFilesystem implements ConfigRepository
 {
     /**
      * @var mixed[]

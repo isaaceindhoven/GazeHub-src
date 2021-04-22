@@ -14,26 +14,26 @@ declare(strict_types=1);
 namespace ISAAC\GazeHub\Controllers;
 
 use ISAAC\GazeHub\Exceptions\DataValidationFailedException;
-use ISAAC\GazeHub\Exceptions\UnAuthorizedException;
+use ISAAC\GazeHub\Exceptions\UnauthorizedException;
 use ISAAC\GazeHub\Models\Client;
 use ISAAC\GazeHub\Models\Request;
-use ISAAC\GazeHub\Repositories\IClientRepository;
-use ISAAC\GazeHub\Repositories\ISubscriptionRepository;
+use ISAAC\GazeHub\Repositories\ClientRepository;
+use ISAAC\GazeHub\Repositories\SubscriptionRepository;
 use React\Http\Message\Response;
 
 class SubscriptionController extends BaseController
 {
     /**
-     *  @var IClientRepository
+     *  @var ClientRepository
      */
     private $clientRepository;
 
     /**
-     *  @var ISubscriptionRepository
+     *  @var SubscriptionRepository
      */
     private $subscriptionRepository;
 
-    public function __construct(IClientRepository $clientRepository, ISubscriptionRepository $subscriptionRepository)
+    public function __construct(ClientRepository $clientRepository, SubscriptionRepository $subscriptionRepository)
     {
         $this->clientRepository = $clientRepository;
         $this->subscriptionRepository = $subscriptionRepository;
@@ -42,7 +42,7 @@ class SubscriptionController extends BaseController
     /**
      * @param Request $request
      * @return Response
-     * @throws UnAuthorizedException
+     * @throws UnauthorizedException
      * @throws DataValidationFailedException
      */
     public function create(Request $request): Response
@@ -65,7 +65,7 @@ class SubscriptionController extends BaseController
      * @param Request $request
      * @return Response
      * @throws DataValidationFailedException
-     * @throws UnAuthorizedException
+     * @throws UnauthorizedException
      */
     public function destroy(Request $request): Response
     {
@@ -86,7 +86,7 @@ class SubscriptionController extends BaseController
     /**
      * @param Request $request
      * @return Response
-     * @throws UnAuthorizedException
+     * @throws UnauthorizedException
      */
     public function ping(Request $request): Response
     {
@@ -98,7 +98,7 @@ class SubscriptionController extends BaseController
     /**
      * @param Request $request
      * @return Client
-     * @throws UnAuthorizedException
+     * @throws UnauthorizedException
      */
     protected function getClient(Request $request): Client
     {
@@ -106,7 +106,7 @@ class SubscriptionController extends BaseController
         $jti = $request->getTokenPayload()['jti'];
         $client = $this->clientRepository->getByTokenId($jti);
         if ($client === null) {
-            throw new UnAuthorizedException();
+            throw new UnauthorizedException();
         }
         return $client;
     }

@@ -13,25 +13,25 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Controllers;
 
-use ISAAC\GazeHub\Exceptions\UnAuthorizedException;
+use ISAAC\GazeHub\Exceptions\UnauthorizedException;
 use ISAAC\GazeHub\Models\Request;
-use ISAAC\GazeHub\Repositories\IClientRepository;
-use ISAAC\GazeHub\Repositories\ISubscriptionRepository;
+use ISAAC\GazeHub\Repositories\ClientRepository;
+use ISAAC\GazeHub\Repositories\SubscriptionRepository;
 use React\Http\Message\Response;
 
 class SSEController
 {
     /**
-     * @var IClientRepository
+     * @var ClientRepository
      */
     private $clientRepository;
 
     /**
-     * @var ISubscriptionRepository
+     * @var SubscriptionRepository
      */
     private $subscriptionRepository;
 
-    public function __construct(IClientRepository $clientRepository, ISubscriptionRepository $subscriptionRepository)
+    public function __construct(ClientRepository $clientRepository, SubscriptionRepository $subscriptionRepository)
     {
         $this->clientRepository = $clientRepository;
         $this->subscriptionRepository = $subscriptionRepository;
@@ -40,7 +40,7 @@ class SSEController
     /**
      * @param Request $request
      * @return Response
-     * @throws UnAuthorizedException
+     * @throws UnauthorizedException
      */
     public function handle(Request $request): Response
     {

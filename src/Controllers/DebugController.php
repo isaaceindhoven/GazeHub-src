@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Controllers;
 
-use ISAAC\GazeHub\Repositories\IConfigRepository;
+use ISAAC\GazeHub\Repositories\ConfigRepository;
 use React\Http\Message\Response;
 
 /**
@@ -26,7 +26,7 @@ class DebugController extends BaseController
      */
     private $enableDebugPage;
 
-    public function __construct(IConfigRepository $configRepository)
+    public function __construct(ConfigRepository $configRepository)
     {
         $this->enableDebugPage = (bool) $configRepository->get('debug_page');
     }

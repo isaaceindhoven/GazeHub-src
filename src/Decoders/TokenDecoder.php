@@ -11,18 +11,18 @@
 
 declare(strict_types=1);
 
-namespace ISAAC\GazeHub\Repositories;
+namespace ISAAC\GazeHub\Decoders;
 
-use ISAAC\GazeHub\Exceptions\ConfigKeyNotFoundException;
+use ISAAC\GazeHub\Exceptions\TokenDecodeException;
 
-interface IConfigRepository
+interface TokenDecoder
 {
     /**
-     * Get a value from the loaded configuration
+     * Decode token and return associated data
      *
-     * @param string $key Key to load value for
-     * @return mixed                        Value from configuration
-     * @throws ConfigKeyNotFoundException   Thrown when key not found in config file
+     * @param string $token
+     * @return mixed[]
+     * @throws TokenDecodeException
      */
-    public function get(string $key);
+    public function decode(string $token): array;
 }

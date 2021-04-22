@@ -14,13 +14,13 @@ declare(strict_types=1);
 namespace ISAAC\GazeHub\Tests;
 
 use DI\Container;
-use ISAAC\GazeHub\Decoders\ITokenDecoder;
+use ISAAC\GazeHub\Decoders\TokenDecoder;
 use ISAAC\GazeHub\Decoders\TokenDecoderJwtPlacebo;
+use ISAAC\GazeHub\Repositories\ClientRepository;
 use ISAAC\GazeHub\Repositories\ClientRepositoryInMemory;
+use ISAAC\GazeHub\Repositories\ConfigRepository;
 use ISAAC\GazeHub\Repositories\ConfigRepositoryFilesystem;
-use ISAAC\GazeHub\Repositories\IClientRepository;
-use ISAAC\GazeHub\Repositories\IConfigRepository;
-use ISAAC\GazeHub\Repositories\ISubscriptionRepository;
+use ISAAC\GazeHub\Repositories\SubscriptionRepository;
 use ISAAC\GazeHub\Repositories\SubscriptionRepositoryInMemory;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -47,10 +47,10 @@ abstract class BaseTest extends TestCase
         $clientRepo = new ClientRepositoryInMemory($logger);
         $subRepo = new SubscriptionRepositoryInMemory($logger);
 
-        $this->container->set(IConfigRepository::class, $configRepo);
-        $this->container->set(ITokenDecoder::class, $tokenDecoderJwtPlacebo);
-        $this->container->set(IClientRepository::class, $clientRepo);
-        $this->container->set(ISubscriptionRepository::class, $subRepo);
+        $this->container->set(ConfigRepository::class, $configRepo);
+        $this->container->set(TokenDecoder::class, $tokenDecoderJwtPlacebo);
+        $this->container->set(ClientRepository::class, $clientRepo);
+        $this->container->set(SubscriptionRepository::class, $subRepo);
         $this->container->set(LoggerInterface::class, $logger);
     }
 }

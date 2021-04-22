@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Tests\Controllers;
 
-use ISAAC\GazeHub\Repositories\IClientRepository;
+use ISAAC\GazeHub\Repositories\ClientRepository;
 use ISAAC\GazeHub\Router;
 use ISAAC\GazeHub\Tests\BaseTest;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -106,7 +106,7 @@ class ControllerTestCase extends BaseTest
 
     protected function registerClient(string $jti): self
     {
-        $clientRepo = $this->container->get(IClientRepository::class);
+        $clientRepo = $this->container->get(ClientRepository::class);
         $clientRepo->add([], $jti);
         return $this;
     }

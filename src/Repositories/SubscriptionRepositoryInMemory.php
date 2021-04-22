@@ -21,7 +21,7 @@ use function array_key_exists;
 use function array_values;
 use function trim;
 
-class SubscriptionRepositoryInMemory implements ISubscriptionRepository
+class SubscriptionRepositoryInMemory implements SubscriptionRepository
 {
     private const ANY = 'GAZEHUB__ALL';
 

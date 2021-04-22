@@ -18,7 +18,7 @@ use Firebase\JWT\JWT;
 use ISAAC\GazeHub\Decoders\TokenDecoderJwt;
 use ISAAC\GazeHub\Exceptions\ConfigKeyNotFoundException;
 use ISAAC\GazeHub\Exceptions\TokenDecodeException;
-use ISAAC\GazeHub\Repositories\IConfigRepository;
+use ISAAC\GazeHub\Repositories\ConfigRepository;
 use ISAAC\GazeHub\Tests\BaseTest;
 
 use function file_get_contents;
@@ -28,14 +28,14 @@ use function sprintf;
 class JWTDecoderTest extends BaseTest
 {
     /**
-     * @var IConfigRepository
+     * @var ConfigRepository
      */
     private $configRepo;
 
     public function __construct()
     {
         parent::__construct();
-        $this->configRepo = $this->container->get(IConfigRepository::class);
+        $this->configRepo = $this->container->get(ConfigRepository::class);
     }
 
     /**

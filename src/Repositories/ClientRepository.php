@@ -15,7 +15,7 @@ namespace ISAAC\GazeHub\Repositories;
 
 use ISAAC\GazeHub\Models\Client;
 
-interface IClientRepository
+interface ClientRepository
 {
     /**
      * Find client by unique token ID

@@ -16,10 +16,10 @@ namespace ISAAC\GazeHub;
 use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
-use ISAAC\GazeHub\Decoders\ITokenDecoder;
+use ISAAC\GazeHub\Decoders\TokenDecoder;
 use ISAAC\GazeHub\Exceptions\DataValidationFailedException;
 use ISAAC\GazeHub\Exceptions\TokenDecodeException;
-use ISAAC\GazeHub\Exceptions\UnAuthorizedException;
+use ISAAC\GazeHub\Exceptions\UnauthorizedException;
 use ISAAC\GazeHub\Helpers\Json;
 use ISAAC\GazeHub\Models\Request;
 use Psr\Http\Message\ServerRequestInterface;
@@ -63,7 +63,7 @@ class Router
             return new Response(404);
         }
 
-        $req = new Request($this->container->get(ITokenDecoder::class), $request);
+        $req = new Request($this->container->get(TokenDecoder::class), $request);
 
         return $this->handle($handler, $req); // @phpstan-ignore-line
     }
@@ -79,7 +79,7 @@ class Router
             return call_user_func($handler, $req);
         } catch (DataValidationFailedException $e) {
             return $this->jsonResponse(400, $e->errors);
-        } catch (UnAuthorizedException | TokenDecodeException $e) {
+        } catch (UnauthorizedException | TokenDecodeException $e) {
             return $this->jsonResponse(401);
         }
     }

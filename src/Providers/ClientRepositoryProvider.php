@@ -14,15 +14,15 @@ declare(strict_types=1);
 namespace ISAAC\GazeHub\Providers;
 
 use DI\Container;
+use ISAAC\GazeHub\Repositories\ClientRepository;
 use ISAAC\GazeHub\Repositories\ClientRepositoryInMemory;
-use ISAAC\GazeHub\Repositories\IClientRepository;
 
-class ClientRepositoryProvider implements IProvider
+class ClientRepositoryProvider implements Provider
 {
     public function register(Container &$container): void
     {
         $container->set(
-            IClientRepository::class,
+            ClientRepository::class,
             $container->get(ClientRepositoryInMemory::class)
         );
     }
