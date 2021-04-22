@@ -22,7 +22,7 @@
     "require-dev": {
         "isaac/composer-git-hooks-standard": "^1.3",
         "isaac/composer-git-hooks": "^1.2",
-        "isaac/php-code-sniffer-standard": "^20.0",
+        "isaac/php-code-sniffer-standard": "^21.0",
         "nunomaduro/collision": "^5.3",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan-strict-rules": "^0.12.9",

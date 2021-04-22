@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c7a6c1af8ab497890900956b0aceabf0",
+    "content-hash": "aab732dfaa969fed84bf0e7ad8f200b8",
     "packages": [
         {
             "name": "evenement/evenement",
@@ -205,16 +205,16 @@
         },
         {
             "name": "opis/closure",
-            "version": "3.6.1",
+            "version": "3.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opis/closure.git",
-                "reference": "943b5d70cc5ae7483f6aff6ff43d7e34592ca0f5"
+                "reference": "06e2ebd25f2869e54a306dda991f7db58066f7f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opis/closure/zipball/943b5d70cc5ae7483f6aff6ff43d7e34592ca0f5",
-                "reference": "943b5d70cc5ae7483f6aff6ff43d7e34592ca0f5",
+                "url": "https://api.github.com/repos/opis/closure/zipball/06e2ebd25f2869e54a306dda991f7db58066f7f6",
+                "reference": "06e2ebd25f2869e54a306dda991f7db58066f7f6",
                 "shasum": ""
             },
             "require": {
@@ -264,9 +264,9 @@
             ],
             "support": {
                 "issues": "https://github.com/opis/closure/issues",
-                "source": "https://github.com/opis/closure/tree/3.6.1"
+                "source": "https://github.com/opis/closure/tree/3.6.2"
             },
-            "time": "2020-11-07T02:01:34+00:00"
+            "time": "2021-04-09T13:42:10+00:00"
         },
         {
             "name": "php-di/invoker",
@@ -325,16 +325,16 @@
         },
         {
             "name": "php-di/php-di",
-            "version": "6.3.1",
+            "version": "6.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-DI/PHP-DI.git",
-                "reference": "78278800b18e7c5582fd4d4e629715f5eebbfcc0"
+                "reference": "12a15cc288bbc89896dd80ce5a36731781613ba2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/78278800b18e7c5582fd4d4e629715f5eebbfcc0",
-                "reference": "78278800b18e7c5582fd4d4e629715f5eebbfcc0",
+                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/12a15cc288bbc89896dd80ce5a36731781613ba2",
+                "reference": "12a15cc288bbc89896dd80ce5a36731781613ba2",
                 "shasum": ""
             },
             "require": {
@@ -385,7 +385,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-DI/PHP-DI/issues",
-                "source": "https://github.com/PHP-DI/PHP-DI/tree/6.3.1"
+                "source": "https://github.com/PHP-DI/PHP-DI/tree/6.3.2"
             },
             "funding": [
                 {
@@ -397,7 +397,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-03-25T10:29:47+00:00"
+            "time": "2021-04-20T12:24:31+00:00"
         },
         {
             "name": "php-di/phpdoc-reader",
@@ -842,16 +842,16 @@
         },
         {
             "name": "react/http",
-            "version": "v1.2.0",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/http.git",
-                "reference": "badb0a87890e14b9cdfa3aec3ba1aafd900401ac"
+                "reference": "bc537273d11ee769c723a830e63aa33c0c35a530"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/http/zipball/badb0a87890e14b9cdfa3aec3ba1aafd900401ac",
-                "reference": "badb0a87890e14b9cdfa3aec3ba1aafd900401ac",
+                "url": "https://api.github.com/repos/reactphp/http/zipball/bc537273d11ee769c723a830e63aa33c0c35a530",
+                "reference": "bc537273d11ee769c723a830e63aa33c0c35a530",
                 "shasum": ""
             },
             "require": {
@@ -920,7 +920,7 @@
             ],
             "support": {
                 "issues": "https://github.com/reactphp/http/issues",
-                "source": "https://github.com/reactphp/http/tree/v1.2.0"
+                "source": "https://github.com/reactphp/http/tree/v1.3.0"
             },
             "funding": [
                 {
@@ -932,7 +932,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-12-04T12:57:33+00:00"
+            "time": "2021-04-11T18:07:28+00:00"
         },
         {
             "name": "react/promise",
@@ -1665,16 +1665,16 @@
         },
         {
             "name": "isaac/php-code-sniffer-standard",
-            "version": "v20.0.0",
+            "version": "v21.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/isaaceindhoven/php-code-sniffer-standard.git",
-                "reference": "3fdfbccc731f38b5c4c80a6570b42b9a4b43bf7d"
+                "reference": "117a27445a3ab1cde9fb36da233b133db419b35e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/isaaceindhoven/php-code-sniffer-standard/zipball/3fdfbccc731f38b5c4c80a6570b42b9a4b43bf7d",
-                "reference": "3fdfbccc731f38b5c4c80a6570b42b9a4b43bf7d",
+                "url": "https://api.github.com/repos/isaaceindhoven/php-code-sniffer-standard/zipball/117a27445a3ab1cde9fb36da233b133db419b35e",
+                "reference": "117a27445a3ab1cde9fb36da233b133db419b35e",
                 "shasum": ""
             },
             "require": {
@@ -1714,9 +1714,9 @@
             "description": "ISAAC PHP_CodeSniffer Standard",
             "support": {
                 "issues": "https://github.com/isaaceindhoven/php-code-sniffer-standard",
-                "source": "https://github.com/isaaceindhoven/php-code-sniffer-standard/tree/v20.0.0"
+                "source": "https://github.com/isaaceindhoven/php-code-sniffer-standard/tree/v21.0.0"
             },
-            "time": "2021-02-09T14:15:36+00:00"
+            "time": "2021-03-09T14:19:23+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -1919,16 +1919,16 @@
         },
         {
             "name": "nunomaduro/collision",
-            "version": "v5.3.0",
+            "version": "v5.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nunomaduro/collision.git",
-                "reference": "aca63581f380f63a492b1e3114604e411e39133a"
+                "reference": "41b7e9999133d5082700d31a1d0977161df8322a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nunomaduro/collision/zipball/aca63581f380f63a492b1e3114604e411e39133a",
-                "reference": "aca63581f380f63a492b1e3114604e411e39133a",
+                "url": "https://api.github.com/repos/nunomaduro/collision/zipball/41b7e9999133d5082700d31a1d0977161df8322a",
+                "reference": "41b7e9999133d5082700d31a1d0977161df8322a",
                 "shasum": ""
             },
             "require": {
@@ -2003,7 +2003,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2021-01-25T15:34:13+00:00"
+            "time": "2021-04-09T13:38:32+00:00"
         },
         {
             "name": "object-calisthenics/phpcs-calisthenics-rules",
@@ -2552,16 +2552,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "0.12.82",
+            "version": "0.12.84",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "3920f0fb0aff39263d3a4cb0bca120a67a1a6a11"
+                "reference": "9c43f15da8798c8f30a4b099e6a94530a558cfd5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/3920f0fb0aff39263d3a4cb0bca120a67a1a6a11",
-                "reference": "3920f0fb0aff39263d3a4cb0bca120a67a1a6a11",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/9c43f15da8798c8f30a4b099e6a94530a558cfd5",
+                "reference": "9c43f15da8798c8f30a4b099e6a94530a558cfd5",
                 "shasum": ""
             },
             "require": {
@@ -2592,7 +2592,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/0.12.82"
+                "source": "https://github.com/phpstan/phpstan/tree/0.12.84"
             },
             "funding": [
                 {
@@ -2608,7 +2608,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-03-19T06:08:17+00:00"
+            "time": "2021-04-19T17:10:54+00:00"
         },
         {
             "name": "phpstan/phpstan-strict-rules",
@@ -4109,16 +4109,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.5.8",
+            "version": "3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "9d583721a7157ee997f235f327de038e7ea6dac4"
+                "reference": "ffced0d2c8fa8e6cdc4d695a743271fab6c38625"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/9d583721a7157ee997f235f327de038e7ea6dac4",
-                "reference": "9d583721a7157ee997f235f327de038e7ea6dac4",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/ffced0d2c8fa8e6cdc4d695a743271fab6c38625",
+                "reference": "ffced0d2c8fa8e6cdc4d695a743271fab6c38625",
                 "shasum": ""
             },
             "require": {
@@ -4161,7 +4161,7 @@
                 "source": "https://github.com/squizlabs/PHP_CodeSniffer",
                 "wiki": "https://github.com/squizlabs/PHP_CodeSniffer/wiki"
             },
-            "time": "2020-10-23T02:01:07+00:00"
+            "time": "2021-04-09T00:54:41+00:00"
         },
         {
             "name": "symfony/console",
@@ -4748,21 +4748,21 @@
         },
         {
             "name": "symfony/service-contracts",
-            "version": "v2.2.0",
+            "version": "v2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/service-contracts.git",
-                "reference": "d15da7ba4957ffb8f1747218be9e1a121fd298a1"
+                "reference": "f040a30e04b57fbcc9c6cbcf4dbaa96bd318b9bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/d15da7ba4957ffb8f1747218be9e1a121fd298a1",
-                "reference": "d15da7ba4957ffb8f1747218be9e1a121fd298a1",
+                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/f040a30e04b57fbcc9c6cbcf4dbaa96bd318b9bb",
+                "reference": "f040a30e04b57fbcc9c6cbcf4dbaa96bd318b9bb",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.2.5",
-                "psr/container": "^1.0"
+                "psr/container": "^1.1"
             },
             "suggest": {
                 "symfony/service-implementation": ""
@@ -4770,7 +4770,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-main": "2.4-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -4807,7 +4807,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/service-contracts/tree/master"
+                "source": "https://github.com/symfony/service-contracts/tree/v2.4.0"
             },
             "funding": [
                 {
@@ -4823,7 +4823,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-09-07T11:33:47+00:00"
+            "time": "2021-04-01T10:43:52+00:00"
         },
         {
             "name": "symfony/string",

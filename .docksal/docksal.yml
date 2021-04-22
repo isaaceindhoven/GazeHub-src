@@ -1,0 +1,12 @@
+version: "2.1"
+
+services:
+  gazehub:
+    image: docksal/cli:2.11-php7.3
+    volumes:
+      - project_root:/var/www:rw,nocopy,cached
+    environment:
+      - GAZEHUB_DEBUG_PAGE=1
+    command: bin/gazehub
+    ports:
+      - 3333:3333
