@@ -1,3 +1,8 @@
-#!/usr/bin/env bash
-
-fin exec vendor/bin/phpcs "$@"
+#!/bin/bash
+#: exec_target = cli
+ 
+## Runs phpcs
+ 
+set -eo pipefail
+ 
+${PROJECT_ROOT}/vendor/bin/phpcs --basepath="/var/www/" "$@"

@@ -1,3 +1,9 @@
-#!/usr/bin/env bash
-
-fin exec vendor/bin/phpstan analyse -c phpstan.neon "$@"
+#!/bin/bash
+#: exec_target = cli
+set -euo pipefail
+ 
+## Runs phpstan
+##
+## Usage: fin phpstan [params to passthrough]
+ 
+exec ${PROJECT_ROOT}/vendor/bin/phpstan analyse -c phpstan.neon "$@"

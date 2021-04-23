@@ -1,3 +1,9 @@
-#!/usr/bin/env bash
+#!/bin/bash
+#: exec_target = cli
+set -euo pipefail
 
-fin exec vendor/bin/phpunit -c phpunit.xml "$@"
+## Runs phpunit
+##
+## Usage: fin phpunit [params to passthrough]
+ 
+exec ${PROJECT_ROOT}/vendor/bin/phpunit -c phpunit.xml "$@"

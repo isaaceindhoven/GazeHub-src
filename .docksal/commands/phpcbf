@@ -1,3 +1,8 @@
-#!/usr/bin/env bash
-
-fin exec vendor/bin/phpcbf "$@"
+#!/bin/bash
+#: exec_target = cli
+ 
+## Runs phpcbf
+ 
+set -eo pipefail
+ 
+${PROJECT_ROOT}/vendor/bin/phpcbf --basepath="/var/www/" "$@"

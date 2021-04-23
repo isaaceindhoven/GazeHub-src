@@ -1,5 +1,5 @@
 {
-    "name": "isaac/gazehub",
+    "name": "isaac/gaze-hub-src",
     "description": "Server-Sent Event Hub, GazeHub",
     "type": "project",
     "minimum-stability": "stable",
