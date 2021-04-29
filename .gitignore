@@ -1,9 +1,7 @@
 /vendor/
-.zshrc
 *.key
-/temp
 *.cache
-coverage/
-.tmp_staging
-gazehub.phar
-.idea
+/coverage/
+/.tmp_staging/
+/gazehub.phar
+/gazehub.config.json

@@ -13,14 +13,18 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Repositories;
 
-use ISAAC\GazeHub\Exceptions\ConfigFileNotExistsException;
+use ISAAC\GazeHub\Exceptions\ConfigFileNotValidException;
 use ISAAC\GazeHub\Exceptions\ConfigKeyNotFoundException;
+use Nette\Utils\JsonException;
 
 use function array_key_exists;
 use function file_exists;
+use function file_get_contents;
 use function getenv;
-use function sprintf;
+use function json_decode;
 use function strtoupper;
+
+use const JSON_THROW_ON_ERROR;
 
 class ConfigRepositoryFilesystem implements ConfigRepository
 {
@@ -30,18 +34,19 @@ class ConfigRepositoryFilesystem implements ConfigRepository
     private $config = [];
 
     /**
-     * Load configuration file in memory, if path is null, /config/config.php is loaded
+     * Load configuration file in memory
      *
-     * @param string       $path                Path to config file to load
-     * @throws ConfigFileNotExistsException     Thrown when the config file does not exist
+     * @param string $path Path to config file to load
+     * @throws ConfigFileNotValidException      Thrown when Json file is invalid
      */
-    public function __construct(string $path)
+    public function __construct(string $path = null)
     {
-        if (!file_exists($path)) {
-            throw new ConfigFileNotExistsException(sprintf('No config file found at %s', $path));
+        $this->loadDefaultConfiguration();
+
+        if ($path !== null && file_exists($path)) {
+            $this->loadJsonConfiguration($path);
         }
 
-        $this->config = include($path);
         $this->loadEnvironmentVariables();
     }
 
@@ -59,6 +64,36 @@ class ConfigRepositoryFilesystem implements ConfigRepository
         }
 
         return $this->config[$key];
+    }
+
+    private function loadDefaultConfiguration(): void
+    {
+        $this->config = include(__DIR__ . '/../../config/config.php');
+    }
+
+    /**
+     * @param string $path
+     * @throws ConfigFileNotValidException
+     */
+    private function loadJsonConfiguration(string $path): void
+    {
+        $jsonContent = file_get_contents($path);
+
+        if ($jsonContent === false) {
+            return;
+        }
+
+        try {
+            $jsonConfig = json_decode($jsonContent, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            throw new ConfigFileNotValidException();
+        }
+
+        foreach ($this->config as $key => $value) {
+            if (array_key_exists($key, $jsonConfig)) {
+                $this->config[$key] = $jsonConfig[$key];
+            }
+        }
     }
 
     private function loadEnvironmentVariables(): void

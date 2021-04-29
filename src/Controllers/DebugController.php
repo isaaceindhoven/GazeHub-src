@@ -28,7 +28,7 @@ class DebugController extends BaseController
 
     public function __construct(ConfigRepository $configRepository)
     {
-        $this->enableDebugPage = (bool) $configRepository->get('debug_page');
+        $this->enableDebugPage = (bool) $configRepository->get('enable_debug_page');
     }
 
     public function handle(): Response

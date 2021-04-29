@@ -41,7 +41,7 @@ abstract class BaseTest extends TestCase
 
     private function fillContainer(): void
     {
-        $configRepo = new ConfigRepositoryFilesystem(__DIR__ . '/assets/testConfig.php');
+        $configRepo = new ConfigRepositoryFilesystem(__DIR__ . '/assets/gazehub.config.json');
         $tokenDecoderJwtPlacebo = new TokenDecoderJwtPlacebo();
         $logger = $this->createMock(LoggerInterface::class);
         $clientRepo = new ClientRepositoryInMemory($logger);

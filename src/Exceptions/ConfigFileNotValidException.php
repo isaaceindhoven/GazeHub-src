@@ -11,11 +11,10 @@
 
 declare(strict_types=1);
 
-use ISAAC\GazeHub\Decoders\TokenDecoderJwtPlacebo;
+namespace ISAAC\GazeHub\Exceptions;
 
-return [
-    'test_key' => 'test_value',
-    'token_decoder' => TokenDecoderJwtPlacebo::class,
-    'jwt_public_key_path' => __DIR__ . '/public.test-key',
-    'jwt_alg' => 'RS256',
-];
+use Exception;
+
+class ConfigFileNotValidException extends Exception
+{
+}

@@ -13,49 +13,37 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Tests\Repositories;
 
-use ISAAC\GazeHub\Exceptions\ConfigFileNotExistsException;
 use ISAAC\GazeHub\Exceptions\ConfigKeyNotFoundException;
 use ISAAC\GazeHub\Repositories\ConfigRepositoryFilesystem;
 use PHPUnit\Framework\TestCase;
 
 use function PHPUnit\Framework\assertEquals;
-use function PHPUnit\Framework\assertNotEmpty;
 
 class ConfigRepositoryFilesystemTest extends TestCase
 {
-    public function testShouldAutoloadConfigWhenNoPathIsSupplied(): void
+    public function testShouldLoadConfigFileWhenNoPathIsSupplied(): void
     {
         // Arrange
-        $config = new ConfigRepositoryFilesystem(__DIR__ . '/../../config/config.php');
+        $config = new ConfigRepositoryFilesystem();
 
         // Assert
-        assertNotEmpty($config->get('server_port'));
+        assertEquals('3333', $config->get('port'));
     }
 
     public function testShouldLoadCustomConfigFileWhenPathIsSupplied(): void
     {
         // Arrange
-        $config = new ConfigRepositoryFilesystem(__DIR__ . '/../assets/testConfig.php');
+        $config = new ConfigRepositoryFilesystem(__DIR__ . '/../assets/gazehub.config.json');
 
         // Assert
-        assertEquals('test_value', $config->get('test_key'));
-    }
-
-    public function testShouldThrowExceptionWhenConfigFileDoesNotExists(): void
-    {
-        // Arrange
-        $this->expectException(ConfigFileNotExistsException::class);
-        $config = new ConfigRepositoryFilesystem('NON_EXISTING_PATH');
-
-        // Assert
-        // Nothing to assert
+        assertEquals('3334', $config->get('port'));
     }
 
     public function testShouldThrowExceptionWhenConfigKeyDoesNotExists(): void
     {
         // Arrange
         $this->expectException(ConfigKeyNotFoundException::class);
-        $config = new ConfigRepositoryFilesystem(__DIR__ . '/../assets/testConfig.php');
+        $config = new ConfigRepositoryFilesystem(__DIR__ . '/../assets/gazehub.config.json');
 
         // Act
         $config->get('NON_EXISTING_KEY');

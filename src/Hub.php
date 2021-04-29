@@ -50,8 +50,8 @@ class Hub
     {
         $config = $this->container->get(ConfigRepository::class);
 
-        $host = $config->get('server_host');
-        $port = $config->get('server_port');
+        $host = $config->get('host');
+        $port = $config->get('port');
 
         $loop = Factory::create();
 
