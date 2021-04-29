@@ -10,13 +10,23 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
+use function count;
+use function getopt;
+
 class LoggerProvider implements Provider
 {
     public function register(Container &$container): void
     {
-        $logger = new Logger('GazeHub');
+        $options = getopt('q');
+
         $configRepo = $container->get(ConfigRepository::class);
-        $logger->pushHandler(new StreamHandler('php://stdout', $configRepo->get('log_level')));
+
+        $logger = new Logger('GazeHub');
+
+        if (count($options) === 0) {
+            $logger->pushHandler(new StreamHandler('php://stdout', $configRepo->get('log_level')));
+        }
+
         $container->set(LoggerInterface::class, $logger);
     }
 }
