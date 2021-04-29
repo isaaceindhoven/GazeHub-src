@@ -15,23 +15,12 @@ namespace ISAAC\GazeHub\Providers;
 
 use DI\Container;
 use ISAAC\GazeHub\Decoders\TokenDecoder;
-use ISAAC\GazeHub\Exceptions\TokenDecoderClassNotFoundException;
-use ISAAC\GazeHub\Repositories\ConfigRepository;
-
-use function class_exists;
+use ISAAC\GazeHub\Decoders\TokenDecoderJwt;
 
 class TokenDecoderProvider implements Provider
 {
     public function register(Container &$container): void
     {
-        $configRepo = $container->get(ConfigRepository::class);
-
-        $tokenDecoderClass = $configRepo->get('token_decoder');
-
-        if (!class_exists($tokenDecoderClass)) {
-            throw new TokenDecoderClassNotFoundException();
-        }
-
-        $container->set(TokenDecoder::class, $container->get($tokenDecoderClass));
+        $container->set(TokenDecoder::class, $container->get(TokenDecoderJwt::class));
     }
 }

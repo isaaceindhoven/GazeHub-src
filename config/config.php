@@ -11,13 +11,10 @@
 
 declare(strict_types=1);
 
-use ISAAC\GazeHub\Decoders\TokenDecoderJwt;
-
 return [
     'port' => 3333,
     'host' => '0.0.0.0',
     'enable_debug_page' => false,
-    'token_decoder' => TokenDecoderJwt::class,
     'jwt_public_key' => '',
     'jwt_alg' => 'RS256',
     'log_level' => 'INFO', // ['DEBUG', 'INFO', 'ERROR']
