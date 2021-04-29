@@ -13,28 +13,35 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Controllers;
 
+use ISAAC\GazeHub\Factories\HtmlFactory;
 use ISAAC\GazeHub\Repositories\ConfigRepository;
 use React\Http\Message\Response;
 
 /**
  * @codeCoverageIgnore
  */
-class DebugController extends BaseController
+class DebugController
 {
     /**
      * @var bool $enableDebugPage
      */
     private $enableDebugPage;
 
-    public function __construct(ConfigRepository $configRepository)
+    /**
+     * @var HtmlFactory
+     */
+    private $htmlFactory;
+
+    public function __construct(ConfigRepository $configRepository, HtmlFactory $htmlFactory)
     {
         $this->enableDebugPage = (bool) $configRepository->get('enable_debug_page');
+        $this->htmlFactory = $htmlFactory;
     }
 
     public function handle(): Response
     {
         if ($this->enableDebugPage) {
-            return $this->html('debug.html');
+            return $this->htmlFactory->create('debug.html');
         }
 
         return new Response(404);

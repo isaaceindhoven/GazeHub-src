@@ -15,12 +15,13 @@ namespace ISAAC\GazeHub\Controllers;
 
 use ISAAC\GazeHub\Exceptions\DataValidationFailedException;
 use ISAAC\GazeHub\Exceptions\UnauthorizedException;
+use ISAAC\GazeHub\Factories\JsonFactory;
 use ISAAC\GazeHub\Models\Request;
 use ISAAC\GazeHub\Repositories\SubscriptionRepository;
 use Psr\Log\LoggerInterface;
 use React\Http\Message\Response;
 
-class EventController extends BaseController
+class EventController
 {
     /**
      * @var SubscriptionRepository
@@ -32,10 +33,19 @@ class EventController extends BaseController
      */
     private $logger;
 
-    public function __construct(SubscriptionRepository $subscriptionRepository, LoggerInterface $logger)
-    {
+    /**
+     * @var JsonFactory
+     */
+    private $jsonFactory;
+
+    public function __construct(
+        SubscriptionRepository $subscriptionRepository,
+        LoggerInterface $logger,
+        JsonFactory $jsonFactory
+    ) {
         $this->subscriptionRepository = $subscriptionRepository;
         $this->logger = $logger;
+        $this->jsonFactory = $jsonFactory;
     }
 
     /**
@@ -69,6 +79,6 @@ class EventController extends BaseController
             ]);
         }
 
-        return $this->json(['status' => 'Event Send']);
+        return $this->jsonFactory->create(['status' => 'Event Send']);
     }
 }
