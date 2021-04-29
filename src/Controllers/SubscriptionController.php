@@ -15,13 +15,14 @@ namespace ISAAC\GazeHub\Controllers;
 
 use ISAAC\GazeHub\Exceptions\DataValidationFailedException;
 use ISAAC\GazeHub\Exceptions\UnauthorizedException;
+use ISAAC\GazeHub\Factories\JsonFactory;
 use ISAAC\GazeHub\Models\Client;
 use ISAAC\GazeHub\Models\Request;
 use ISAAC\GazeHub\Repositories\ClientRepository;
 use ISAAC\GazeHub\Repositories\SubscriptionRepository;
 use React\Http\Message\Response;
 
-class SubscriptionController extends BaseController
+class SubscriptionController
 {
     /**
      *  @var ClientRepository
@@ -33,10 +34,19 @@ class SubscriptionController extends BaseController
      */
     private $subscriptionRepository;
 
-    public function __construct(ClientRepository $clientRepository, SubscriptionRepository $subscriptionRepository)
-    {
+    /**
+     * @var JsonFactory
+     */
+    private $jsonFactory;
+
+    public function __construct(
+        ClientRepository $clientRepository,
+        SubscriptionRepository $subscriptionRepository,
+        JsonFactory $jsonFactory
+    ) {
         $this->clientRepository = $clientRepository;
         $this->subscriptionRepository = $subscriptionRepository;
+        $this->jsonFactory = $jsonFactory;
     }
 
     /**
@@ -58,7 +68,7 @@ class SubscriptionController extends BaseController
             $this->subscriptionRepository->subscribe($client, $topic);
         }
 
-        return $this->json(['status' => 'subscribed'], 200);
+        return $this->jsonFactory->create(['status' => 'subscribed'], 200);
     }
 
     /**
@@ -80,7 +90,7 @@ class SubscriptionController extends BaseController
             $this->subscriptionRepository->unsubscribe($client, $topic);
         }
 
-        return $this->json(['status' => 'unsubscribed']);
+        return $this->jsonFactory->create(['status' => 'unsubscribed']);
     }
 
     /**
