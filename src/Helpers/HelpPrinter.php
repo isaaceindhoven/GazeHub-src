@@ -13,13 +13,11 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Helpers;
 
-use function array_keys;
-use function array_map;
-use function intval;
-use function max;
-use function str_repeat;
-use function strlen;
-use function strtoupper;
+use function json_encode;
+use function preg_replace;
+
+use const JSON_PRETTY_PRINT;
+use const JSON_THROW_ON_ERROR;
 
 class HelpPrinter
 {
@@ -36,37 +34,27 @@ class HelpPrinter
             '01',
             '30',
             self::getAsciiLogo() .
-            "Below you'll find the environment variables with their default values.\n"
+            'You can change the configuration by adding a file called \'gazehub.config.json\' in your ' . "\n" .
+            'current working directory, or give a path to the config file with the -c argument.' . "\n\n"
         );
 
-        echo ("To change the port for example you could run `GAZEHUB_SERVER_PORT=8000 ./gazehub`\n\n");
+        echo 'Config key you can use in gazehub.config.json, with their default values:' . "\n";
 
-        $longestKey = self::getLongestKeyLength();
-
-        foreach (self::$config as $key => $default) {
-            echo(
-                self::cEcho('01', '35', 'GAZEHUB_' . strtoupper($key)) .
-                str_repeat(' ', $longestKey - strlen($key)) .
-                self::cEcho('00', '33', '  >  ' . $default) .
-                "\n"
-            );
-        }
+        $config = json_encode(self::$config, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
+        echo preg_replace(
+            '/("\w+"):/',
+            self::cEcho('01', '35', '${1}') . ':',
+            $config
+        );
 
         echo "\n";
+
+        echo ("\nYou can also override config with environment variables, like this: `GAZEHUB_PORT=8000 ./gazehub`\n");
     }
 
     private static function cEcho(string $style, string $color, string $text): string
     {
         return "\033[" . $style . ';' . $color . 'm' . $text . "\033[0m";
-    }
-
-    private static function getLongestKeyLength(): int
-    {
-        return intval(
-            max(array_map(static function ($x): int {
-                return strlen($x);
-            }, array_keys(self::$config)))
-        );
     }
 
     private static function getAsciiLogo(): string

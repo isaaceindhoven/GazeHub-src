@@ -15,12 +15,10 @@ namespace ISAAC\GazeHub\Decoders;
 
 use Exception;
 use Firebase\JWT\JWT;
-use ISAAC\GazeHub\Exceptions\PublicKeyFileNotExistsException;
 use ISAAC\GazeHub\Exceptions\TokenDecodeException;
 use ISAAC\GazeHub\Repositories\ConfigRepository;
 
 use function explode;
-use function file_get_contents;
 
 class TokenDecoderJwt implements TokenDecoder
 {
@@ -37,16 +35,13 @@ class TokenDecoderJwt implements TokenDecoder
     public function __construct(ConfigRepository $configRepository)
     {
         $this->algorithm = $configRepository->get('jwt_alg');
-        $publicKeyContent = file_get_contents($configRepository->get('jwt_public_key_path'));
-        if ($publicKeyContent === false) {
-            throw new PublicKeyFileNotExistsException();
-        }
-        $this->publicKeyContent = $publicKeyContent;
+        $this->publicKeyContent = $configRepository->get('jwt_public_key');
     }
 
     /**
      * @param string $token
      * @return mixed[]
+     * @throws TokenDecodeException
      */
     public function decode(string $token): array
     {
