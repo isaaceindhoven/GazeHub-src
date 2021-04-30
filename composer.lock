@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aab732dfaa969fed84bf0e7ad8f200b8",
+    "content-hash": "f39a159b1b9ea32b9c2314c16e5882c0",
     "packages": [
         {
             "name": "evenement/evenement",
@@ -1492,16 +1492,16 @@
         },
         {
             "name": "filp/whoops",
-            "version": "2.12.0",
+            "version": "2.12.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filp/whoops.git",
-                "reference": "d501fd2658d55491a2295ff600ae5978eaad7403"
+                "reference": "c13c0be93cff50f88bbd70827d993026821914dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filp/whoops/zipball/d501fd2658d55491a2295ff600ae5978eaad7403",
-                "reference": "d501fd2658d55491a2295ff600ae5978eaad7403",
+                "url": "https://api.github.com/repos/filp/whoops/zipball/c13c0be93cff50f88bbd70827d993026821914dd",
+                "reference": "c13c0be93cff50f88bbd70827d993026821914dd",
                 "shasum": ""
             },
             "require": {
@@ -1551,7 +1551,7 @@
             ],
             "support": {
                 "issues": "https://github.com/filp/whoops/issues",
-                "source": "https://github.com/filp/whoops/tree/2.12.0"
+                "source": "https://github.com/filp/whoops/tree/2.12.1"
             },
             "funding": [
                 {
@@ -1559,109 +1559,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-03-30T12:00:00+00:00"
-        },
-        {
-            "name": "isaac/composer-git-hooks",
-            "version": "v1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/isaaceindhoven/composer-git-hooks.git",
-                "reference": "56505f4086ec30a91346d651949c4ee38052c23f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/isaaceindhoven/composer-git-hooks/zipball/56505f4086ec30a91346d651949c4ee38052c23f",
-                "reference": "56505f4086ec30a91346d651949c4ee38052c23f",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^1.1 || ^2.0",
-                "php": "~7.3.0 || ~7.4.0 || ~8.0.0"
-            },
-            "require-dev": {
-                "composer/composer": "^1.10 || ^2.0",
-                "isaac/php-code-sniffer-standard": "^19.0",
-                "phpstan/extension-installer": "^1.0",
-                "phpstan/phpstan": "^0.12",
-                "phpstan/phpstan-strict-rules": "^0.12.4"
-            },
-            "type": "composer-plugin",
-            "extra": {
-                "class": "ISAAC\\ComposerGitHooks\\ComposerPlugin"
-            },
-            "autoload": {
-                "psr-4": {
-                    "ISAAC\\ComposerGitHooks\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "ISAAC",
-                    "email": "info@isaac.nl",
-                    "homepage": "https://www.isaac.nl"
-                }
-            ],
-            "description": "ISAAC Composer Git Hooks",
-            "support": {
-                "issues": "https://github.com/isaaceindhoven/composer-git-hooks/issues",
-                "source": "https://github.com/isaaceindhoven/composer-git-hooks/tree/v1.2.0"
-            },
-            "time": "2021-02-09T14:44:15+00:00"
-        },
-        {
-            "name": "isaac/composer-git-hooks-standard",
-            "version": "v1.3.0",
-            "source": {
-                "type": "git",
-                "url": "ssh://git@gitlab.isaac.local/php-module/isaac-composer-git-hooks-standard.git",
-                "reference": "848d099e4a99a14c6050762f51b4018f6ab97211"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://composer-packages.hq.isaac.nl/repository/dist/isaac/composer-git-hooks-standard/isaac-composer-git-hooks-standard-v1.3.0-3eb847.zip",
-                "reference": "848d099e4a99a14c6050762f51b4018f6ab97211",
-                "shasum": "540197458ca6d125d9430d02497a882293e86e20"
-            },
-            "require": {
-                "composer-plugin-api": "^1.1 || ^2.0",
-                "isaac/composer-git-hooks": "^1.1",
-                "php": "~7.3.0 || ~7.4.0 || ~8.0.0"
-            },
-            "require-dev": {
-                "composer/composer": "^1.10 || ^2.0",
-                "isaac/php-code-sniffer-standard": "^19.0",
-                "isaac/phpstorm-copyright": "^2.0",
-                "phpstan/extension-installer": "^1.0",
-                "phpstan/phpstan": "^0.12",
-                "phpstan/phpstan-strict-rules": "^0.12.4"
-            },
-            "type": "composer-plugin",
-            "extra": {
-                "class": "ISAAC\\ComposerGitHooksStandard\\ComposerPlugin"
-            },
-            "autoload": {
-                "psr-4": {
-                    "ISAAC\\ComposerGitHooksStandard\\": "src/"
-                }
-            },
-            "scripts": {
-                "post-install-cmd": [
-                    "ISAAC\\ComposerGitHooksStandard\\ComposerPlugin::process"
-                ],
-                "post-update-cmd": [
-                    "ISAAC\\ComposerGitHooksStandard\\ComposerPlugin::process"
-                ]
-            },
-            "license": [
-                "proprietary"
-            ],
-            "description": "ISAAC Composer Git Hooks standard hooks",
-            "time": "2021-02-09T15:06:39+00:00"
+            "time": "2021-04-25T12:00:00+00:00"
         },
         {
             "name": "isaac/php-code-sniffer-standard",
@@ -2552,16 +2450,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "0.12.84",
+            "version": "0.12.85",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "9c43f15da8798c8f30a4b099e6a94530a558cfd5"
+                "reference": "20e6333c0067875ad7697cd8acdf245c6ef69d03"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/9c43f15da8798c8f30a4b099e6a94530a558cfd5",
-                "reference": "9c43f15da8798c8f30a4b099e6a94530a558cfd5",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/20e6333c0067875ad7697cd8acdf245c6ef69d03",
+                "reference": "20e6333c0067875ad7697cd8acdf245c6ef69d03",
                 "shasum": ""
             },
             "require": {
@@ -2592,7 +2490,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/0.12.84"
+                "source": "https://github.com/phpstan/phpstan/tree/0.12.85"
             },
             "funding": [
                 {
@@ -2608,7 +2506,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-04-19T17:10:54+00:00"
+            "time": "2021-04-27T14:13:16+00:00"
         },
         {
             "name": "phpstan/phpstan-strict-rules",

@@ -1,6 +1,6 @@
 {
     "name": "isaac/gaze-hub-src",
-    "description": "Server-Sent Event Hub, GazeHub",
+    "description": "The source code behind GazeHub.",
     "type": "project",
     "minimum-stability": "stable",
     "config": {
@@ -20,8 +20,6 @@
         "react/stream": "^1.1"
     },
     "require-dev": {
-        "isaac/composer-git-hooks-standard": "^1.3",
-        "isaac/composer-git-hooks": "^1.2",
         "isaac/php-code-sniffer-standard": "^21.0",
         "nunomaduro/collision": "^5.3",
         "phpstan/extension-installer": "^1.1",
@@ -35,17 +33,8 @@
             "ISAAC\\GazeHub\\Tests\\": "tests/"
         }
     },
-    "scripts": {
-        "install-git-hooks": "ISAAC\\ComposerGitHooks\\ComposerPlugin::process"
-    },
-    "license": "proprietary",
+    "license": "MIT",
     "bin": [
         "bin/gazehub"
-    ],
-    "repositories": {
-        "isaac": {
-            "type": "composer",
-            "url": "https://composer-packages.hq.isaac.nl/repository"
-        }
-    }
+    ]
 }
