@@ -1,12 +1,12 @@
 # GazeHub
-GazeHub is part of [Gaze](#).
+GazeHub is part of [Gaze](https://isaaceindhoven.github.io/GazeHub/docs).
 GazeHub is the main server that is responsible for sending data from the backend to the frontend.
 
 ## Documentation
-[Click here](#) to go to the full documentation for Gaze and GazeHub.
+[Click here](https://isaaceindhoven.github.io/GazeHub/docs/#/gazehub) to go to the full documentation for Gaze and GazeHub.
 
 ## Installation
-To install GazeHub go to the [GazeHub release repository](#) and follow the instructions there.
+To install GazeHub go to the [GazeHub release repository](https://github.com/isaaceindhoven/GazeHub) and follow the instructions there.
 
 ## Development
 For development you need [Composer](https://getcomposer.org/) or [Docksal](https://docksal.io/) installed on your system.
@@ -35,5 +35,5 @@ php --define phar.readonly=0 create-archive.php
 ```
 
 ### Release
-To release a new version of GazeHub a new phar file needs te be created in the [GazeHub release repository](#). 
+To release a new version of GazeHub a new phar file needs te be created in the [GazeHub release repository](https://github.com/isaaceindhoven/GazeHub). 
 Follow the instructions there to create the new release.
