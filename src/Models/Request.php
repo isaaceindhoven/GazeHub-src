@@ -10,10 +10,8 @@ use ISAAC\GazeHub\Exceptions\UnauthorizedException;
 use Psr\Http\Message\ServerRequestInterface;
 use Rakit\Validation\Validator;
 
-use function array_key_exists;
 use function str_replace;
 use function trim;
-use function urldecode;
 
 class Request
 {
@@ -40,7 +38,7 @@ class Request
 
     public function isAuthorized(): void
     {
-        $token = $this->getTokenFromHeaderOrQuery();
+        $token = $this->getAuthTokenFromHeader();
         $this->tokenPayload = $this->tokenDecoder->decode($token);
     }
 
@@ -95,19 +93,6 @@ class Request
      * @param string $key
      * @return null|string
      */
-    private function getQueryParam(string $key)
-    {
-        if (array_key_exists($key, $this->originalRequest->getQueryParams())) {
-            $value = $this->originalRequest->getQueryParams()[$key];
-            return urldecode($value);
-        }
-        return null;
-    }
-
-    /**
-     * @param string $key
-     * @return null|string
-     */
     private function getHeaderValueByKey(string $key)
     {
         $value = $this->originalRequest->getHeaderLine($key);
@@ -117,13 +102,9 @@ class Request
         return $value;
     }
 
-    private function getTokenFromHeaderOrQuery(): string
+    private function getAuthTokenFromHeader(): string
     {
         $token = $this->getHeaderValueByKey('Authorization');
-
-        if ($token === null) {
-            $token = $this->getQueryParam('token');
-        }
 
         if ($token === null) {
             $token = '';

@@ -14,8 +14,6 @@ use React\Http\Message\Response;
 
 use function array_key_exists;
 use function base64_encode;
-use function explode;
-use function is_string;
 use function json_encode;
 use function parse_url;
 use function PHPUnit\Framework\assertEquals;
@@ -23,7 +21,6 @@ use function PHPUnit\Framework\returnCallback;
 use function uniqid;
 
 use const PHP_URL_PATH;
-use const PHP_URL_QUERY;
 
 // phpcs:ignore ObjectCalisthenics.Metrics.MethodPerClassLimit.ObjectCalisthenics\Sniffs\Metrics\MethodPerClassLimitSniff
 class ControllerTestCase extends BaseTest
@@ -140,15 +137,13 @@ class ControllerTestCase extends BaseTest
 
         $originalRequest->method('getMethod')->willReturn($this->method);
         $originalRequest->method('getParsedBody')->willReturn($this->body);
-        $originalRequest->method('getQueryParams')->willReturn($this->getParsedQuery());
-        $scope = $this;
         $originalRequest
             ->method('getHeaderLine')
-            ->will(returnCallback(static function ($key) use ($scope): string {
-                if (!array_key_exists($key, $scope->headers)) {
+            ->will(returnCallback(function ($key): string {
+                if (!array_key_exists($key, $this->headers)) {
                     return '';
                 }
-                return $scope->headers[$key];
+                return $this->headers[$key];
             }));
 
         $uriMock = $this->createMock(UriInterface::class);
@@ -168,25 +163,5 @@ class ControllerTestCase extends BaseTest
         if ($this->response !== null) {
             assertEquals($code, $this->response->getStatusCode());
         }
-    }
-
-    /**
-     * @return string[]
-     */
-    private function getParsedQuery(): array
-    {
-        $queryString = parse_url($this->url, PHP_URL_QUERY);
-
-        if (!is_string($queryString)) {
-            return [];
-        }
-
-        $params = explode('&', $queryString);
-        $queryParams = [];
-        foreach ($params as $param) {
-            [$key, $val] = explode('=', $param);
-            $queryParams[$key] = $val;
-        }
-        return $queryParams;
     }
 }
