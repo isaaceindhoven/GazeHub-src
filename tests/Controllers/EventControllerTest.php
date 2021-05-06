@@ -8,6 +8,7 @@ use ISAAC\GazeHub\Models\Client;
 use ISAAC\GazeHub\Repositories\SubscriptionRepository;
 use ISAAC\GazeHub\Repositories\SubscriptionRepositoryInMemory;
 
+use React\Stream\ThroughStream;
 use function PHPUnit\Framework\once;
 
 class EventControllerTest extends ControllerTestCase
@@ -89,7 +90,7 @@ class EventControllerTest extends ControllerTestCase
     {
         $subRepo = $this->createMock(SubscriptionRepositoryInMemory::class);
         $client = $this->createMock(Client::class);
-        $client->expects(once())->method('send');
+        $client->expects(once())->method('getStream')->willReturn(new ThroughStream());
 
         $subRepo->method('getClientsByTopicAndRole')->willReturn([$client]);
 

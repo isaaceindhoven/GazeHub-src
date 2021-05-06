@@ -92,10 +92,12 @@ class ControllerTestCase extends BaseTest
         return $this;
     }
 
-    protected function registerClient(string $jti): self
+    protected function registerClient(): self
     {
+        /** @var ClientRepository $clientRepo */
         $clientRepo = $this->container->get(ClientRepository::class);
-        $clientRepo->add([], $jti);
+        $client = $clientRepo->add();
+        $this->setHeaders(['Authorization' => 'Bearer ' . $client->getId() ]);
         return $this;
     }
 

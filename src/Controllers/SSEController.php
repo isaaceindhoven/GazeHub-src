@@ -4,14 +4,20 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Controllers;
 
-use ISAAC\GazeHub\Exceptions\UnauthorizedException;
-use ISAAC\GazeHub\Models\Request;
 use ISAAC\GazeHub\Repositories\ClientRepository;
 use ISAAC\GazeHub\Repositories\SubscriptionRepository;
+use React\EventLoop\LoopInterface;
 use React\Http\Message\Response;
+
+use function React\Promise\Timer\resolve;
 
 class SSEController
 {
+    /**
+     * @var LoopInterface
+     */
+    private $loop;
+
     /**
      * @var ClientRepository
      */
@@ -22,24 +28,22 @@ class SSEController
      */
     private $subscriptionRepository;
 
-    public function __construct(ClientRepository $clientRepository, SubscriptionRepository $subscriptionRepository)
-    {
+    public function __construct(
+        LoopInterface $loop,
+        ClientRepository $clientRepository,
+        SubscriptionRepository $subscriptionRepository
+    ) {
+        $this->loop = $loop;
         $this->clientRepository = $clientRepository;
         $this->subscriptionRepository = $subscriptionRepository;
     }
 
     /**
-     * @param Request $request
      * @return Response
-     * @throws UnauthorizedException
      */
-    public function handle(Request $request): Response
+    public function handle(): Response
     {
-        $request->isAuthorized();
-
-        $payload = $request->getTokenPayload();
-
-        $client = $this->clientRepository->add($payload['roles'], $payload['jti']);
+        $client = $this->clientRepository->add();
 
         $client->getStream()->on(
             'close',
@@ -49,6 +53,14 @@ class SSEController
             }
         );
 
-        return new Response(200, ['Content-Type' => 'text/event-stream'], $client->getStream());
+        $response = new Response(200, ['Content-Type' => 'text/event-stream'], $client->getStream());
+
+        resolve(0, $this->loop)->then(static function () use ($client): void {
+            $client->getStream()->write([
+                'id' => $client->getId(),
+            ]);
+        });
+
+        return $response;
     }
 }

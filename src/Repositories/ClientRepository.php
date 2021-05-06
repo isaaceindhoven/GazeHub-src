@@ -11,19 +11,17 @@ interface ClientRepository
     /**
      * Find client by unique token ID
      *
-     * @param string $tokenId
+     * @param string $id
      * @return Client|null
      */
-    public function getByTokenId(string $tokenId): ?Client;
+    public function getById(string $id): ?Client;
 
     /**
      * Add a new client to the repository
      *
-     * @param string[] $roles
-     * @param string $tokenId
      * @return Client
      */
-    public function add(array $roles, string $tokenId): Client;
+    public function add(): Client;
 
     /**
      * Remove client from repository

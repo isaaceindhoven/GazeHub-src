@@ -39,7 +39,10 @@ class Request
     public function isAuthorized(): void
     {
         $token = $this->getAuthTokenFromHeader();
-        $this->tokenPayload = $this->tokenDecoder->decode($token);
+
+        if ($token === '') {
+            throw new UnauthorizedException();
+        }
     }
 
     /**
@@ -49,6 +52,7 @@ class Request
     public function isRole(string $role): void
     {
         $this->isAuthorized();
+        $this->tokenPayload = $this->tokenDecoder->decode($this->getAuthTokenFromHeader());
 
         if ($this->getTokenPayload()['role'] !== $role) {
             throw new UnauthorizedException();
@@ -102,7 +106,7 @@ class Request
         return $value;
     }
 
-    private function getAuthTokenFromHeader(): string
+    public function getAuthTokenFromHeader(): string
     {
         $token = $this->getHeaderValueByKey('Authorization');
 

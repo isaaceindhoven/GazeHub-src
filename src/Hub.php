@@ -12,6 +12,7 @@ use ISAAC\GazeHub\Providers\Provider;
 use ISAAC\GazeHub\Repositories\ConfigRepository;
 use Psr\Log\LoggerInterface;
 use React\EventLoop\Factory;
+use React\EventLoop\LoopInterface;
 use React\Http\Server as HttpServer;
 use React\Socket\Server;
 
@@ -45,6 +46,7 @@ class Hub
         $port = $config->get('port');
 
         $loop = Factory::create();
+        $this->container->set(LoopInterface::class, $loop);
 
         $socket = new Server(sprintf('%s:%s', $host, $port), $loop);
 

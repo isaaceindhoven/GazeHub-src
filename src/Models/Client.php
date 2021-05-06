@@ -26,7 +26,7 @@ class Client
     /**
      * @var string
      */
-    private $tokenId;
+    private $id;
 
     /**
      * @var string[]
@@ -35,23 +35,15 @@ class Client
 
     /**
      * @param string[] $roles
-     * @param string $tokenId
+     * @param string $id
      */
-    public function __construct(array $roles, string $tokenId)
+    public function __construct(array $roles, string $id)
     {
         $this->roles = $roles;
-        $this->tokenId = $tokenId;
+        $this->id = $id;
         $this->stream = new ThroughStream(static function (array $data): string {
             return 'data: ' . json_encode($data) . "\n\n";
         });
-    }
-
-    /**
-     * @param mixed[] $data
-     */
-    public function send(array $data): void
-    {
-        $this->stream->write($data);
     }
 
     /**
@@ -93,6 +85,14 @@ class Client
     }
 
     /**
+     * @param string[] $roles
+     */
+    public function setRoles(array $roles): void
+    {
+        $this->roles = $roles;
+    }
+
+    /**
      * @return string[]
      */
     public function getRoles(): array
@@ -100,13 +100,13 @@ class Client
         return $this->roles;
     }
 
-    public function getTokenId(): string
+    public function getId(): string
     {
-        return $this->tokenId;
+        return $this->id;
     }
 
     public function equals(Client $client): bool
     {
-        return $this->tokenId === $client->getTokenId();
+        return $this->id === $client->getId();
     }
 }
