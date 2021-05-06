@@ -6,13 +6,8 @@ namespace ISAAC\GazeHub\Tests\Controllers;
 
 class SSEControllerTest extends ControllerTestCase
 {
-    public function testResponse401IfUnauthorized(): void
+    public function testResponse200(): void
     {
-        $this->req('/sse', 'GET')->assertHttpCode(401);
-    }
-
-    public function testResponse200IfAuthorized(): void
-    {
-        $this->req('/sse', 'GET')->asClient()->assertHttpCode(200);
+        $this->req('/sse', 'GET')->assertHttpCode(200);
     }
 }

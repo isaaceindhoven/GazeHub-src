@@ -86,26 +86,14 @@ class SubscriptionController
 
     /**
      * @param Request $request
-     * @return Response
-     * @throws UnauthorizedException
-     */
-    public function ping(Request $request): Response
-    {
-        $client = $this->getClient($request);
-        $client->send(['pong']);
-        return new Response();
-    }
-
-    /**
-     * @param Request $request
      * @return Client
      * @throws UnauthorizedException
      */
     protected function getClient(Request $request): Client
     {
         $request->isAuthorized();
-        $jti = $request->getTokenPayload()['jti'];
-        $client = $this->clientRepository->getByTokenId($jti);
+        $id = $request->getAuthTokenFromHeader();
+        $client = $this->clientRepository->getById($id);
         if ($client === null) {
             throw new UnauthorizedException();
         }

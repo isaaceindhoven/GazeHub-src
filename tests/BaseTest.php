@@ -15,6 +15,8 @@ use ISAAC\GazeHub\Repositories\SubscriptionRepository;
 use ISAAC\GazeHub\Repositories\SubscriptionRepositoryInMemory;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use React\EventLoop\Factory;
+use React\EventLoop\LoopInterface;
 
 abstract class BaseTest extends TestCase
 {
@@ -38,6 +40,7 @@ abstract class BaseTest extends TestCase
         $clientRepo = new ClientRepositoryInMemory($logger);
         $subRepo = new SubscriptionRepositoryInMemory($logger);
 
+        $this->container->set(LoopInterface::class, Factory::create());
         $this->container->set(ConfigRepository::class, $configRepo);
         $this->container->set(TokenDecoder::class, $tokenDecoderJwtPlacebo);
         $this->container->set(ClientRepository::class, $clientRepo);

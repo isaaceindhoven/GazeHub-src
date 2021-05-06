@@ -7,9 +7,9 @@ namespace ISAAC\GazeHub\Repositories;
 use ISAAC\GazeHub\Models\Client;
 use Psr\Log\LoggerInterface;
 
-use function array_filter;
-use function array_push;
+use function array_key_exists;
 use function count;
+use function uniqid;
 
 class ClientRepositoryInMemory implements ClientRepository
 {
@@ -29,34 +29,26 @@ class ClientRepositoryInMemory implements ClientRepository
     }
 
     /**
-     * Find client by Token Id (jti claim in JWT)
+     * Find client by Id
      *
-     * @param string        $tokenId        Token ID in JWT jti claim
+     * @param string        $id
      * @return Client|null
      */
-    public function getByTokenId(string $tokenId): ?Client
+    public function getById(string $id): ?Client
     {
-        foreach ($this->clients as $client) {
-            if ($client->getTokenId() === $tokenId) {
-                return $client;
-            }
-        }
-
-        return null;
+        return array_key_exists($id, $this->clients) ? $this->clients[$id] : null;
     }
 
     /**
      * Create and add a new client to this repository
      *
-     * @param string[]      $roles      Client roles
-     * @param string        $tokenId    Client token id
      * @return Client                   Newly created client
      */
-    public function add(array $roles, string $tokenId): Client
+    public function add(): Client
     {
-        $client = new Client($roles, $tokenId);
+        $client = new Client([], uniqid('', true));
 
-        array_push($this->clients, $client);
+        $this->clients[$client->getId()] = $client;
         $this->logger->info('Client connected', ['connected clients' => count($this->clients)]);
 
         return $client;
@@ -69,12 +61,8 @@ class ClientRepositoryInMemory implements ClientRepository
      */
     public function remove(Client $clientToRemove): void
     {
-        $this->clients = array_filter(
-            $this->clients,
-            static function ($client) use ($clientToRemove): bool {
-                return !$clientToRemove->equals($client);
-            }
-        );
+        unset($this->clients[$clientToRemove->getId()]);
+
         $this->logger->info('Client disconnected', ['connected clients' => count($this->clients)]);
     }
 }

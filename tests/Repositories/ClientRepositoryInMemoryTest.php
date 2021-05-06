@@ -12,6 +12,7 @@ use Psr\Log\LoggerInterface;
 
 use function count;
 use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertNotEmpty;
 use function PHPUnit\Framework\assertNotNull;
 use function PHPUnit\Framework\assertNull;
 use function uniqid;
@@ -22,14 +23,13 @@ class ClientRepositoryInMemoryTest extends TestCase
     {
         // Arrange
         $clientRepo = $this->createClientRepo();
-        $tokenPayload = ['roles' => ['admin', 'client'], 'jti' => 'randomId'];
 
         // Act
-        $client = $clientRepo->add($tokenPayload['roles'], $tokenPayload['jti']);
+        $client = $clientRepo->add();
 
         // Assert
-        assertEquals($tokenPayload['roles'], $client->getRoles());
-        assertEquals($tokenPayload['jti'], $client->getTokenId());
+        assertNotNull($client);
+        assertNotEmpty($client->getId());
     }
 
     public function testShouldReturnClientBasedOnTokenId(): void
@@ -40,7 +40,7 @@ class ClientRepositoryInMemoryTest extends TestCase
         $this->addClientToRepo($clientRepo);
 
         // Act
-        $foundClient = $clientRepo->getByTokenId($client1->getTokenId());
+        $foundClient = $clientRepo->getById($client1->getId());
 
         // Assert
         assertNotNull($foundClient);
@@ -58,17 +58,19 @@ class ClientRepositoryInMemoryTest extends TestCase
         $clientRepo->remove($client1);
 
         // Assert
-        assertNull($clientRepo->getByTokenId($client1->getTokenId()));
-        assertEquals($client2, $clientRepo->getByTokenId($client2->getTokenId()));
+        assertNull($clientRepo->getById($client1->getId()));
+        assertEquals($client2, $clientRepo->getById($client2->getId()));
     }
 
     public function testShouldGetAllAdminSubscriptions(): void
     {
         // Arrange
         $clientRepo = $this->createClientRepo();
-        $client1 = $clientRepo->add(['admin'], 'Client1');
-        $client2 = $clientRepo->add([], 'Client2');
-        $client3 = $clientRepo->add([], 'Client3');
+        $client1 = $clientRepo->add();
+        $client2 = $clientRepo->add();
+        $client3 = $clientRepo->add();
+
+        $client1->setRoles(['admin']);
 
         $subRepo = new SubscriptionRepositoryInMemory($this->createMock(LoggerInterface::class));
         $subRepo->subscribe($client1, 'ProductCreated');
@@ -84,7 +86,9 @@ class ClientRepositoryInMemoryTest extends TestCase
 
     private function addClientToRepo(ClientRepositoryInMemory $repository): Client
     {
-        return $repository->add(['admin', 'client'], uniqid());
+        $client = $repository->add();
+        $client->setRoles(['admin', 'client']);
+        return $client;
     }
 
     private function createClientRepo(): ClientRepositoryInMemory

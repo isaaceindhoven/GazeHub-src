@@ -20,8 +20,7 @@ class SubscriptionControllerTest extends ControllerTestCase
     {
         $this
             ->req('/subscription', 'POST')
-            ->registerClient('client1')
-            ->asClient('client1')
+            ->registerClient()
             ->setBody(['callbackId' => 'abc', 'topics' => ['ProductCreated']])
             ->assertHttpCode(200);
     }
@@ -30,8 +29,7 @@ class SubscriptionControllerTest extends ControllerTestCase
     {
         $this
             ->req('/subscription', 'POST')
-            ->registerClient('client1')
-            ->asClient('client1')
+            ->registerClient()
             ->setBody(['callbackId' => 'abc', 'topics' => []])
             ->assertHttpCode(400);
     }
@@ -40,8 +38,7 @@ class SubscriptionControllerTest extends ControllerTestCase
     {
         $this
             ->req('/subscription', 'DELETE')
-            ->registerClient('client1')
-            ->asClient('client1')
+            ->registerClient()
             ->setBody(['topics' => ['ProductCreated']])
             ->assertHttpCode(200);
     }
@@ -61,31 +58,6 @@ class SubscriptionControllerTest extends ControllerTestCase
             ->req('/subscription', 'DELETE')
             ->asClient('client1')
             ->setBody(['topics' => ['ProductCreated']])
-            ->assertHttpCode(401);
-    }
-
-    public function testPingResponse401IfClientNotRegistered(): void
-    {
-        $this
-            ->req('/ping', 'GET')
-            ->asClient('client1')
-            ->assertHttpCode(401);
-    }
-
-    public function testPingResponse200IfAuthorized(): void
-    {
-        $this
-            ->req('/ping', 'GET')
-            ->registerClient('client1')
-            ->asClient('client1')
-            ->assertHttpCode(200);
-    }
-
-    public function testPingResponse401WithInvalidJwt(): void
-    {
-        $this
-            ->req('/ping', 'GET')
-            ->setHeaders(['Authorization' => 'Bearer NOTVALID.NOTVALID.NOTVALID'])
             ->assertHttpCode(401);
     }
 }

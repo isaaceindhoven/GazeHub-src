@@ -25,7 +25,7 @@ class SubscriptionRepositoryInMemoryTest extends TestCase
         $clients = $subRepo->getClientsByTopicAndRole('ProductCreated');
 
         assertEquals(1, count($clients));
-        assertEquals($client1->getTokenId(), $clients[0]->getTokenId());
+        assertEquals($client1->getId(), $clients[0]->getId());
     }
 
     public function testIfGetterWorksWithEmptyRoleString(): void
@@ -37,7 +37,7 @@ class SubscriptionRepositoryInMemoryTest extends TestCase
         $clients = $subRepo->getClientsByTopicAndRole('ProductCreated', '');
 
         assertEquals(1, count($clients));
-        assertEquals($client1->getTokenId(), $clients[0]->getTokenId());
+        assertEquals($client1->getId(), $clients[0]->getId());
     }
 
     public function testIfSubscribeWorksWithClientWithRoleAdmin(): void
@@ -53,9 +53,9 @@ class SubscriptionRepositoryInMemoryTest extends TestCase
 
         assertEquals(1, count($adminClients));
         assertEquals(2, count($allClients));
-        assertEquals($client1->getTokenId(), $adminClients[0]->getTokenId());
-        assertEquals($client1->getTokenId(), $allClients[0]->getTokenId());
-        assertEquals($client2->getTokenId(), $allClients[1]->getTokenId());
+        assertEquals($client1->getId(), $adminClients[0]->getId());
+        assertEquals($client1->getId(), $allClients[0]->getId());
+        assertEquals($client2->getId(), $allClients[1]->getId());
     }
 
     public function testIfClientCanOnlyBeSubscribedOnceToTopic(): void
@@ -68,7 +68,7 @@ class SubscriptionRepositoryInMemoryTest extends TestCase
         $adminClients = $subRepo->getClientsByTopicAndRole('ProductCreated', 'admin');
 
         assertEquals(1, count($adminClients));
-        assertEquals($client1->getTokenId(), $adminClients[0]->getTokenId());
+        assertEquals($client1->getId(), $adminClients[0]->getId());
     }
 
     public function testIfClientCanSubscribeToMultipleTopics(): void
@@ -81,7 +81,7 @@ class SubscriptionRepositoryInMemoryTest extends TestCase
         $adminClients = $subRepo->getClientsByTopicAndRole('ProductCreated', 'admin');
 
         assertEquals(1, count($adminClients));
-        assertEquals($client1->getTokenId(), $adminClients[0]->getTokenId());
+        assertEquals($client1->getId(), $adminClients[0]->getId());
         assertEquals(['ProductCreated', 'ProductUpdated'], $adminClients[0]->getTopics());
     }
 
@@ -96,7 +96,7 @@ class SubscriptionRepositoryInMemoryTest extends TestCase
         $adminClients = $subRepo->getClientsByTopicAndRole('ProductCreated', 'admin');
 
         assertEquals(1, count($adminClients));
-        assertEquals($client1->getTokenId(), $adminClients[0]->getTokenId());
+        assertEquals($client1->getId(), $adminClients[0]->getId());
         assertEquals(['ProductCreated'], $adminClients[0]->getTopics());
     }
 
@@ -112,7 +112,7 @@ class SubscriptionRepositoryInMemoryTest extends TestCase
         $clients = $subRepo->getClientsByTopicAndRole('ProductCreated', 'admin');
 
         assertEquals(1, count($clients));
-        assertEquals($client2->getTokenId(), $clients[0]->getTokenId());
+        assertEquals($client2->getId(), $clients[0]->getId());
         assertEquals(['ProductCreated'], $clients[0]->getTopics());
     }
 
@@ -126,7 +126,7 @@ class SubscriptionRepositoryInMemoryTest extends TestCase
         $clients = $subRepo->getClientsByTopicAndRole('ProductCreated', 'admin');
 
         assertEquals(1, count($clients));
-        assertEquals($client1->getTokenId(), $clients[0]->getTokenId());
+        assertEquals($client1->getId(), $clients[0]->getId());
         assertEquals(['ProductCreated'], $clients[0]->getTopics());
     }
 
@@ -140,7 +140,7 @@ class SubscriptionRepositoryInMemoryTest extends TestCase
         $clients = $subRepo->getClientsByTopicAndRole('ProductCreated', 'admin');
 
         assertEquals(1, count($clients));
-        assertEquals($client1->getTokenId(), $clients[0]->getTokenId());
+        assertEquals($client1->getId(), $clients[0]->getId());
         assertEquals(['ProductCreated'], $clients[0]->getTopics());
     }
 
@@ -168,7 +168,7 @@ class SubscriptionRepositoryInMemoryTest extends TestCase
         $clients = $subRepo->getClientsByTopicAndRole('ProductCreated', 'admin');
 
         assertEquals(1, count($clients));
-        assertEquals($client2->getTokenId(), $clients[0]->getTokenId());
+        assertEquals($client2->getId(), $clients[0]->getId());
         assertEquals(0, count($client1->getTopics()));
     }
 
@@ -184,7 +184,7 @@ class SubscriptionRepositoryInMemoryTest extends TestCase
         $clients = $subRepo->getClientsByTopicAndRole('ProductCreated', 'admin');
 
         assertEquals(1, count($clients));
-        assertEquals($client1->getTokenId(), $clients[0]->getTokenId());
+        assertEquals($client1->getId(), $clients[0]->getId());
     }
 
     private function createSubRepo(): SubscriptionRepositoryInMemory

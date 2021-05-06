@@ -64,7 +64,7 @@ class EventController
 
         foreach ($clients as $client) {
             $this->logger->debug('Sending data to client', $validatedData);
-            $client->send([
+            $client->getStream()->write([
                 'topic' => $validatedData['topic'],
                 'payload' => $validatedData['payload'],
             ]);
