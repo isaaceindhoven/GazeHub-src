@@ -1,4 +1,4 @@
-name: "Tests"
+name: "CI"
 
 on:
   pull_request:
@@ -7,8 +7,8 @@ on:
     branches: [ master ]
 
 jobs:
-  tests:
-    name: "Tests"
+  ci:
+    name: "CI"
 
     runs-on: ubuntu-latest
 
@@ -32,5 +32,11 @@ jobs:
       - name: "Install dependencies"
         run: "composer install --no-interaction --no-progress --no-suggest --ignore-platform-reqs"
 
+      - name: "Run PHP CodeSniffer"
+        run: "./vendor/bin/phpcs"
+
+      - name: "Run PHPStan"
+        run: "./vendor/bin/phpstan analyse -c phpstan.neon"
+
       - name: "Run tests"
-        run: ./vendor/bin/phpunit
+        run: "./vendor/bin/phpunit -c phpunit.xml"
