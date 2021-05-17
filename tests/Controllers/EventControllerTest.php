@@ -7,8 +7,8 @@ namespace ISAAC\GazeHub\Tests\Controllers;
 use ISAAC\GazeHub\Models\Client;
 use ISAAC\GazeHub\Repositories\SubscriptionRepository;
 use ISAAC\GazeHub\Repositories\SubscriptionRepositoryInMemory;
-
 use React\Stream\ThroughStream;
+
 use function PHPUnit\Framework\once;
 
 class EventControllerTest extends ControllerTestCase
