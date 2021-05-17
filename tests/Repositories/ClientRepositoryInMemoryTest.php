@@ -15,7 +15,6 @@ use function PHPUnit\Framework\assertEquals;
 use function PHPUnit\Framework\assertNotEmpty;
 use function PHPUnit\Framework\assertNotNull;
 use function PHPUnit\Framework\assertNull;
-use function uniqid;
 
 class ClientRepositoryInMemoryTest extends TestCase
 {
