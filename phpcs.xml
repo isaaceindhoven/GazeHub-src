@@ -8,4 +8,6 @@
 
     <!-- include all rules in isaac ruleset -->
     <rule ref="ISAAC"/>
+
+    <config name="php_version" value="70328"/>
 </ruleset>
