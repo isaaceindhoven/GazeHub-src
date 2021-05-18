@@ -14,6 +14,7 @@ use function file_get_contents;
 use function getenv;
 use function json_decode;
 use function strtoupper;
+use function trim;
 
 use const JSON_THROW_ON_ERROR;
 
@@ -70,7 +71,7 @@ class ConfigRepositoryFilesystem implements ConfigRepository
     {
         $jsonContent = file_get_contents($path);
 
-        if ($jsonContent === false) {
+        if ($jsonContent === false || trim($jsonContent) === '') {
             return;
         }
 

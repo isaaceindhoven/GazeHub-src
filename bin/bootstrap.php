@@ -36,7 +36,7 @@ if (array_key_exists('h', $options)) {
         $hub = new Hub(require(__DIR__ . '/../config/providers.php'));
         $hub->run();
     } catch (Exception $e) {
-        fwrite(STDERR, 'Something went wrong while booting GazeHub.' . "\n" . $e->getMessage() . "\n");
+        fwrite(STDERR, 'Something went wrong while booting GazeHub.' . "\n" . $e . "\n");
         exit(1);
     }
 }

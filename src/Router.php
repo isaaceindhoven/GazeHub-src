@@ -92,7 +92,7 @@ class Router
         } catch (UnauthorizedException | TokenDecodeException $e) {
             return new Response(401);
         } catch (GazeException $e) {
-            $this->logger->error($e->getMessage());
+            $this->logger->error($e);
             return new Response(500);
         }
     }

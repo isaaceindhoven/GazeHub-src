@@ -17,7 +17,7 @@ use Psr\Log\LoggerInterface;
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
 use React\Http\Server as HttpServer;
-use React\Socket\Server;
+use React\Socket\Server as SocketServer;
 
 use function class_exists;
 use function get_class;
@@ -44,17 +44,12 @@ class Hub
      */
     public function __construct(array $providers = [], Container $container = null)
     {
-        if ($container === null) {
-            $container = new Container();
-        }
-        $this->container = $container;
+        $this->container = $container === null ? new Container() : $container;
 
         $this->loadLogger();
         $this->loadProviders($providers);
-        $this->logger = $this->container->get(LoggerInterface::class);
 
-        $loop = Factory::create();
-        $this->container->set(LoopInterface::class, $loop);
+        $this->container->set(LoopInterface::class, Factory::create());
     }
 
     /**
@@ -71,18 +66,18 @@ class Hub
         /** @var LoopInterface $loop */
         $loop = $this->container->get(LoopInterface::class);
 
-        $socket = new Server(sprintf('%s:%s', $host, $port), $loop);
+        $socketServer = new SocketServer(sprintf('%s:%s', $host, $port), $loop);
 
-        $server = new HttpServer(
+        $httpServer = new HttpServer(
             $loop,
             [$this->container->get(CorsMiddleware::class), 'handle'],
             [$this->container->get(JsonParserMiddleware::class), 'handle'],
             [new Router($this->container), 'route']
         );
 
-        $server->on('error', [$this, 'onError']);
+        $httpServer->on('error', [$this, 'onError']);
 
-        $server->listen($socket);
+        $httpServer->listen($socketServer);
 
         $this->logger->info(sprintf('Server running on %s:%s', $host, $port));
 
