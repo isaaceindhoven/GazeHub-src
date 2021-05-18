@@ -40,6 +40,14 @@ class ClientRepositoryInMemory implements ClientRepository
     }
 
     /**
+     * @return int
+     */
+    public function count(): int
+    {
+        return count($this->clients);
+    }
+
+    /**
      * Create and add a new client to this repository
      *
      * @return Client                   Newly created client

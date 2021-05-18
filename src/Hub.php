@@ -36,14 +36,23 @@ class Hub
 
     /**
      * Hub constructor.
+     * @param string[] $providers
+     * @param Container|null $container
      * @throws DependencyException
      * @throws NotFoundException
      */
-    public function __construct()
+    public function __construct(array $providers = [], Container $container = null)
     {
-        $this->container = new Container();
-        $this->loadProviders();
+        if ($container === null) {
+            $container = new Container();
+        }
+        $this->container = $container;
+
         $this->logger = $this->container->get(LoggerInterface::class);
+        $this->loadProviders($providers);
+
+        $loop = Factory::create();
+        $this->container->set(LoopInterface::class, $loop);
     }
 
     /**
@@ -57,8 +66,8 @@ class Hub
         $host = $config->get('host');
         $port = $config->get('port');
 
-        $loop = Factory::create();
-        $this->container->set(LoopInterface::class, $loop);
+        /** @var LoopInterface $loop */
+        $loop = $this->container->get(LoopInterface::class);
 
         $socket = new Server(sprintf('%s:%s', $host, $port), $loop);
 
@@ -88,10 +97,11 @@ class Hub
         $this->logger->error($message);
     }
 
-    private function loadProviders(): void
+    /**
+     * @param string[] $providers
+     */
+    private function loadProviders(array $providers): void
     {
-        $providers = require(__DIR__ . '/../config/providers.php');
-
         foreach ($providers as $provider) {
             if (!class_exists($provider)) {
                 $this->logger->error(sprintf('Provider %s does not exist.', $provider));

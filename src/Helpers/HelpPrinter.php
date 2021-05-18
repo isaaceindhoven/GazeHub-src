@@ -10,6 +10,9 @@ use function preg_replace;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 
+/**
+ * @codeCoverageIgnore
+ */
 class HelpPrinter
 {
     /**

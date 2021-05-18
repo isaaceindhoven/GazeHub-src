@@ -17,6 +17,13 @@ interface ClientRepository
     public function getById(string $id): ?Client;
 
     /**
+     * Get total client in repository
+     *
+     * @return int
+     */
+    public function count(): int;
+
+    /**
      * Add a new client to the repository
      *
      * @return Client
