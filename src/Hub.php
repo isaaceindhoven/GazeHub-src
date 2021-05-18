@@ -46,8 +46,9 @@ class Hub
     {
         $this->container = $container === null ? new Container() : $container;
 
-        $this->loadLogger();
+        $this->loadDefaultLogger();
         $this->loadProviders($providers);
+        $this->logger = $this->container->get(LoggerInterface::class);
 
         $this->container->set(LoopInterface::class, Factory::create());
     }
@@ -123,7 +124,7 @@ class Hub
      * @throws DependencyException
      * @throws NotFoundException
      */
-    private function loadLogger(): void
+    private function loadDefaultLogger(): void
     {
         if (!$this->container->has(LoggerInterface::class)) {
             (new LoggerProvider())->register($this->container);
