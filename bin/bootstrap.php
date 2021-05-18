@@ -19,7 +19,7 @@ foreach ([$libraryAutoload, $projectAutoload] as $file) {
 }
 
 if ($composerFile === null) {
-    fwrite(STDERR, 'You can use ISAAC\GazeHub as dependency in a project, ' .
+    fwrite(STDERR, 'You can use GazeHub as dependency in a project, ' .
         'or as a standalone application, but make sure you install the dependencies using composer.');
 
     die(1);
@@ -32,6 +32,11 @@ $options = getopt('h');
 if (array_key_exists('h', $options)) {
     HelpPrinter::print();
 } else {
-    $hub = new Hub();
-    $hub->run();
+    try {
+        $hub = new Hub(require(__DIR__ . '/../config/providers.php'));
+        $hub->run();
+    } catch (Exception $e) {
+        fwrite(STDERR, 'Something went wrong while booting GazeHub.' . "\n" . $e . "\n");
+        exit(1);
+    }
 }

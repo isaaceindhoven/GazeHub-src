@@ -6,6 +6,7 @@ namespace ISAAC\GazeHub\Decoders;
 
 use Exception;
 use Firebase\JWT\JWT;
+use ISAAC\GazeHub\Exceptions\ConfigKeyNotFoundException;
 use ISAAC\GazeHub\Exceptions\TokenDecodeException;
 use ISAAC\GazeHub\Repositories\ConfigRepository;
 
@@ -23,6 +24,11 @@ class TokenDecoderJwt implements TokenDecoder
      */
     private $algorithm;
 
+    /**
+     * TokenDecoderJwt constructor.
+     * @param ConfigRepository $configRepository
+     * @throws ConfigKeyNotFoundException
+     */
     public function __construct(ConfigRepository $configRepository)
     {
         $this->algorithm = $configRepository->get('jwt_alg');

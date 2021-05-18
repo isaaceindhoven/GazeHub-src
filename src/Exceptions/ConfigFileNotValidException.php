@@ -6,6 +6,6 @@ namespace ISAAC\GazeHub\Exceptions;
 
 use Exception;
 
-class ConfigFileNotValidException extends Exception
+class ConfigFileNotValidException extends Exception implements GazeException
 {
 }

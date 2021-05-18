@@ -19,12 +19,17 @@ class LoggerProvider implements Provider
     {
         $options = getopt('q');
 
-        $configRepo = $container->get(ConfigRepository::class);
+        $logLevel = 'INFO';
+
+        if ($container->has(ConfigRepository::class)) {
+            $configRepo = $container->get(ConfigRepository::class);
+            $logLevel = $configRepo->get('log_level');
+        }
 
         $logger = new Logger('GazeHub');
 
         if (count($options) === 0) {
-            $logger->pushHandler(new StreamHandler('php://stdout', $configRepo->get('log_level')));
+            $logger->pushHandler(new StreamHandler('php://stdout', $logLevel));
         }
 
         $container->set(LoggerInterface::class, $logger);

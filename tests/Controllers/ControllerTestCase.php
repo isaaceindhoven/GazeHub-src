@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Tests\Controllers;
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use ISAAC\GazeHub\Repositories\ClientRepository;
 use ISAAC\GazeHub\Router;
 use ISAAC\GazeHub\Tests\BaseTest;
@@ -125,6 +127,11 @@ class ControllerTestCase extends BaseTest
         return $this;
     }
 
+    /**
+     * @return $this
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
     protected function do(): self
     {
         $router = new Router($this->container);
@@ -164,6 +171,8 @@ class ControllerTestCase extends BaseTest
 
         if ($this->response !== null) {
             assertEquals($code, $this->response->getStatusCode());
+        } else {
+            self::fail('No response received');
         }
     }
 }

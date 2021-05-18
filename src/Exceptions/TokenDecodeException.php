@@ -6,6 +6,6 @@ namespace ISAAC\GazeHub\Exceptions;
 
 use Exception;
 
-class TokenDecodeException extends Exception
+class TokenDecodeException extends Exception implements GazeException
 {
 }

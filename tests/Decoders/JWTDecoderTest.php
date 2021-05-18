@@ -34,6 +34,7 @@ class JWTDecoderTest extends BaseTest
      * @param string $token
      * @return mixed[]
      * @throws TokenDecodeException
+     * @throws ConfigKeyNotFoundException
      */
     private function decode(bool $throwsException, string $token): array
     {
@@ -62,6 +63,7 @@ class JWTDecoderTest extends BaseTest
 
     /**
      * @throws TokenDecodeException
+     * @throws ConfigKeyNotFoundException
      */
     public function testIfJwtDecodeThrowsIfNot3Parts(): void
     {
@@ -70,6 +72,7 @@ class JWTDecoderTest extends BaseTest
 
     /**
      * @throws TokenDecodeException
+     * @throws ConfigKeyNotFoundException
      */
     public function testIfJwtDecodeThrowsIfNotValidJsonInTheMiddle(): void
     {
@@ -78,6 +81,7 @@ class JWTDecoderTest extends BaseTest
 
     /**
      * @throws TokenDecodeException
+     * @throws ConfigKeyNotFoundException
      */
     public function testIfJwtDecodeThrowsIfEmptyString(): void
     {
@@ -86,6 +90,7 @@ class JWTDecoderTest extends BaseTest
 
     /**
      * @throws TokenDecodeException
+     * @throws ConfigKeyNotFoundException
      */
     public function testIfJwtDecodeThrowsIf3EmptyDots(): void
     {
@@ -94,6 +99,7 @@ class JWTDecoderTest extends BaseTest
 
     /**
      * @throws TokenDecodeException
+     * @throws ConfigKeyNotFoundException
      */
     public function testIfJwtDecodeThrowsIfMiddleNotValidBase64(): void
     {

@@ -6,6 +6,7 @@ namespace ISAAC\GazeHub\Models;
 
 use ISAAC\GazeHub\Decoders\TokenDecoder;
 use ISAAC\GazeHub\Exceptions\DataValidationFailedException;
+use ISAAC\GazeHub\Exceptions\TokenDecodeException;
 use ISAAC\GazeHub\Exceptions\UnauthorizedException;
 use Psr\Http\Message\ServerRequestInterface;
 use Rakit\Validation\Validator;
@@ -36,6 +37,9 @@ class Request
         $this->originalRequest = $request;
     }
 
+    /**
+     * @throws UnauthorizedException
+     */
     public function isAuthorized(): void
     {
         $token = $this->getAuthTokenFromHeader();
@@ -48,6 +52,7 @@ class Request
     /**
      * @param string $role
      * @throws UnauthorizedException
+     * @throws TokenDecodeException
      */
     public function isRole(string $role): void
     {

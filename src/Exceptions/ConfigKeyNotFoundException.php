@@ -6,6 +6,6 @@ namespace ISAAC\GazeHub\Exceptions;
 
 use Exception;
 
-class ConfigKeyNotFoundException extends Exception
+class ConfigKeyNotFoundException extends Exception implements GazeException
 {
 }

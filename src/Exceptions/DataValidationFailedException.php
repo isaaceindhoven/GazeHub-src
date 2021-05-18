@@ -6,7 +6,7 @@ namespace ISAAC\GazeHub\Exceptions;
 
 use Exception;
 
-class DataValidationFailedException extends Exception
+class DataValidationFailedException extends Exception implements GazeException
 {
     /**
      * @var string[]

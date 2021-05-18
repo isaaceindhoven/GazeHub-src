@@ -8,6 +8,7 @@ use ISAAC\GazeHub\Decoders\TokenDecoder;
 use ISAAC\GazeHub\Providers\ClientRepositoryProvider;
 use ISAAC\GazeHub\Providers\ConfigRepositoryProvider;
 use ISAAC\GazeHub\Providers\LoggerProvider;
+use ISAAC\GazeHub\Providers\Provider;
 use ISAAC\GazeHub\Providers\SubscriptionRepositoryProvider;
 use ISAAC\GazeHub\Providers\TokenDecoderProvider;
 use ISAAC\GazeHub\Repositories\ClientRepository;
@@ -30,6 +31,7 @@ class ProviderTest extends BaseTest
         ];
 
         foreach ($providers as $provider => $classesToInject) {
+            /** @var Provider $provider */
             $provider = new $provider();
             $provider->register($this->container);
 
