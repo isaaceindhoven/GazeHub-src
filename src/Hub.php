@@ -10,6 +10,7 @@ use DI\NotFoundException;
 use Exception;
 use ISAAC\GazeHub\Middlewares\CorsMiddleware;
 use ISAAC\GazeHub\Middlewares\JsonParserMiddleware;
+use ISAAC\GazeHub\Providers\LoggerProvider;
 use ISAAC\GazeHub\Providers\Provider;
 use ISAAC\GazeHub\Repositories\ConfigRepository;
 use Psr\Log\LoggerInterface;
@@ -48,8 +49,9 @@ class Hub
         }
         $this->container = $container;
 
-        $this->logger = $this->container->get(LoggerInterface::class);
+        $this->loadLogger();
         $this->loadProviders($providers);
+        $this->logger = $this->container->get(LoggerInterface::class);
 
         $loop = Factory::create();
         $this->container->set(LoopInterface::class, $loop);
@@ -118,5 +120,20 @@ class Hub
 
             $provider->register($this->container);
         }
+    }
+
+    /**
+     * Make sure a logger is always available, but can be overridden by another provider
+     *
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
+    private function loadLogger(): void
+    {
+        if (!$this->container->has(LoggerInterface::class)) {
+            (new LoggerProvider())->register($this->container);
+        }
+
+        $this->logger = $this->container->get(LoggerInterface::class);
     }
 }
