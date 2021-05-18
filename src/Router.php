@@ -123,9 +123,8 @@ class Router
             throw new NotFoundException();
         }
 
-        return function(Request $request) use ($instance, $handler): Response {
+        return static function (Request $request) use ($instance, $handler): Response {
             return $instance->$handler($request); // @phpstan-ignore-line
-
         };
     }
 
