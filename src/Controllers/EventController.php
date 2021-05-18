@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ISAAC\GazeHub\Controllers;
 
 use ISAAC\GazeHub\Exceptions\DataValidationFailedException;
+use ISAAC\GazeHub\Exceptions\TokenDecodeException;
 use ISAAC\GazeHub\Exceptions\UnauthorizedException;
 use ISAAC\GazeHub\Factories\JsonFactory;
 use ISAAC\GazeHub\Models\Request;
@@ -44,6 +45,7 @@ class EventController
      * @return Response
      * @throws DataValidationFailedException
      * @throws UnauthorizedException
+     * @throws TokenDecodeException
      */
     public function handle(Request $request): Response
     {

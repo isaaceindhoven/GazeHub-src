@@ -6,6 +6,6 @@ namespace ISAAC\GazeHub\Exceptions;
 
 use Exception;
 
-class TokenDecoderClassNotFoundException extends Exception
+class TokenDecoderClassNotFoundException extends Exception implements GazeException
 {
 }

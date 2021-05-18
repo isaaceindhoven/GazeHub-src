@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace ISAAC\GazeHub;
 
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
 use Exception;
 use ISAAC\GazeHub\Middlewares\CorsMiddleware;
 use ISAAC\GazeHub\Middlewares\JsonParserMiddleware;
@@ -16,6 +18,7 @@ use React\EventLoop\LoopInterface;
 use React\Http\Server as HttpServer;
 use React\Socket\Server;
 
+use function class_exists;
 use function get_class;
 use function sprintf;
 
@@ -31,6 +34,11 @@ class Hub
      */
     private $logger;
 
+    /**
+     * Hub constructor.
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
     public function __construct()
     {
         $this->container = new Container();
@@ -38,6 +46,10 @@ class Hub
         $this->logger = $this->container->get(LoggerInterface::class);
     }
 
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
     public function run(): void
     {
         $config = $this->container->get(ConfigRepository::class);
@@ -68,10 +80,12 @@ class Hub
 
     public function onError(Exception $e): void
     {
-        $this->logger->error($e->getMessage());
+        $message = $e->getMessage();
         if ($e->getPrevious() !== null && $e->getPrevious()->getMessage() !== '') {
-            $this->logger->error($e->getPrevious()->getMessage());
+            $message .= "\t" . sprintf('Previous error: %s' . $e->getPrevious()->getMessage());
         }
+
+        $this->logger->error($message);
     }
 
     private function loadProviders(): void
@@ -79,11 +93,16 @@ class Hub
         $providers = require(__DIR__ . '/../config/providers.php');
 
         foreach ($providers as $provider) {
+            if (!class_exists($provider)) {
+                $this->logger->error(sprintf('Provider %s does not exist.', $provider));
+                continue;
+            }
+
             $provider = new $provider();
 
             if (!($provider instanceof Provider)) {
                 $className = get_class($provider);
-                $this->logger->error(sprintf('Class %s is not an instance of Provider', $className));
+                $this->logger->error(sprintf('Provider %s is not an instance of Provider', $className));
                 continue;
             }
 

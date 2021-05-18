@@ -6,6 +6,6 @@ namespace ISAAC\GazeHub\Exceptions;
 
 use Exception;
 
-class UnauthorizedException extends Exception
+class UnauthorizedException extends Exception implements GazeException
 {
 }
