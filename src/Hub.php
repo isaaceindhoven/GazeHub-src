@@ -91,7 +91,7 @@ class Hub
     {
         $message = $e->getMessage();
         if ($e->getPrevious() !== null && $e->getPrevious()->getMessage() !== '') {
-            $message .= "\t" . sprintf('Previous error: %s' . $e->getPrevious()->getMessage());
+            $message .= "\n\t" . sprintf('Previous error: %s' . $e->getPrevious()->getMessage());
         }
 
         $this->logger->error($message);
