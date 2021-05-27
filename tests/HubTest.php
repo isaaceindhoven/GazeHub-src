@@ -54,4 +54,15 @@ class HubTest extends BaseTest
 
         self::assertEquals('registered', $this->container->get('ValidProviderTest'));
     }
+
+    public function testOnErrorMethodWillLogMessage(): void
+    {
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects(self::once())->method('error');
+
+        $this->container->set(LoggerInterface::class, $logger);
+
+        $hub = new Hub([], $this->container);
+        $hub->onError(new \Exception('Test'));
+    }
 }

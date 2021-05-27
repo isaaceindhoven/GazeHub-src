@@ -14,9 +14,10 @@ return [
     'POST' => [
         '/event' => [EventController::class, 'handle'],
         '/subscription' => [SubscriptionController::class, 'create'],
-        '/auth' => [AuthController::class, 'handle'],
+        '/auth' => [AuthController::class, 'authenticate'],
     ],
     'DELETE' => [
         '/subscription' => [SubscriptionController::class, 'destroy'],
+        '/auth' => [AuthController::class, 'unauthenticate'],
     ],
 ];

@@ -7,6 +7,7 @@ namespace ISAAC\GazeHub\Controllers;
 use ISAAC\GazeHub\Decoders\TokenDecoder;
 use ISAAC\GazeHub\Exceptions\DataValidationFailedException;
 use ISAAC\GazeHub\Exceptions\TokenDecodeException;
+use ISAAC\GazeHub\Exceptions\UnauthorizedException;
 use ISAAC\GazeHub\Factories\JsonFactory;
 use ISAAC\GazeHub\Models\Request;
 use ISAAC\GazeHub\Repositories\ClientRepository;
@@ -47,7 +48,7 @@ class AuthController
      * @throws DataValidationFailedException
      * @throws TokenDecodeException
      */
-    public function handle(Request $request): Response
+    public function authenticate(Request $request): Response
     {
         $validatedData = $request->validate([
             'id' => 'required',
@@ -69,5 +70,26 @@ class AuthController
         $client->setRoles($token['roles']);
 
         return $this->jsonFactory->create(['status' => 'Client authenticated'], 200);
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     * @throws UnauthorizedException
+     */
+    public function unauthenticate(Request $request): Response
+    {
+        $request->isAuthorized();
+        $id = $request->getAuthTokenFromHeader();
+
+        $client = $this->clientRepository->getById($id);
+
+        if ($client === null) {
+            return $this->jsonFactory->create(['error' => 'Not found'], 404);
+        }
+
+        $client->setRoles([]);
+
+        return $this->jsonFactory->create(['status' => 'Client unauthenticated'], 200);
     }
 }

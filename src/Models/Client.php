@@ -11,6 +11,7 @@ use function array_push;
 use function in_array;
 use function json_encode;
 
+// phpcs:ignore ObjectCalisthenics.Metrics.MethodPerClassLimit.ObjectCalisthenics\Sniffs\Metrics\MethodPerClassLimitSniff
 class Client
 {
     /**
@@ -98,6 +99,11 @@ class Client
     public function getRoles(): array
     {
         return $this->roles;
+    }
+
+    public function hasRole(string $role): bool
+    {
+        return in_array($role, $this->roles, true);
     }
 
     public function getId(): string
