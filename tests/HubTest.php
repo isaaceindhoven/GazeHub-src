@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Tests;
 
+use Exception;
 use ISAAC\GazeHub\Hub;
 use ISAAC\GazeHub\Tests\Providers\InvalidProvider;
 use ISAAC\GazeHub\Tests\Providers\ValidProvider;
@@ -63,6 +64,6 @@ class HubTest extends BaseTest
         $this->container->set(LoggerInterface::class, $logger);
 
         $hub = new Hub([], $this->container);
-        $hub->onError(new \Exception('Test'));
+        $hub->onError(new Exception('Test'));
     }
 }
