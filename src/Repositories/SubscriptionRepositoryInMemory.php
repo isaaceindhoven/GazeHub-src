@@ -14,14 +14,9 @@ use function trim;
 
 class SubscriptionRepositoryInMemory implements SubscriptionRepository
 {
-    private const ANY = 'GAZEHUB__ALL';
-
     /**
      * [
-     *      "ProductCreated" => [
-     *          "GAZEHUB__ALL" => [CLIENTS],
-     *          "admin" => [CLIENTS]
-     *      ]
+     *    "ProductCreated" => [CLIENT]
      * ]
      *
      * @var mixed[]
@@ -54,14 +49,8 @@ class SubscriptionRepositoryInMemory implements SubscriptionRepository
         $client->addTopics([$topic]);
 
         $this->makeKeyOnArrayIfNotExist($this->subscriptions, $topic);
-        $this->makeKeyOnArrayIfNotExist($this->subscriptions[$topic], self::ANY);
 
-        $this->subscriptions[$topic][self::ANY][] = $client;
-
-        foreach ($client->getRoles() as $role) {
-            $this->makeKeyOnArrayIfNotExist($this->subscriptions[$topic], $role);
-            $this->subscriptions[$topic][$role][] = $client;
-        }
+        $this->subscriptions[$topic][] = $client;
     }
 
     /**
@@ -77,14 +66,12 @@ class SubscriptionRepositoryInMemory implements SubscriptionRepository
 
         $this->logger->info('Unsubscribe client from topic', [$topic]);
 
-        foreach ($this->subscriptions[$topic] as $role => $clients) {
-            $this->subscriptions[$topic][$role] = array_values(array_filter(
-                $clients,
-                static function ($client) use ($clientToUnsubscribe): bool {
-                    return !$clientToUnsubscribe->equals($client);
-                }
-            ));
-        }
+        $this->subscriptions[$topic] = array_values(array_filter(
+            $this->subscriptions[$topic],
+            static function ($client) use ($clientToUnsubscribe): bool {
+                return !$clientToUnsubscribe->equals($client);
+            }
+        ));
 
         $clientToUnsubscribe->removeTopics([$topic]);
     }
@@ -116,14 +103,12 @@ class SubscriptionRepositoryInMemory implements SubscriptionRepository
         }
 
         if ($role === null) {
-            return $this->subscriptions[$topic][self::ANY];
+            return $this->subscriptions[$topic];
         }
 
-        if (array_key_exists($role, $this->subscriptions[$topic])) {
-            return $this->subscriptions[$topic][$role];
-        }
-
-        return [];
+        return array_filter($this->subscriptions[$topic], static function (Client $client) use ($role): bool {
+            return $client->hasRole($role);
+        });
     }
 
     /**
