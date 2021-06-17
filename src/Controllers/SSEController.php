@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Controllers;
 
+use ISAAC\GazeHub\Models\Request;
 use ISAAC\GazeHub\Repositories\ClientRepository;
 use ISAAC\GazeHub\Repositories\SubscriptionRepository;
 use React\EventLoop\LoopInterface;
@@ -41,13 +42,37 @@ class SSEController
     /**
      * @return Response
      */
-    public function handle(): Response
+    public function handle(Request $request): Response
     {
         $client = $this->clientRepository->add();
+
+        $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole("GAZE_DEBUG_ClientConnected");
+
+        foreach ($debugClients as $debugClient) {
+            $debugClient->getStream()->write([
+                'topic' => "GAZE_DEBUG_ClientConnected",
+                'payload' => [
+                    "id" => $client->getId(),
+                    "ip" => $request->getIp()
+                ],
+            ]);
+        }
 
         $client->getStream()->on(
             'close',
             function () use ($client): void {
+
+                $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole("GAZE_DEBUG_ClientDisconnected");
+
+                foreach ($debugClients as $debugClient) {
+                    $debugClient->getStream()->write([
+                        'topic' => "GAZE_DEBUG_ClientDisconnected",
+                        'payload' => [
+                            "id" => $client->getId()
+                        ],
+                    ]);
+                }
+                
                 $this->subscriptionRepository->remove($client);
                 $this->clientRepository->remove($client);
             }

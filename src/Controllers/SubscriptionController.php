@@ -55,6 +55,18 @@ class SubscriptionController
             'topics.*' => 'required|regex:/.+/',
         ]);
 
+        $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole("GAZE_DEBUG_Subscribed");
+
+        foreach ($debugClients as $debugClient) {
+            $debugClient->getStream()->write([
+                'topic' => "GAZE_DEBUG_Subscribed",
+                'payload' => [
+                    "clientId" => $client->getId(),
+                    "topics" => $validatedData['topics']
+                ],
+            ]);
+        }
+
         foreach ($validatedData['topics'] as $topic) {
             $this->subscriptionRepository->subscribe($client, $topic);
         }
@@ -76,6 +88,18 @@ class SubscriptionController
             'topics' => 'required|array',
             'topics.*' => 'required|regex:/.+/',
         ]);
+
+        $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole("GAZE_DEBUG_Unsubscribed");
+
+        foreach ($debugClients as $debugClient) {
+            $debugClient->getStream()->write([
+                'topic' => "GAZE_DEBUG_Unsubscribed",
+                'payload' => [
+                    "clientId" => $client->getId(),
+                    "topics" => $validatedData['topics']
+                ],
+            ]);
+        }
 
         foreach ($validatedData['topics'] as $topic) {
             $this->subscriptionRepository->unsubscribe($client, $topic);
