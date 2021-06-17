@@ -112,7 +112,7 @@
                                                 </div>
                                             </div>
                                             
-                                            <div class="flex flex-col relative" style="flex: 70;">
+                                            <div class="flex flex-col relative overflow-scroll" style="flex: 70;">
         
                                                 <div @click='client.messages = []' class="fab absolute w-10 h-10 hover:bg-red-600 cursor-pointer bg-red-500 text-white rounded-full flex justify-center items-center right-0 bottom-0">
                                                     <div style="left: -300%;" class="tooltip absolute text-xs bg-gray-800 text-white rounded px-3 py-2">clear messages</div>
@@ -208,10 +208,6 @@
                             const client = this.clients.find(c => c.id === payload.clientId);
                             if (client === undefined) return;
                             client.messages.push(payload.payload);
-                        });
-
-                        gaze.on("test123", payload => {
-                            console.log(payload);
                         });
                     }
                 }))
