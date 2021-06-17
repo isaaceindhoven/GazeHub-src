@@ -114,7 +114,7 @@
                                             
                                             <div class="flex flex-col relative" style="flex: 70;">
         
-                                                <div class="fab absolute w-10 h-10 hover:bg-red-600 cursor-pointer bg-red-500 text-white rounded-full flex justify-center items-center right-0 bottom-0">
+                                                <div @click='client.messages = []' class="fab absolute w-10 h-10 hover:bg-red-600 cursor-pointer bg-red-500 text-white rounded-full flex justify-center items-center right-0 bottom-0">
                                                     <div style="left: -300%;" class="tooltip absolute text-xs bg-gray-800 text-white rounded px-3 py-2">clear messages</div>
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -124,26 +124,14 @@
                                                 <span class="text-xs text-gray-500 text-center mb-4">MESSAGES</span>
         
                                                 <div class="flex flex-col overflow-y-scroll">
-                                                    <div class="flex flex-col py-2 mx-5">
-                                                        <pre style="font-size: 13px;" id="json1"></pre>
-                                                        <script>
-                                                            var data = {
-                                                                "payload": {
-                                                                    'time': new Date().getTime(),
-                                                                    'product_name': 'Shirt',
-                                                                    'price': 1200,
-                                                                    'created_at': new Date().getTime(),
-                                                                    'is_deleted': false,
-                                                                    'orders': [1, 2, 55, 88],
-                                                                    'refundable': false
-                                                                },
-                                                                'topic': 'ProductCreated',
-                                                                'role': 'Inkoop'
-                                                            };
-                                                            $('#json1').jsonBrowse(data, {collapsed: true, withQuotes: true});
-                                                        </script>
-                                                    </div>
-    
+                                                    <template x-for="message in client.messages">
+                                                        <div class="flex flex-col py-2 mx-5">
+                                                            <pre
+                                                                style="font-size: 13px;"
+                                                                x-init="$($el).jsonBrowse(message, {collapsed: true, withQuotes: true})">
+                                                            </pre>
+                                                        </div>
+                                                    </template>
                                                 </div>
         
                                             </div>
@@ -213,6 +201,12 @@
                         // });
 
                         gaze.on("GAZE_DEBUG_Emitted", payload => {
+                            const client = this.clients.find(c => c.id === payload.clientId);
+                            if (client === undefined) return;
+                            client.messages.push(payload.payload);
+                        });
+
+                        gaze.on("test123", payload => {
                             console.log(payload);
                         });
                     }
