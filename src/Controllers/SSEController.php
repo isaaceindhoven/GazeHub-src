@@ -46,14 +46,14 @@ class SSEController
     {
         $client = $this->clientRepository->add();
 
-        $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole("GAZE_DEBUG_ClientConnected");
+        $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole('GAZE_DEBUG_ClientConnected');
 
         foreach ($debugClients as $debugClient) {
             $debugClient->getStream()->write([
-                'topic' => "GAZE_DEBUG_ClientConnected",
+                'topic' => 'GAZE_DEBUG_ClientConnected',
                 'payload' => [
-                    "id" => $client->getId(),
-                    "ip" => $request->getIp()
+                    'id' => $client->getId(),
+                    'ip' => $request->getIp(),
                 ],
             ]);
         }
@@ -62,17 +62,17 @@ class SSEController
             'close',
             function () use ($client): void {
 
-                $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole("GAZE_DEBUG_ClientDisconnected");
+                $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole('GAZE_DEBUG_ClientDisconnected');
 
                 foreach ($debugClients as $debugClient) {
                     $debugClient->getStream()->write([
-                        'topic' => "GAZE_DEBUG_ClientDisconnected",
+                        'topic' => 'GAZE_DEBUG_ClientDisconnected',
                         'payload' => [
-                            "id" => $client->getId()
+                            'id' => $client->getId(),
                         ],
                     ]);
                 }
-                
+
                 $this->subscriptionRepository->remove($client);
                 $this->clientRepository->remove($client);
             }

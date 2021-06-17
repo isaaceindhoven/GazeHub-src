@@ -75,14 +75,14 @@ class AuthController
             throw new DataValidationFailedException(['roles' => 'Roles are missing from token payload']);
         }
 
-        $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole("GAZE_DEBUG_Authenticated");
+        $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole('GAZE_DEBUG_Authenticated');
 
         foreach ($debugClients as $debugClient) {
             $debugClient->getStream()->write([
-                'topic' => "GAZE_DEBUG_Authenticated",
+                'topic' => 'GAZE_DEBUG_Authenticated',
                 'payload' => [
-                    "clientId" => $client->getId(),
-                    "roles" => $token['roles'],
+                    'clientId' => $client->getId(),
+                    'roles' => $token['roles'],
                 ],
             ]);
         }
@@ -108,13 +108,13 @@ class AuthController
             return $this->jsonFactory->create(['error' => 'Not found'], 404);
         }
 
-        $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole("GAZE_DEBUG_Unauthenticated");
+        $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole('GAZE_DEBUG_Unauthenticated');
 
         foreach ($debugClients as $debugClient) {
             $debugClient->getStream()->write([
-                'topic' => "GAZE_DEBUG_Unauthenticated",
+                'topic' => 'GAZE_DEBUG_Unauthenticated',
                 'payload' => [
-                    "clientId" => $client->getId()
+                    'clientId' => $client->getId(),
                 ],
             ]);
         }

@@ -122,7 +122,8 @@ class Request
         return str_replace('Bearer ', '', $token);
     }
 
-    public function getIp(): string {
-        return $this->originalRequest->getServerParams()["REMOTE_ADDR"];
+    public function getIp(): string
+    {
+        return $this->originalRequest->getServerParams()['REMOTE_ADDR'];
     }
 }

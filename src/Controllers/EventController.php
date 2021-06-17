@@ -64,17 +64,17 @@ class EventController
             $validatedData['role']
         );
 
-        $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole("GAZE_DEBUG_Emitted");
+        $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole('GAZE_DEBUG_Emitted');
 
         foreach ($clients as $client) {
             $this->logger->debug('Sending data to client', $validatedData);
 
             foreach ($debugClients as $debugClient) {
                 $debugClient->getStream()->write([
-                    'topic' => "GAZE_DEBUG_Emitted",
+                    'topic' => 'GAZE_DEBUG_Emitted',
                     'payload' => [
-                        "clientId" => $client->getId(),
-                        "payload" => $validatedData
+                        'clientId' => $client->getId(),
+                        'payload' => $validatedData,
                     ],
                 ]);
             }

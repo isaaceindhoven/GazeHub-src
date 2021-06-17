@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ISAAC\GazeHub\Tests\Controllers;
 
 use ISAAC\GazeHub\Controllers\SSEController;
+use ISAAC\GazeHub\Models\Request;
 use ISAAC\GazeHub\Repositories\ClientRepository;
 use React\EventLoop\LoopInterface;
 
@@ -25,7 +26,7 @@ class SSEControllerTest extends ControllerTestCase
         /** @var SSEController $controller */
         $controller = $this->container->get(SSEController::class);
 
-        $response = $controller->handle();
+        $response = $controller->handle($this->getRequest());
         self::assertEquals(1, $clientRepo->count());
 
         $response->getBody()->close();
@@ -41,7 +42,7 @@ class SSEControllerTest extends ControllerTestCase
         /** @var LoopInterface $loop */
         $loop = $this->container->get(LoopInterface::class);
 
-        $response = $controller->handle();
+        $response = $controller->handle($this->getRequest());
         $response->getBody()->input->on('data', static function ($data): void {
             self::assertNotEmpty($data);
         });
@@ -50,5 +51,10 @@ class SSEControllerTest extends ControllerTestCase
             $loop->stop();
         });
         $loop->run();
+    }
+
+    private function getRequest(): Request
+    {
+        return $this->createMock(Request::class);
     }
 }
