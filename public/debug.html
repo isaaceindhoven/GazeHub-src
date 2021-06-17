@@ -123,12 +123,12 @@
         
                                                 <span class="text-xs text-gray-500 text-center mb-4">MESSAGES</span>
         
-                                                <div class="flex flex-col overflow-y-scroll">
+                                                <div class="flex flex-col flex-col-reverse overflow-y-scroll">
                                                     <template x-for="message in client.messages">
                                                         <div class="flex flex-col py-2 mx-5">
                                                             <pre
                                                                 style="font-size: 13px;"
-                                                                x-init="$($el).jsonBrowse(message, {collapsed: true, withQuotes: true})">
+                                                                x-init="$($el).jsonBrowse(message, {collapsed: false, withQuotes: true})">
                                                             </pre>
                                                         </div>
                                                     </template>
@@ -192,13 +192,17 @@
                             })
                         });
 
-                        // gaze.on("GAZE_DEBUG_Authenticated", payload => {
-                        //     console.log(payload);
-                        // });
+                        gaze.on("GAZE_DEBUG_Authenticated", payload => {
+                            const client = this.clients.find(c => c.id === payload.clientId);
+                            if (client === undefined) return;
+                            client.roles = payload.roles;
+                        });
 
-                        // gaze.on("GAZE_DEBUG_Unauthenticated", payload => {
-                        //     console.log(payload);
-                        // });
+                        gaze.on("GAZE_DEBUG_Unauthenticated", payload => {
+                            const client = this.clients.find(c => c.id === payload.clientId);
+                            if (client === undefined) return;
+                            client.roles = [];
+                        });
 
                         gaze.on("GAZE_DEBUG_Emitted", payload => {
                             const client = this.clients.find(c => c.id === payload.clientId);
