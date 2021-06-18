@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Services;
 
+use ISAAC\GazeHub\Exceptions\ConfigKeyNotFoundException;
+use ISAAC\GazeHub\Repositories\ConfigRepository;
 use ISAAC\GazeHub\Repositories\SubscriptionRepository;
 
 use function sprintf;
@@ -15,9 +17,21 @@ class DebugEmitter
      */
     private $subscriptionRepository;
 
-    public function __construct(SubscriptionRepository $subscriptionRepository)
-    {
+    /**
+     * @var bool
+     */
+    private $enabled;
+
+    public function __construct(
+        SubscriptionRepository $subscriptionRepository,
+        ConfigRepository $configRepository
+    ) {
         $this->subscriptionRepository = $subscriptionRepository;
+        try {
+            $this->enabled = (bool) $configRepository->get('debug_page');
+        } catch (ConfigKeyNotFoundException $e) {
+            $this->enabled = false;
+        }
     }
 
     /**
@@ -26,6 +40,10 @@ class DebugEmitter
      */
     public function emit(string $topic, $payload): void
     {
+        if (!$this->enabled) {
+            return;
+        }
+
         $topic = sprintf('GAZE_DEBUG_%s', $topic);
         $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole($topic);
 

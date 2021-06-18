@@ -8,4 +8,5 @@ return [
     'jwt_public_key' => '',
     'jwt_alg' => 'RS256',
     'log_level' => 'INFO', // ['DEBUG', 'INFO', 'WARN', 'ERROR']
+    'debug_page' => false,
 ];

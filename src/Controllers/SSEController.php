@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Controllers;
 
-use ISAAC\GazeHub\Models\Request;
 use ISAAC\GazeHub\Repositories\ClientRepository;
 use ISAAC\GazeHub\Repositories\SubscriptionRepository;
 use ISAAC\GazeHub\Services\DebugEmitter;

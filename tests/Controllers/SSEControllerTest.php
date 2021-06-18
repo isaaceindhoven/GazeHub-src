@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ISAAC\GazeHub\Tests\Controllers;
 
 use ISAAC\GazeHub\Controllers\SSEController;
-use ISAAC\GazeHub\Models\Request;
 use ISAAC\GazeHub\Repositories\ClientRepository;
 use React\EventLoop\LoopInterface;
 
