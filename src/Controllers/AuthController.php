@@ -11,7 +11,7 @@ use ISAAC\GazeHub\Exceptions\UnauthorizedException;
 use ISAAC\GazeHub\Factories\JsonFactory;
 use ISAAC\GazeHub\Models\Request;
 use ISAAC\GazeHub\Repositories\ClientRepository;
-use ISAAC\GazeHub\Repositories\SubscriptionRepository;
+use ISAAC\GazeHub\Services\DebugEmitter;
 use React\Http\Message\Response;
 
 use function array_key_exists;
@@ -24,11 +24,6 @@ class AuthController
     private $clientRepository;
 
     /**
-     *  @var SubscriptionRepository
-     */
-    private $subscriptionRepository;
-
-    /**
      * @var TokenDecoder
      */
     private $tokenDecoder;
@@ -38,16 +33,21 @@ class AuthController
      */
     private $jsonFactory;
 
+    /**
+     * @var DebugEmitter
+     */
+    private $debugEmitter;
+
     public function __construct(
         ClientRepository $clientRepository,
-        SubscriptionRepository $subscriptionRepository,
         TokenDecoder $tokenDecoder,
-        JsonFactory $jsonFactory
+        JsonFactory $jsonFactory,
+        DebugEmitter $debugEmitter
     ) {
         $this->clientRepository = $clientRepository;
-        $this->subscriptionRepository = $subscriptionRepository;
         $this->tokenDecoder = $tokenDecoder;
         $this->jsonFactory = $jsonFactory;
+        $this->debugEmitter = $debugEmitter;
     }
 
     /**
@@ -75,17 +75,7 @@ class AuthController
             throw new DataValidationFailedException(['roles' => 'Roles are missing from token payload']);
         }
 
-        $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole('GAZE_DEBUG_Authenticated');
-
-        foreach ($debugClients as $debugClient) {
-            $debugClient->getStream()->write([
-                'topic' => 'GAZE_DEBUG_Authenticated',
-                'payload' => [
-                    'clientId' => $client->getId(),
-                    'roles' => $token['roles'],
-                ],
-            ]);
-        }
+        $this->debugEmitter->emit('Authenticated', ['clientId' => $client->getId(), 'roles' => $token['roles']]);
 
         $client->setRoles($token['roles']);
 
@@ -108,16 +98,7 @@ class AuthController
             return $this->jsonFactory->create(['error' => 'Not found'], 404);
         }
 
-        $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole('GAZE_DEBUG_Unauthenticated');
-
-        foreach ($debugClients as $debugClient) {
-            $debugClient->getStream()->write([
-                'topic' => 'GAZE_DEBUG_Unauthenticated',
-                'payload' => [
-                    'clientId' => $client->getId(),
-                ],
-            ]);
-        }
+        $this->debugEmitter->emit('Unauthenticated', ['clientId' => $client->getId()]);
 
         $client->setRoles([]);
 

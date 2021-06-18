@@ -7,6 +7,7 @@ namespace ISAAC\GazeHub\Controllers;
 use ISAAC\GazeHub\Models\Request;
 use ISAAC\GazeHub\Repositories\ClientRepository;
 use ISAAC\GazeHub\Repositories\SubscriptionRepository;
+use ISAAC\GazeHub\Services\DebugEmitter;
 use React\EventLoop\LoopInterface;
 use React\Http\Message\Response;
 
@@ -29,49 +30,37 @@ class SSEController
      */
     private $subscriptionRepository;
 
+    /**
+     * @var DebugEmitter
+     */
+    private $debugEmitter;
+
     public function __construct(
         LoopInterface $loop,
         ClientRepository $clientRepository,
-        SubscriptionRepository $subscriptionRepository
+        SubscriptionRepository $subscriptionRepository,
+        DebugEmitter $debugEmitter
     ) {
         $this->loop = $loop;
         $this->clientRepository = $clientRepository;
         $this->subscriptionRepository = $subscriptionRepository;
+        $this->debugEmitter = $debugEmitter;
     }
 
     /**
      * @return Response
      */
-    public function handle(Request $request): Response
+    public function handle(): Response
     {
         $client = $this->clientRepository->add();
 
-        $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole('GAZE_DEBUG_ClientConnected');
-
-        foreach ($debugClients as $debugClient) {
-            $debugClient->getStream()->write([
-                'topic' => 'GAZE_DEBUG_ClientConnected',
-                'payload' => [
-                    'id' => $client->getId(),
-                    'ip' => $request->getIp(),
-                ],
-            ]);
-        }
+        $this->debugEmitter->emit('ClientConnected', ['id' => $client->getId()]);
 
         $client->getStream()->on(
             'close',
             function () use ($client): void {
 
-                $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole('GAZE_DEBUG_ClientDisconnected');
-
-                foreach ($debugClients as $debugClient) {
-                    $debugClient->getStream()->write([
-                        'topic' => 'GAZE_DEBUG_ClientDisconnected',
-                        'payload' => [
-                            'id' => $client->getId(),
-                        ],
-                    ]);
-                }
+                $this->debugEmitter->emit('ClientDisconnected', ['id' => $client->getId()]);
 
                 $this->subscriptionRepository->remove($client);
                 $this->clientRepository->remove($client);

@@ -11,6 +11,7 @@ use ISAAC\GazeHub\Models\Client;
 use ISAAC\GazeHub\Models\Request;
 use ISAAC\GazeHub\Repositories\ClientRepository;
 use ISAAC\GazeHub\Repositories\SubscriptionRepository;
+use ISAAC\GazeHub\Services\DebugEmitter;
 use React\Http\Message\Response;
 
 class SubscriptionController
@@ -30,14 +31,21 @@ class SubscriptionController
      */
     private $jsonFactory;
 
+    /**
+     * @var DebugEmitter
+     */
+    private $debugEmitter;
+
     public function __construct(
         ClientRepository $clientRepository,
         SubscriptionRepository $subscriptionRepository,
-        JsonFactory $jsonFactory
+        JsonFactory $jsonFactory,
+        DebugEmitter $debugEmitter
     ) {
         $this->clientRepository = $clientRepository;
         $this->subscriptionRepository = $subscriptionRepository;
         $this->jsonFactory = $jsonFactory;
+        $this->debugEmitter = $debugEmitter;
     }
 
     /**
@@ -55,17 +63,10 @@ class SubscriptionController
             'topics.*' => 'required|regex:/.+/',
         ]);
 
-        $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole('GAZE_DEBUG_Subscribed');
-
-        foreach ($debugClients as $debugClient) {
-            $debugClient->getStream()->write([
-                'topic' => 'GAZE_DEBUG_Subscribed',
-                'payload' => [
-                    'clientId' => $client->getId(),
-                    'topics' => $validatedData['topics'],
-                ],
-            ]);
-        }
+        $this->debugEmitter->emit('Subscribed', [
+            'clientId' => $client->getId(),
+            'topics' => $validatedData['topics'],
+        ]);
 
         foreach ($validatedData['topics'] as $topic) {
             $this->subscriptionRepository->subscribe($client, $topic);
@@ -89,17 +90,10 @@ class SubscriptionController
             'topics.*' => 'required|regex:/.+/',
         ]);
 
-        $debugClients = $this->subscriptionRepository->getClientsByTopicAndRole('GAZE_DEBUG_Unsubscribed');
-
-        foreach ($debugClients as $debugClient) {
-            $debugClient->getStream()->write([
-                'topic' => 'GAZE_DEBUG_Unsubscribed',
-                'payload' => [
-                    'clientId' => $client->getId(),
-                    'topics' => $validatedData['topics'],
-                ],
-            ]);
-        }
+        $this->debugEmitter->emit('Unsubscribed', [
+            'clientId' => $client->getId(),
+            'topics' => $validatedData['topics'],
+        ]);
 
         foreach ($validatedData['topics'] as $topic) {
             $this->subscriptionRepository->unsubscribe($client, $topic);
