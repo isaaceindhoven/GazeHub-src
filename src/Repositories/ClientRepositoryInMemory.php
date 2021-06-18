@@ -40,6 +40,16 @@ class ClientRepositoryInMemory implements ClientRepository
     }
 
     /**
+     * Get all clients
+     *
+     * @return Client[]
+     */
+    public function getAll(): array
+    {
+        return $this->clients;
+    }
+
+    /**
      * @return int
      */
     public function count(): int
@@ -58,7 +68,6 @@ class ClientRepositoryInMemory implements ClientRepository
 
         $this->clients[$client->getId()] = $client;
         $this->logger->info('Client connected', ['connected clients' => count($this->clients)]);
-
         return $client;
     }
 
@@ -70,7 +79,6 @@ class ClientRepositoryInMemory implements ClientRepository
     public function remove(Client $clientToRemove): void
     {
         unset($this->clients[$clientToRemove->getId()]);
-
         $this->logger->info('Client disconnected', ['connected clients' => count($this->clients)]);
     }
 }

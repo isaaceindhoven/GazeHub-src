@@ -11,6 +11,7 @@ use ISAAC\GazeHub\Models\Client;
 use ISAAC\GazeHub\Models\Request;
 use ISAAC\GazeHub\Repositories\ClientRepository;
 use ISAAC\GazeHub\Repositories\SubscriptionRepository;
+use ISAAC\GazeHub\Services\DebugEmitter;
 use React\Http\Message\Response;
 
 class SubscriptionController
@@ -30,14 +31,21 @@ class SubscriptionController
      */
     private $jsonFactory;
 
+    /**
+     * @var DebugEmitter
+     */
+    private $debugEmitter;
+
     public function __construct(
         ClientRepository $clientRepository,
         SubscriptionRepository $subscriptionRepository,
-        JsonFactory $jsonFactory
+        JsonFactory $jsonFactory,
+        DebugEmitter $debugEmitter
     ) {
         $this->clientRepository = $clientRepository;
         $this->subscriptionRepository = $subscriptionRepository;
         $this->jsonFactory = $jsonFactory;
+        $this->debugEmitter = $debugEmitter;
     }
 
     /**
@@ -53,6 +61,11 @@ class SubscriptionController
         $validatedData = $request->validate([
             'topics' => 'required|array',
             'topics.*' => 'required|regex:/.+/',
+        ]);
+
+        $this->debugEmitter->emit('Subscribed', [
+            'clientId' => $client->getId(),
+            'topics' => $validatedData['topics'],
         ]);
 
         foreach ($validatedData['topics'] as $topic) {
@@ -75,6 +88,11 @@ class SubscriptionController
         $validatedData = $request->validate([
             'topics' => 'required|array',
             'topics.*' => 'required|regex:/.+/',
+        ]);
+
+        $this->debugEmitter->emit('Unsubscribed', [
+            'clientId' => $client->getId(),
+            'topics' => $validatedData['topics'],
         ]);
 
         foreach ($validatedData['topics'] as $topic) {

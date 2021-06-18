@@ -10,7 +10,7 @@ use React\Http\Message\Response;
 class JsonFactory
 {
     /**
-     * @param string[] $data
+     * @param mixed[] $data
      * @param int $statusCode
      * @return Response
      */

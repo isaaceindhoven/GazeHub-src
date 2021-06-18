@@ -17,6 +17,13 @@ interface ClientRepository
     public function getById(string $id): ?Client;
 
     /**
+     * Get all clients
+     *
+     * @return Client[]
+     */
+    public function getAll(): array;
+
+    /**
      * Get total client in repository
      *
      * @return int

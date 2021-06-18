@@ -6,6 +6,7 @@ namespace ISAAC\GazeHub\Controllers;
 
 use ISAAC\GazeHub\Repositories\ClientRepository;
 use ISAAC\GazeHub\Repositories\SubscriptionRepository;
+use ISAAC\GazeHub\Services\DebugEmitter;
 use React\EventLoop\LoopInterface;
 use React\Http\Message\Response;
 
@@ -28,14 +29,21 @@ class SSEController
      */
     private $subscriptionRepository;
 
+    /**
+     * @var DebugEmitter
+     */
+    private $debugEmitter;
+
     public function __construct(
         LoopInterface $loop,
         ClientRepository $clientRepository,
-        SubscriptionRepository $subscriptionRepository
+        SubscriptionRepository $subscriptionRepository,
+        DebugEmitter $debugEmitter
     ) {
         $this->loop = $loop;
         $this->clientRepository = $clientRepository;
         $this->subscriptionRepository = $subscriptionRepository;
+        $this->debugEmitter = $debugEmitter;
     }
 
     /**
@@ -45,9 +53,14 @@ class SSEController
     {
         $client = $this->clientRepository->add();
 
+        $this->debugEmitter->emit('ClientConnected', ['id' => $client->getId()]);
+
         $client->getStream()->on(
             'close',
             function () use ($client): void {
+
+                $this->debugEmitter->emit('ClientDisconnected', ['id' => $client->getId()]);
+
                 $this->subscriptionRepository->remove($client);
                 $this->clientRepository->remove($client);
             }

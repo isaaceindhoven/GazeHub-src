@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Debug</title>
+        <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+        <style>
+            html, body{
+                width: 100%;
+                height: 100%;
+                padding: 0px;
+                margin: 0px;
+            }
+
+            .fab .tooltip{
+                opacity: 0;
+                transition: opacity .2s ease-in-out;
+            }
+
+            .fab:hover .tooltip{
+                opacity: 1;
+            }
+        </style>
+
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.5/dayjs.min.js'></script>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.5/plugin/relativeTime.min.js'></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src='https://unpkg.com/json-browse@0.2.0/json-browse/jquery.json-browse.js'></script>
+        <link rel="stylesheet" href="https://unpkg.com/json-browse@0.2.0/json-browse/jquery.json-browse.css">
+    </head>
+    <body class="flex flex-col bg-blue-50" x-data="state">
+
+        <div class="flex flex-shrink-0">
+
+            <div class="flex w-full h-full">
+                <div class="flex flex-col m-8 p-6 w-full bg-white rounded-xl">
+                    <span class="uppercase text-gray-500 tracking-wide text-xs text-center -mt-2">Clients</span>
+
+                    <div class="mt-4 w-full">
+
+                        <template x-for="(client, index) in clients">
+                            <div x-data="{ expanded: false }" class="flex flex-col w-full">
+
+                                <div @click="expanded = !expanded" class="flex items-center justify-between py-4 hover:bg-gray-50 px-3 rounded-md">
+                                
+                                    <div class="flex items-center">
+        
+                                        <span class="flex justify-center items-center text-xs text-gray-600 font-bold font-mono w-8 h-8 bg-gray-100 rounded-full mr-6">
+                                            <span x-text="index + 1"></span>
+                                        </span>
+            
+                                        <div class="flex flex-col">
+                                            <span class="font-semibold" x-text="client.id"></span>
+                                        </div>
+        
+                                    </div>
+        
+                                    <div class="flex items-center space-x-4">
+                                        
+                                        <div 
+                                            class="text-xs text-yellow-300 font-semibold italic" 
+                                            x-text="client.connectedAtFormattedText">
+                                        </div>
+        
+                                        <div class="flex space-x-2">
+                                            <span class="bg-green-600 text-white rounded-full px-3 text-center py-1 text-xs font-semibold">
+                                                <span x-text="client.roles.length"></span> roles
+                                            </span>
+                                            
+                                            <span class="bg-blue-600 text-white rounded-full px-3 text-center py-1 text-xs font-semibold">
+                                                <span x-text="client.topics.length"></span> topics
+                                            </span>
+
+                                            <span class="bg-pink-600 text-white rounded-full px-3 text-center py-1 text-xs font-semibold">
+                                                <span x-text="client.messages.length"></span> messages
+                                            </span>
+                                        </div>
+        
+                                        <div class="flex w-8 h-8 items-center justify-center border rounded-full hover:bg-gray-100 cursor-pointer">
+                                            <svg  xmlns="http://www.w3.org/2000/svg" :class="expanded && 'transform rotate-180'" class="transition-transform h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                
+                                <template x-if="expanded">
+                                    <div class="flex w-full px-3">
+                                        <div class="flex w-full border rounded-xl p-4 my-3 space-x-3" style="height: 400px">
+                                        
+                                            <div class="flex flex-col" style="flex: 12;">
+                                                
+                                                <span class="text-xs text-gray-500 text-center mb-4">ROLES</span>
+            
+                                                <div class="flex flex-col overflow-y-scroll space-y-2 text-xs font-semibold text-gray-800 tracking-wide">
+                                                    <template x-for="role in client.roles">
+                                                        <span x-text="role"></span>
+                                                    </template>
+                                                </div>
+            
+                                            </div>
+            
+                                            <div class="flex flex-col border-r border-l" style="flex: 14;">
+                                                <span class="text-xs text-gray-500 text-center mb-4">TOPICS</span>
+        
+                                                <div class="flex flex-col mx-5 overflow-y-scroll space-y-2 text-xs font-semibold text-gray-800 tracking-wide">
+                                                    <template x-for="topic in client.topics">
+                                                        <span x-text="topic"></span>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="flex flex-col relative overflow-scroll" style="flex: 70;">
+        
+                                                <div @click='client.messages = []' class="fab absolute w-10 h-10 hover:bg-red-600 cursor-pointer bg-red-500 text-white rounded-full flex justify-center items-center right-0 bottom-0">
+                                                    <div style="left: -300%;" class="tooltip absolute text-xs bg-gray-800 text-white rounded px-3 py-2">clear messages</div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                </div>
+        
+                                                <span class="text-xs text-gray-500 text-center mb-4">MESSAGES</span>
+        
+                                                <div class="flex flex-col flex-col-reverse overflow-y-scroll">
+                                                    <template x-for="message in client.messages">
+                                                        <div class="flex flex-col py-2 mx-5">
+                                                            <pre
+                                                                style="font-size: 13px;"
+                                                                x-init="$($el).jsonBrowse(message, {collapsed: false, withQuotes: true})">
+                                                            </pre>
+                                                        </div>
+                                                    </template>
+                                                </div>
+        
+                                            </div>
+            
+                                        </div>
+                                    </div>
+                                </template>
+                                
+    
+    
+                            </div>
+                        </template>
+
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <script src="https://unpkg.com/@isaac.frontend/gaze-client/dist/GazeClient.js"></script>
+        
+        <script>
+
+            dayjs.extend(dayjs_plugin_relativeTime)
+
+            document.addEventListener('alpine:initializing', () => {
+                Alpine.data('state', () => ({
+                    clients: [],
+
+                    init() {
+
+                        setInterval(() => {
+                            this.clients.filter(c => c.connectedAt !== null).forEach(c => {
+                                c.connectedAtFormattedText = c.connectedAt.fromNow();
+                            })
+                        }, 1000);
+
+                        fetch('/debug/clients').then(resp => resp.json()).then(clients => {
+                            clients.forEach(client => {
+                                this.clients.push({
+                                    id: client.id,
+                                    topics: client.topics,
+                                    roles: client.roles,
+                                    messages: [],
+                                    connectedAt: null,
+                                    connectedAtFormattedText: null
+                                });
+                            });
+                        });
+
+                        window.gaze = new GazeClient(`//${window.location.host}`);
+                        
+                        gaze.on("GAZE_DEBUG_ClientConnected", client => {
+                            this.clients.push({
+                                id: client.id,
+                                topics: [],
+                                roles: [],
+                                messages: [],
+                                connectedAt: dayjs(),
+                                connectedAtFormattedText: null
+                            });
+                        });
+
+                        gaze.on("GAZE_DEBUG_ClientDisconnected", client => {
+                            this.clients = this.clients.filter(c => c.id !== client.id);
+                        });
+
+                        gaze.on("GAZE_DEBUG_Subscribed", payload => {
+                            const client = this.clients.find(c => c.id === payload.clientId);
+                            if (client === undefined) return;
+                            client.topics.push(...payload.topics);
+                        });
+
+                        gaze.on("GAZE_DEBUG_Unsubscribed", payload => {
+                            const client = this.clients.find(c => c.id === payload.clientId);
+                            if (client === undefined) return;
+                            payload.topics.forEach(topicToRemove => {
+                                client.topics = client.topics.filter(t => t !== topicToRemove);
+                            })
+                        });
+
+                        gaze.on("GAZE_DEBUG_Authenticated", payload => {
+                            const client = this.clients.find(c => c.id === payload.clientId);
+                            if (client === undefined) return;
+                            client.roles = payload.roles;
+                        });
+
+                        gaze.on("GAZE_DEBUG_Unauthenticated", payload => {
+                            const client = this.clients.find(c => c.id === payload.clientId);
+                            if (client === undefined) return;
+                            client.roles = [];
+                        });
+
+                        gaze.on("GAZE_DEBUG_Emitted", payload => {
+                            const client = this.clients.find(c => c.id === payload.clientId);
+                            if (client === undefined) return;
+                            client.messages.push(payload.payload);
+                        });
+                    }
+                }))
+            })
+        </script>
+
+        <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.js"></script>
+
+    </body>
+</html>

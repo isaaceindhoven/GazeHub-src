@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ISAAC\GazeHub\Models;
 
+use JsonSerializable;
 use React\Stream\ThroughStream;
 
 use function array_filter;
@@ -12,7 +13,7 @@ use function in_array;
 use function json_encode;
 
 // phpcs:ignore ObjectCalisthenics.Metrics.MethodPerClassLimit.ObjectCalisthenics\Sniffs\Metrics\MethodPerClassLimitSniff
-class Client
+class Client implements JsonSerializable
 {
     /**
      * @var ThroughStream
@@ -114,5 +115,17 @@ class Client
     public function equals(Client $client): bool
     {
         return $this->id === $client->getId();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'roles' => $this->roles,
+            'topics' => $this->topics,
+        ];
     }
 }

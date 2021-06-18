@@ -11,6 +11,7 @@ use ISAAC\GazeHub\Exceptions\UnauthorizedException;
 use ISAAC\GazeHub\Factories\JsonFactory;
 use ISAAC\GazeHub\Models\Request;
 use ISAAC\GazeHub\Repositories\ClientRepository;
+use ISAAC\GazeHub\Services\DebugEmitter;
 use React\Http\Message\Response;
 
 use function array_key_exists;
@@ -32,14 +33,21 @@ class AuthController
      */
     private $jsonFactory;
 
+    /**
+     * @var DebugEmitter
+     */
+    private $debugEmitter;
+
     public function __construct(
         ClientRepository $clientRepository,
         TokenDecoder $tokenDecoder,
-        JsonFactory $jsonFactory
+        JsonFactory $jsonFactory,
+        DebugEmitter $debugEmitter
     ) {
         $this->clientRepository = $clientRepository;
         $this->tokenDecoder = $tokenDecoder;
         $this->jsonFactory = $jsonFactory;
+        $this->debugEmitter = $debugEmitter;
     }
 
     /**
@@ -67,6 +75,8 @@ class AuthController
             throw new DataValidationFailedException(['roles' => 'Roles are missing from token payload']);
         }
 
+        $this->debugEmitter->emit('Authenticated', ['clientId' => $client->getId(), 'roles' => $token['roles']]);
+
         $client->setRoles($token['roles']);
 
         return $this->jsonFactory->create(['status' => 'Client authenticated'], 200);
@@ -87,6 +97,8 @@ class AuthController
         if ($client === null) {
             return $this->jsonFactory->create(['error' => 'Not found'], 404);
         }
+
+        $this->debugEmitter->emit('Unauthenticated', ['clientId' => $client->getId()]);
 
         $client->setRoles([]);
 
