@@ -12,6 +12,7 @@ return [
     'GET' => [
         '/sse' => [SSEController::class, 'handle'],
         '/debug' => [DebugController::class, 'handle'],
+        '/debug/clients' => [DebugController::class, 'clients'],
     ],
     'POST' => [
         '/event' => [EventController::class, 'handle'],

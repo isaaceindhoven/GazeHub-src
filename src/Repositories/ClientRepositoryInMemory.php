@@ -40,6 +40,16 @@ class ClientRepositoryInMemory implements ClientRepository
     }
 
     /**
+     * Get all clients
+     *
+     * @return Client[]
+     */
+    public function getAll(): array
+    {
+        return $this->clients;
+    }
+
+    /**
      * @return int
      */
     public function count(): int

@@ -161,11 +161,23 @@
 
                     init() {
 
+                        fetch('/debug/clients').then(resp => resp.json()).then(clients => {
+                            clients.forEach(client => {
+                                this.clients.push({
+                                    id: client.id,
+                                    topics: client.topics,
+                                    roles: client.roles,
+                                    messages: [],
+                                    connectedAt: null
+                                });
+                            });
+                        });
+
                         window.gaze = new GazeClient(`//${window.location.host}`);
                         
                         gaze.on("GAZE_DEBUG_ClientConnected", client => {
                             this.clients.push({
-                                ...client,
+                                id: client.id,
                                 topics: [],
                                 roles: [],
                                 messages: [],
