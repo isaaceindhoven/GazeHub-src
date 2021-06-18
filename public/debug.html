@@ -24,6 +24,8 @@
             }
         </style>
 
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.5/dayjs.min.js'></script>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.5/plugin/relativeTime.min.js'></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src='https://unpkg.com/json-browse@0.2.0/json-browse/jquery.json-browse.js'></script>
         <link rel="stylesheet" href="https://unpkg.com/json-browse@0.2.0/json-browse/jquery.json-browse.css">
@@ -56,10 +58,10 @@
                                     </div>
         
                                     <div class="flex items-center space-x-4">
-        
+                                        
                                         <div 
                                             class="text-xs text-yellow-300 font-semibold italic" 
-                                            x-text="client.connectedAt">
+                                            x-text="client.connectedAtFormattedText">
                                         </div>
         
                                         <div class="flex space-x-2">
@@ -155,11 +157,20 @@
         <script src="https://unpkg.com/@isaac.frontend/gaze-client/dist/GazeClient.js"></script>
         
         <script>
+
+            dayjs.extend(dayjs_plugin_relativeTime)
+
             document.addEventListener('alpine:initializing', () => {
                 Alpine.data('state', () => ({
                     clients: [],
 
                     init() {
+
+                        setInterval(() => {
+                            this.clients.filter(c => c.connectedAt !== null).forEach(c => {
+                                c.connectedAtFormattedText = c.connectedAt.fromNow();
+                            })
+                        }, 1000);
 
                         fetch('/debug/clients').then(resp => resp.json()).then(clients => {
                             clients.forEach(client => {
@@ -168,7 +179,8 @@
                                     topics: client.topics,
                                     roles: client.roles,
                                     messages: [],
-                                    connectedAt: null
+                                    connectedAt: null,
+                                    connectedAtFormattedText: null
                                 });
                             });
                         });
@@ -181,7 +193,8 @@
                                 topics: [],
                                 roles: [],
                                 messages: [],
-                                connectedAt: new Date().getTime()
+                                connectedAt: dayjs(),
+                                connectedAtFormattedText: null
                             });
                         });
 
